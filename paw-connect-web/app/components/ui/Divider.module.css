@@ -1,0 +1,19 @@
+.dividerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 4px 0;
+}
+
+.dividerLine {
+  flex: 1;
+  height: 1px;
+  background-color: var(--navy-12);
+}
+
+.dividerText {
+  font-size: 13px;
+  color: var(--navy-40);
+  font-weight: 500;
+}

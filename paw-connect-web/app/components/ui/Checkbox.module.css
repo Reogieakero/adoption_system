@@ -1,0 +1,34 @@
+.checkboxGroup {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 2px 0;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: var(--navy);
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.legalText {
+  font-size: 12.5px;
+  color: var(--navy-70);
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.legalText a {
+  color: var(--navy);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 600;
+}
+
+.legalText a:hover {
+  color: var(--ocean);
+}

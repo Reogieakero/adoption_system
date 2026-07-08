@@ -1,0 +1,63 @@
+.container {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--white);
+  overflow: hidden;
+  perspective: 1800px;
+}
+
+.formSide {
+  flex: 1.2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px max(40px, 6vw);
+  position: relative;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54 48c-2 0-3 1-4 2v4c0 1-1 2-2 2H4c-1 0-2-1-2-2V4c0-1 1-2 2-2h44c1 0 2 1 2 2v4c1 1 2 2 4 2s3-1 4-2V4c0-2-2-4-4-4H4C2 0 0 2 0 4v52c0 2 2 4 4 4h44c2 0 4-2 4-4v-4c0-1-1-2-2-2zM8 8h36v36H8V8z' fill='%23f4f6f9' fill-opacity='0.95' fill-rule='evenodd'/%3E%3C/svg%3E");
+  background-size: 60px 60px;
+  min-width: 0;
+  backface-visibility: hidden;
+}
+
+.formWrapper {
+  width: 100%;
+  max-width: 460px;
+  position: relative;
+  z-index: 2;
+  margin-top: clamp(20px, 4vh, 60px);
+}
+
+.imageSide {
+  display: none;
+  flex: 1;
+  max-width: 580px;
+  padding: 24px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  backface-visibility: hidden;
+}
+
+@media (min-width: 900px) {
+  .imageSide {
+    display: flex;
+  }
+}
+
+.imageCard {
+  width: 100%;
+  height: 100%;
+  max-height: calc(100vh - 48px);
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 20px 40px -10px var(--navy-12);
+}
+
+.petImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
