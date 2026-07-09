@@ -1,0 +1,52 @@
+.sideCardsColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.reportSideCard {
+  background: var(--white);
+  border: 1px solid var(--navy-12);
+  border-radius: 12px;
+  padding: 18px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.sideCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.sideCardLabel {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--navy-40);
+}
+
+.iconReport {
+  color: var(--ocean);
+}
+
+.iconAdopted {
+  color: #16a34a;
+}
+
+.animalName {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--navy);
+  margin: 0 0 6px 0;
+}
+
+.animalDetails {
+  font-size: 12px;
+  color: var(--navy-70);
+  margin: 0;
+  line-height: 1.6;
+}

@@ -1,0 +1,16 @@
+.layout {
+  min-height: 100vh;
+  background-color: var(--soft-white);
+}
+
+.page {
+  min-height: 100vh;
+  margin-top: 56px;
+  margin-left: 64px;
+}
+
+.main {
+  padding: 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
