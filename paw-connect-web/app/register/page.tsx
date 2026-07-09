@@ -145,7 +145,7 @@ export default function RegisterPage() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
             >
-              <h1 className={styles.title}>Create an account</h1>
+              <h1 className={styles.title}>Create an account OK</h1>
               <p className={styles.subtitle}>
                 Let&apos;s get started with your custom profile setups
               </p>
