@@ -5,6 +5,11 @@ const { validateRegister, handleValidationErrors } = require('../middleware/vali
 const { sendVerificationEmail } = require('../utils/mailer');
 const { generateVerificationCode, getExpiryDate } = require('../utils/verificationCode');
 
+const jwt = require('jsonwebtoken');
+
+const { getAuth } = require('firebase-admin/auth');
+const firebaseApp = require('../config/firebaseAdmin');
+
 const router = express.Router();
 const SALT_ROUNDS = 10;
 
@@ -138,6 +143,123 @@ router.post('/resend-code', async (req, res, next) => {
 
     res.json({ success: true, message: 'A new code has been sent to your email' });
   } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/login', async (req, res, next) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ success: false, message: 'Email and password are required' });
+  }
+
+  try {
+    const [rows] = await pool.query(
+      'SELECT id, first_name, last_name, email, password_hash, is_verified, provider FROM users WHERE email = ?',
+      [email]
+    );
+    const user = rows[0];
+
+    if (!user) {
+      return res.status(401).json({ success: false, message: 'Invalid email or password' });
+    }
+
+    if (!user.password_hash) {
+      return res.status(400).json({
+        success: false,
+        message: 'This account uses Google sign-in. Continue with Google instead.',
+      });
+    }
+
+    const passwordMatches = await bcrypt.compare(password, user.password_hash);
+    if (!passwordMatches) {
+      return res.status(401).json({ success: false, message: 'Invalid email or password' });
+    }
+
+    if (!user.is_verified) {
+      return res.status(403).json({
+        success: false,
+        requiresVerification: true,
+        email: user.email,
+        message: 'Please verify your email before signing in',
+      });
+    }
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    res.json({
+      success: true,
+      token,
+      user: {
+        id: user.id,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        email: user.email,
+        provider: user.provider,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/google', async (req, res, next) => {
+  const { idToken } = req.body;
+
+  if (!idToken) {
+    return res.status(400).json({ success: false, message: 'idToken is required' });
+  }
+
+  try {
+    const decoded = await getAuth(firebaseApp).verifyIdToken(idToken);
+    const { email, uid, name } = decoded;
+
+    const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+    let user = rows[0];
+
+    if (!user) {
+      const firstName = name ? name.split(' ')[0] : '';
+      const lastName = name ? name.split(' ').slice(1).join(' ') : '';
+
+      const [result] = await pool.query(
+        `INSERT INTO users (first_name, last_name, email, provider, google_uid, is_verified)
+         VALUES (?, ?, ?, 'google', ?, TRUE)`,
+        [firstName, lastName, email, uid]
+      );
+
+      const [newRows] = await pool.query('SELECT * FROM users WHERE id = ?', [result.insertId]);
+      user = newRows[0];
+    } else if (!user.google_uid) {
+      await pool.query('UPDATE users SET google_uid = ? WHERE id = ?', [uid, user.id]);
+      user.google_uid = uid;
+    }
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    res.json({
+      success: true,
+      token,
+      user: {
+        id: user.id,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        email: user.email,
+        provider: user.provider || 'local',
+      },
+    });
+  } catch (err) {
+    if (err.code && err.code.startsWith('auth/')) {
+      return res.status(401).json({ success: false, message: 'Invalid Google token' });
+    }
     next(err);
   }
 });

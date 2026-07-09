@@ -8,6 +8,8 @@ const { errorHandler, notFound } = require('./middleware/errorHandler');
 const app = express();
 
 const allowedOrigins = (process.env.CLIENT_ORIGIN || 'http://localhost:3000').split(',');
+const googleAuthRoutes = require('./routes/googleAuth');
+
 app.use(cors({ origin: allowedOrigins }));
 
 app.use(express.json());
@@ -16,6 +18,8 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
 app.use('/api/auth', authRoutes);
+
+app.use('/api/auth', googleAuthRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
