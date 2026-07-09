@@ -246,7 +246,6 @@ export function useRegisterForm() {
     toggleConfirmPasswordVisibility,
     handleSubmit,
 
-    // verification stage
     stage,
     codeDigits,
     codeInputRefs,

@@ -1,5 +1,140 @@
-.wrapper {
+.page {
   min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+}
+
+/* ---------- Left: brand / security panel ---------- */
+
+.brandPanel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: var(--navy);
+  background-image:
+    radial-gradient(circle at 12% 8%, var(--royal-14), transparent 45%),
+    radial-gradient(circle at 90% 82%, var(--ocean-14), transparent 50%),
+    repeating-linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.02) 0px,
+      rgba(255, 255, 255, 0.02) 1px,
+      transparent 1px,
+      transparent 34px
+    );
+  overflow: hidden;
+  padding: 56px;
+}
+
+.brandPanelInner {
+  position: relative;
+  z-index: 1;
+  max-width: 440px;
+}
+
+.wordmark {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 48px;
+}
+
+.wordmarkMain {
+  font-family: var(--font-display), serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--white);
+  letter-spacing: -0.01em;
+}
+
+.eyebrow {
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.headline {
+  font-family: var(--font-display), serif;
+  font-size: 34px;
+  font-weight: 500;
+  line-height: 1.22;
+  color: var(--white);
+  margin: 0 0 18px 0;
+  letter-spacing: -0.01em;
+}
+
+.headlineSupport {
+  font-family: var(--font-body), sans-serif;
+  font-size: 14px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.62);
+  margin: 0 0 44px 0;
+  max-width: 400px;
+}
+
+.statusList {
+  list-style: none;
+  margin: 0;
+  padding: 20px 0 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.statusItem {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+
+.statusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #27C93F;
+  box-shadow: 0 0 0 3px rgba(39, 201, 63, 0.18);
+  animation: pulse 2.4s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.securityNote {
+  font-family: var(--font-mono), monospace;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.42);
+  padding-left: 16px;
+  position: relative;
+}
+
+.securityNote::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .statusDot {
+    animation: none;
+  }
+}
+
+/* ---------- Right: form panel ---------- */
+
+.formPanel {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -7,42 +142,48 @@
   padding: 24px;
 }
 
-.card {
+.formPanelInner {
   width: 100%;
   max-width: 380px;
-  background-color: var(--white);
-  border: 1px solid var(--navy-12);
-  border-radius: 10px;
-  box-shadow: 0 4px 16px rgba(23, 10, 12, 0.06);
-  padding: 32px 28px;
+}
+
+.mobileWordmark {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 28px;
 }
 
 .badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono), monospace;
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font-weight: 500;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ocean);
   background-color: var(--ocean-14);
-  padding: 4px 10px;
+  padding: 5px 10px 5px 8px;
   border-radius: 100px;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 .title {
   font-family: var(--font-body), sans-serif;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 600;
   color: var(--navy);
   margin: 0 0 4px 0;
+  letter-spacing: -0.01em;
 }
 
 .subtitle {
   font-family: var(--font-body), sans-serif;
   font-size: 13px;
   color: var(--navy-70);
-  margin: 0 0 20px 0;
+  margin: 0 0 24px 0;
   line-height: 1.5;
 }
 
@@ -87,6 +228,7 @@
   box-shadow: none !important;
   transform: none !important;
   transition: background-color 0.15s ease, opacity 0.15s ease !important;
+  margin-top: 4px;
 }
 
 .submitButton:hover:not([disabled]) {
@@ -125,4 +267,43 @@
   font-size: 12.5px;
   color: #1D8348;
   margin: 0;
+}
+
+.footerNote {
+  margin-top: 22px;
+  font-size: 12.5px;
+  color: var(--navy-70);
+  text-align: center;
+}
+
+.footerLink {
+  color: var(--navy);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.footerLink:hover {
+  color: var(--ocean);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 960px) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+
+  .brandPanel {
+    display: none;
+  }
+
+  .mobileWordmark {
+    display: flex;
+  }
+
+  .formPanel {
+    padding: 40px 20px;
+    min-height: 100vh;
+  }
 }

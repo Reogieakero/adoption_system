@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export function useAdminLoginForm() {
+  const router = useRouter();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -40,6 +42,7 @@ export function useAdminLoginForm() {
 
       sessionStorage.setItem('adminAuthToken', data.token);
       setSuccessMessage(`Login successful. Welcome back, ${data.admin.email}.`);
+      router.push('/admin/dashboard');
     } catch {
       setErrorMessage('Unable to reach the server. Please try again.');
     } finally {

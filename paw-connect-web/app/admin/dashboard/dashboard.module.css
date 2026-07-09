@@ -1,0 +1,35 @@
+.layout {
+  min-height: 100vh;
+}
+
+.page {
+  min-height: 100vh;
+  margin-top: 56px; /* navbar height */
+  margin-left: 64px; /* sidebar's collapsed width; sidebar overlays on hover, content doesn't shift */
+  background-color: var(--soft-white);
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 56px);
+  text-align: center;
+  padding: 24px;
+}
+
+.title {
+  font-family: var(--font-display), serif;
+  font-size: 32px;
+  font-weight: 500;
+  color: var(--navy);
+  margin: 0 0 8px 0;
+}
+
+.subtitle {
+  font-family: var(--font-geist-sans), ui-sans-serif, sans-serif;
+  font-size: 14px;
+  color: var(--navy-70);
+  margin: 0;
+}
