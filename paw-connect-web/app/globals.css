@@ -3,18 +3,29 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
   --white: #FFFFFF;
-  --soft-white: #F8FAFC;
-  --ivory: #FFFFF0;
-  --navy: #0A1F44;
-  --ocean: #0077B6;
-  --royal: #4169E1;
-  --navy-70: rgba(10, 31, 68, 0.7);
-  --navy-40: rgba(10, 36, 68, 0.4);
-  --navy-12: rgba(10, 31, 68, 0.12);
-  --navy-06: rgba(10, 31, 68, 0.06);
-  --ocean-14: rgba(0, 119, 182, 0.14);
-  --royal-14: rgba(65, 105, 225, 0.14);
+  --soft-white: #FAF7F6;
+  --ivory: #FFF7F5;
+
+  /* Was navy (#0A1F44) — now a near-black with a warm charcoal-red undertone.
+     Used across the app as the primary text/dark-surface color (buttons,
+     headings, borders), so this single value repaints most of the UI. */
+  --navy: #170A0C;
+  --navy-70: rgba(23, 10, 12, 0.7);
+  --navy-40: rgba(23, 10, 12, 0.4);
+  --navy-12: rgba(23, 10, 12, 0.12);
+  --navy-06: rgba(23, 10, 12, 0.06);
+
+  /* Was ocean (#0077B6) — now a bright crimson red, used for focus rings,
+     link hovers, and primary accents. */
+  --ocean: #C8102E;
+  --ocean-14: rgba(200, 16, 46, 0.14);
+
+  /* Was royal (#4169E1) — now a deep maroon, used as a secondary accent. */
+  --royal: #7A0D1E;
+  --royal-14: rgba(122, 13, 30, 0.14);
+
   --font-display: 'Fraunces', ui-serif, Georgia, serif;
   --font-body: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
@@ -75,5 +86,5 @@ a {
 }
 
 ::selection {
-  background: rgba(0, 119, 182, 0.24);
+  background: rgba(200, 16, 46, 0.24);
 }

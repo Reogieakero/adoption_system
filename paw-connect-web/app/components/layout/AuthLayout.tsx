@@ -9,6 +9,9 @@ interface AuthLayoutProps {
   children: ReactNode;
   imageSrc?: string;
   imageAlt?: string;
+  brandName?: string;
+  heading?: string;
+  tagline?: string;
 }
 
 const FLIP_DURATION = 0.7;
@@ -24,17 +27,19 @@ const FLIP_EASE = [0.65, 0, 0.35, 1] as const;
  * <AuthLayout>, React remounts it on navigation and there's nothing to
  * animate between.
  *
- * On every mode change, the image panel rotates through 90° (fading out
- * right at the edge-on point, where it'd look like a mirrored sliver
- * anyway) while sliding to its new side, and the form panel does the
- * mirror-image rotation in the opposite direction — like two facing
- * pages of a book turning at once.
+ * On every mode change, the marketing panel rotates through 90° (fading
+ * out right at the edge-on point) while sliding to its new side, and the
+ * form panel does the mirror-image rotation in the opposite direction —
+ * like two facing pages of a book turning at once.
  */
 export default function AuthLayout({
   mode,
   children,
   imageSrc = 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=1000&h=1500',
   imageAlt = 'Pet Portrait',
+  brandName = 'Paw Connect',
+  heading = 'Find your new best friend',
+  tagline = 'The most trusted platform for pet adoption and rescue, connecting shelters and loving homes nationwide.',
 }: AuthLayoutProps) {
   const imageOnLeft = mode === 'login';
   const imageControls = useAnimationControls();
@@ -70,6 +75,14 @@ export default function AuthLayout({
       >
         <div className={styles.imageCard}>
           <img src={imageSrc} alt={imageAlt} className={styles.petImage} />
+          <div className={styles.gradientOverlay} aria-hidden="true" />
+
+          <span className={styles.panelBrand}>{brandName}</span>
+
+          <div className={styles.panelText}>
+            <h2 className={styles.panelHeading}>{heading}</h2>
+            <p className={styles.panelTagline}>{tagline}</p>
+          </div>
         </div>
       </motion.div>
 

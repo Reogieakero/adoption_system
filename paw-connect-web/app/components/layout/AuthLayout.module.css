@@ -8,14 +8,12 @@
 }
 
 .formSide {
-  flex: 1.2;
+  flex: 1;
   display: flex;
   align-items: flex-start;
   justify-content: center;
   padding: 40px max(40px, 6vw);
   position: relative;
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54 48c-2 0-3 1-4 2v4c0 1-1 2-2 2H4c-1 0-2-1-2-2V4c0-1 1-2 2-2h44c1 0 2 1 2 2v4c1 1 2 2 4 2s3-1 4-2V4c0-2-2-4-4-4H4C2 0 0 2 0 4v52c0 2 2 4 4 4h44c2 0 4-2 4-4v-4c0-1-1-2-2-2zM8 8h36v36H8V8z' fill='%23f4f6f9' fill-opacity='0.95' fill-rule='evenodd'/%3E%3C/svg%3E");
-  background-size: 60px 60px;
   min-width: 0;
   backface-visibility: hidden;
 }
@@ -31,10 +29,10 @@
 .imageSide {
   display: none;
   flex: 1;
-  max-width: 580px;
-  padding: 24px;
-  align-items: center;
-  justify-content: center;
+  min-width: 0;
+  padding: 0;
+  align-items: stretch;
+  justify-content: stretch;
   box-sizing: border-box;
   backface-visibility: hidden;
 }
@@ -48,16 +46,66 @@
 .imageCard {
   width: 100%;
   height: 100%;
-  max-height: calc(100vh - 48px);
-  border-radius: 16px;
+  border-radius: 0;
   overflow: hidden;
   position: relative;
-  box-shadow: 0 20px 40px -10px var(--navy-12);
+  background-color: #000000;
 }
 
 .petImage {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.gradientOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(179, 18, 46, 0.82) 0%,
+    rgba(122, 13, 30, 0.72) 30%,
+    rgba(52, 6, 13, 0.68) 62%,
+    rgba(0, 0, 0, 0.85) 100%
+  );
+  pointer-events: none;
+}
+
+.panelBrand {
+  position: absolute;
+  top: 32px;
+  left: 32px;
+  font-family: var(--font-body), sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
+.panelText {
+  position: absolute;
+  left: 32px;
+  right: 32px;
+  bottom: 36px;
+  max-width: 360px;
+}
+
+.panelHeading {
+  font-family: var(--font-body), sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 10px 0;
+  line-height: 1.2;
+}
+
+.panelTagline {
+  font-family: var(--font-body), sans-serif;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+  margin: 0;
 }

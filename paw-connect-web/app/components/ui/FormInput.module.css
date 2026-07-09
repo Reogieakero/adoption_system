@@ -1,45 +1,44 @@
 .inputFieldContainer {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   width: 100%;
 }
 
-.floatingInput {
+.label {
   font-family: var(--font-body), sans-serif;
-  font-size: 15px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--navy);
+  line-height: 1;
+}
+
+.input {
+  font-family: var(--font-body), sans-serif;
+  font-size: 14px;
   width: 100%;
-  padding: 22px 16px 10px 16px;
-  border-radius: 10px;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 6px;
   border: 1px solid var(--navy-12);
   background-color: var(--white);
   color: var(--navy);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
   outline: none;
   box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.floatingInput:focus {
+.input::placeholder {
+  color: var(--navy-40);
+}
+
+.input:focus {
   border-color: var(--ocean);
   box-shadow: 0 0 0 3px var(--ocean-14);
 }
 
-.floatingLabel {
-  position: absolute;
-  left: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 15px;
+.input:disabled {
+  background-color: var(--navy-06);
   color: var(--navy-40);
-  pointer-events: none;
-  transition: all 0.2s ease;
-  font-weight: 500;
-  background-color: transparent;
-}
-
-.floatingInput:focus ~ .floatingLabel,
-.floatingInput:not(:placeholder-shown) ~ .floatingLabel {
-  top: 14px;
-  transform: scale(0.8) translateY(-50%);
-  transform-origin: left top;
-  color: var(--ocean);
-  font-weight: 600;
+  cursor: not-allowed;
 }

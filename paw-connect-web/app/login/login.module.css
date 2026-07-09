@@ -1,7 +1,7 @@
 .windowDots {
   display: flex;
   gap: 6px;
-  margin-bottom: clamp(24px, 5vh, 48px);
+  margin-bottom: clamp(18px, 3.5vh, 32px);
 }
 
 .dot {
@@ -15,26 +15,26 @@
 
 .title {
   font-family: var(--font-body), sans-serif;
-  font-size: 38px;
-  font-weight: 700;
+  font-size: 24px;
+  font-weight: 600;
   color: var(--navy);
-  line-height: 1.2;
-  margin: 0 0 10px 0;
+  line-height: 1.3;
+  margin: 0 0 4px 0;
   letter-spacing: -0.01em;
 }
 
 .subtitle {
   font-family: var(--font-body), sans-serif;
-  font-size: 15px;
+  font-size: 13.5px;
   color: var(--navy-70);
-  margin: 0 0 28px 0;
+  margin: 0 0 20px 0;
   line-height: 1.5;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 
 .optionsRow {
@@ -57,24 +57,25 @@
 }
 
 .footer .link {
-  font-size: 14px;
+  font-size: 13.5px;
 }
 
 .submitButton {
   width: 100% !important;
-  padding: 15px !important;
-  font-size: 14px !important;
-  font-weight: 700 !important;
-  border-radius: 10px !important;
+  height: 36px !important;
+  padding: 0 16px !important;
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  border-radius: 6px !important;
   background-color: var(--navy) !important;
   color: var(--white) !important;
   box-shadow: none !important;
   transform: none !important;
-  transition: background-color 0.2s ease, opacity 0.2s ease !important;
+  transition: background-color 0.15s ease, opacity 0.15s ease !important;
 }
 
 .submitButton:hover:not([disabled]) {
-  background-color: #112b5c !important;
+  opacity: 0.9;
 }
 
 .submitButton[disabled] {
@@ -86,8 +87,8 @@
 }
 
 .footer {
-  margin-top: 20px;
-  font-size: 14px;
+  margin-top: 16px;
+  font-size: 13.5px;
   color: var(--navy-70);
   text-align: center;
 }

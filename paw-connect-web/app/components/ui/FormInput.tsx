@@ -9,23 +9,22 @@ interface FormInputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 /**
- * Generic floating-label text input.
+ * Compact shadcn-style text input: small label above a bordered field.
  * Usage: <FormInput id="email" type="email" label="Email Address" required />
  */
 const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
   ({ label, id, className, ...props }, ref) => {
     return (
       <div className={styles.inputFieldContainer}>
+        <label htmlFor={id} className={styles.label}>
+          {label}
+        </label>
         <input
           ref={ref}
           id={id}
-          className={`${styles.floatingInput} ${className ?? ''}`}
-          placeholder=" "
+          className={`${styles.input} ${className ?? ''}`}
           {...props}
         />
-        <label htmlFor={id} className={styles.floatingLabel}>
-          {label}
-        </label>
       </div>
     );
   }
