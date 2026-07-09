@@ -37,7 +37,7 @@ export default function AuthLayout({
   children,
   imageSrc = 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=1000&h=1500',
   imageAlt = 'Pet Portrait',
-  brandName = 'Paw Connect',
+  brandName = 'spot.',
   heading = 'Find your new best friend',
   tagline = 'The most trusted platform for pet adoption and rescue, connecting shelters and loving homes nationwide.',
 }: AuthLayoutProps) {
