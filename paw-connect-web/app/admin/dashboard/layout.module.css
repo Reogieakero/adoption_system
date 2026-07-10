@@ -1,6 +1,6 @@
 .layout {
   min-height: 100vh;
-  background-color: var(--soft-white);
+  background-color: var(--white);
 }
 
 .page {
@@ -10,7 +10,7 @@
 }
 
 .main {
-  padding: 40px;
+  padding: 24px 16px;
   max-width: 1400px;
   margin: 0 auto;
 }

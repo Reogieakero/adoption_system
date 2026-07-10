@@ -1,13 +1,25 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   TrendingUp,
   TrendingDown,
   Activity,
   MapPin,
+  ChevronDown,
   type LucideIcon,
 } from 'lucide-react';
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  LabelList,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
+import type { ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import styles from './AnalyticsPanel.module.css';
 
 type ChartType = 'vertical' | 'horizontal';
@@ -27,6 +39,13 @@ interface ReportTool {
   chartType: ChartType;
   chartUnit: string;
   data: ChartPoint[];
+}
+
+interface ChartTooltipProps {
+  active?: boolean;
+  payload?: { value: ValueType }[];
+  label?: string;
+  unit: string;
 }
 
 const REPORT_TOOLS: ReportTool[] = [
@@ -83,10 +102,93 @@ const REPORT_TOOLS: ReportTool[] = [
   },
 ];
 
+const YEARS = ['2026', '2025', '2024'];
+const MONTHS = ['All Months', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+const AXIS_TICK_STYLE = {
+  fontSize: 12,
+  fill: 'var(--navy-70)',
+};
+
+const VALUE_LABEL_STYLE = {
+  fontSize: 12,
+  fontWeight: 600,
+  fill: 'var(--navy)',
+  fontFamily: "var(--font-geist-mono), 'Geist Mono', monospace",
+};
+
+function ChartTooltip({ active, payload, label, unit }: ChartTooltipProps) {
+  if (!active || !payload || !payload.length) return null;
+  const value = payload[0].value;
+
+  return (
+    <div className={styles.tooltip}>
+      <span className={styles.tooltipLabel}>{label}</span>
+      <span className={styles.tooltipValue}>
+        {value} <span className={styles.tooltipUnit}>{unit}</span>
+      </span>
+    </div>
+  );
+}
+
+interface CustomSelectProps {
+  options: string[];
+  selected: string;
+  onChange: (value: string) => void;
+  isMonth?: boolean;
+}
+
+function CustomSelect({ options, selected, onChange, isMonth }: CustomSelectProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  return (
+    <div className={styles.customSelectWrapper} ref={containerRef}>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className={`${styles.customSelectTrigger} ${isOpen ? styles.customSelectTriggerActive : ''}`}
+      >
+        <span>{selected}</span>
+        <ChevronDown size={12} className={`${styles.chevronIcon} ${isOpen ? styles.chevronIconOpen : ''}`} />
+      </button>
+      {isOpen && (
+        <div className={`${styles.customSelectDropdown} ${isMonth ? styles.monthDropdown : ''}`}>
+          {options.map((option) => (
+            <button
+              key={option}
+              type="button"
+              onClick={() => {
+                onChange(option);
+                setIsOpen(false);
+              }}
+              className={`${styles.customSelectItem} ${option === selected ? styles.customSelectItemActive : ''}`}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function AnalyticsPanel() {
   const [activeId, setActiveId] = useState(REPORT_TOOLS[0].id);
+  const [selectedYear, setSelectedYear] = useState('2026');
+  const [selectedMonth, setSelectedMonth] = useState('All Months');
+
   const activeTool = REPORT_TOOLS.find((tool) => tool.id === activeId) ?? REPORT_TOOLS[0];
-  const maxValue = Math.max(...activeTool.data.map((point) => point.value));
 
   return (
     <section className={styles.analyticsPanel}>
@@ -97,23 +199,29 @@ export default function AnalyticsPanel() {
         </p>
       </div>
 
-      <div className={styles.toolsList} role="tablist">
-        {REPORT_TOOLS.map(({ id, icon: Icon, title }) => (
-          <button
-            key={id}
-            type="button"
-            role="tab"
-            aria-selected={id === activeId}
-            onClick={() => setActiveId(id)}
-            className={`${styles.toolTab} ${id === activeId ? styles.toolTabActive : ''}`}
-          >
-            <Icon size={16} strokeWidth={2} />
-            <span>{title}</span>
-          </button>
-        ))}
+      <div className={styles.controlsRow}>
+        <div className={styles.toolsList} role="tablist">
+          {REPORT_TOOLS.map(({ id, icon: Icon, title }) => (
+            <button
+              key={id}
+              type="button"
+              role="tab"
+              aria-selected={id === activeId}
+              onClick={() => setActiveId(id)}
+              className={`${styles.toolTab} ${id === activeId ? styles.toolTabActive : ''}`}
+            >
+              <Icon size={13} strokeWidth={2} />
+              <span>{title}</span>
+            </button>
+          ))}
+        </div>
+
+        <div className={styles.filterGroup}>
+          <CustomSelect options={MONTHS} selected={selectedMonth} onChange={setSelectedMonth} isMonth={true} />
+          <CustomSelect options={YEARS} selected={selectedYear} onChange={setSelectedYear} />
+        </div>
       </div>
 
-      {/* key={activeTool.id} forces a remount on switch so the fade/grow animations replay */}
       <div key={activeTool.id} className={styles.chartCard}>
         <div className={styles.chartHeader}>
           <div>
@@ -127,31 +235,63 @@ export default function AnalyticsPanel() {
         </div>
 
         {activeTool.chartType === 'vertical' ? (
-          <div className={styles.verticalChart}>
-            {activeTool.data.map((point) => (
-              <div key={point.label} className={styles.barWrapper}>
-                <div
-                  className={styles.bar}
-                  style={{ height: `${(point.value / maxValue) * 100}%` }}
+          <div className={styles.chartArea}>
+            <ResponsiveContainer width="100%" height={160}>
+              <BarChart data={activeTool.data} margin={{ top: 8, right: 4, left: 4, bottom: 0 }}>
+                <CartesianGrid vertical={false} stroke="var(--navy-06)" />
+                <XAxis
+                  dataKey="label"
+                  tickLine={false}
+                  axisLine={false}
+                  tick={AXIS_TICK_STYLE}
+                  dy={8}
                 />
-                <span>{point.label}</span>
-              </div>
-            ))}
+                <YAxis hide domain={[0, (max: number) => max * 1.15]} />
+                <Tooltip
+                  cursor={{ fill: 'var(--navy-06)' }}
+                  content={<ChartTooltip unit={activeTool.chartUnit} />}
+                />
+                <Bar
+                  dataKey="value"
+                  fill="var(--ocean)"
+                  radius={[4, 4, 0, 0]}
+                  maxBarSize={40}
+                />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         ) : (
-          <div className={styles.horizontalChart}>
-            {activeTool.data.map((point) => (
-              <div key={point.label} className={styles.hBarRow}>
-                <span className={styles.hBarLabel}>{point.label}</span>
-                <div className={styles.hBarTrack}>
-                  <div
-                    className={styles.hBarFill}
-                    style={{ width: `${(point.value / maxValue) * 100}%` }}
-                  />
-                </div>
-                <span className={styles.hBarValue}>{point.value}</span>
-              </div>
-            ))}
+          <div className={styles.chartArea}>
+            <ResponsiveContainer width="100%" height={activeTool.data.length * 38}>
+              <BarChart
+                data={activeTool.data}
+                layout="vertical"
+                margin={{ top: 0, right: 32, left: 0, bottom: 0 }}
+              >
+                <XAxis type="number" hide />
+                <YAxis
+                  dataKey="label"
+                  type="category"
+                  width={110}
+                  tickLine={false}
+                  axisLine={false}
+                  tick={AXIS_TICK_STYLE}
+                />
+                <Tooltip
+                  cursor={{ fill: 'var(--navy-06)' }}
+                  content={<ChartTooltip unit={activeTool.chartUnit} />}
+                />
+                <Bar
+                  dataKey="value"
+                  fill="var(--ocean)"
+                  radius={999}
+                  barSize={8}
+                  background={{ fill: 'var(--navy-06)', radius: 999 }}
+                >
+                  <LabelList dataKey="value" position="right" style={VALUE_LABEL_STYLE} />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         )}
 

@@ -10,14 +10,14 @@ export default function AdminDashboardPage() {
       {/* 1. Metric Cards */}
       <StatsGrid />
 
-      {/* 2. Seamless E-Learning Infinite Loop */}
-      <ELearningCarousel />
-
-      {/* Bottom Row split: Analytics & Reports */}
+      {/* 2. Analytics & Reports */}
       <div className={styles.dataSplit}>
         <AnalyticsPanel />
         <ReportSideCards />
       </div>
+
+      {/* 3. Seamless E-Learning Infinite Loop */}
+      <ELearningCarousel />
     </div>
   );
 }
