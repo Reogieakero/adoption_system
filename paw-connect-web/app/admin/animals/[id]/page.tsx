@@ -40,7 +40,7 @@ export default async function AnimalDetailPage({
   return (
     <div className={styles.page}>
       <div className={styles.container}>
-        <TopBar backHref={ANIMALS_INDEX_HREF} />
+        <TopBar backHref={ANIMALS_INDEX_HREF} animal={animal} />
 
         <div className={styles.layout}>
           <PhotoDossier animal={animal} />

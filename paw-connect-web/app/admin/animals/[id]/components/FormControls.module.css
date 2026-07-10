@@ -1,0 +1,118 @@
+/* ---------- shadcn-style form controls ---------- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.15rem;
+}
+
+.label {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--navy, #170a0c);
+  letter-spacing: 0.01em;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 0.75rem;
+  font-family: inherit;
+  font-size: 0.8rem;
+  color: var(--navy, #170a0c);
+  background: var(--white, #ffffff);
+  border: 1px solid var(--navy-16, #cbd5e1);
+  border-radius: 6px;
+  outline: none;
+  box-shadow: 0 1px 2px rgba(15, 10, 10, 0.03);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input {
+  height: 36px;
+}
+
+.textarea {
+  height: auto;
+  min-height: 88px;
+  padding: 0.6rem 0.75rem;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--navy-40, #94a3b8);
+}
+
+.input:focus,
+.textarea:focus,
+.select:focus {
+  border-color: var(--navy-16, #cbd5e1);
+  box-shadow: 0 0 0 2px var(--white, #ffffff), 0 0 0 4px var(--ocean-14, rgba(200, 16, 46, 0.18));
+}
+
+.selectWrapper {
+  position: relative;
+}
+
+/* shadcn-style select trigger */
+.select {
+  width: 100%;
+  box-sizing: border-box;
+  height: 36px;
+  padding: 0 2.1rem 0 0.75rem;
+  font-family: inherit;
+  font-size: 0.8rem;
+  color: var(--navy, #170a0c);
+  background: var(--white, #ffffff);
+  border: 1px solid var(--navy-16, #cbd5e1);
+  border-radius: 6px;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(15, 10, 10, 0.03);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.selectChevron {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--navy-60, #64748b);
+  opacity: 0.6;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 480px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.photoPreviewRow {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 1.15rem;
+}
+
+.photoPreview {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid var(--navy-12, #e2e8f0);
+  flex-shrink: 0;
+  background: var(--navy-06, #f1f5f9);
+}
