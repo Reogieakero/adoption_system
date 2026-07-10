@@ -16,7 +16,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   useEffect(() => {
     if (token === null) {
-      router.replace('/admin/admin-login');
+      router.replace('/admin-login');
     }
   }, [token, router]);
 

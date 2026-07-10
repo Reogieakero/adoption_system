@@ -1,0 +1,93 @@
+/* ---------- Top bar ---------- */
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  animation: fadeInDown 0.5s ease both;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--navy-70, #170a0c);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.15s ease, gap 0.15s ease;
+}
+
+.backLink:hover {
+  color: var(--ocean, #c8102e);
+  gap: 0.6rem;
+}
+
+.actionsBar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 36px;
+  padding: 0 0.9rem;
+  font-family: inherit;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  border-radius: 8px;
+  border: 1px solid var(--navy-12, #e2e8f0);
+  background: var(--white, #ffffff);
+  color: var(--navy, #170a0c);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease, color 0.15s ease;
+}
+
+.actionBtn:hover {
+  transform: translateY(-1px);
+  border-color: var(--ocean, #c8102e);
+  color: var(--ocean, #c8102e);
+}
+
+.actionBtnPrimary {
+  background: var(--navy, #170a0c);
+  color: var(--white, #ffffff);
+  border-color: var(--navy, #170a0c);
+}
+
+.actionBtnPrimary:hover {
+  background: var(--ocean, #c8102e);
+  border-color: var(--ocean, #c8102e);
+  color: var(--white, #ffffff);
+}
+
+.actionBtnDanger {
+  background: var(--white, #ffffff);
+  color: var(--ocean, #c8102e);
+  border-color: var(--ocean-14, rgba(200, 16, 46, 0.14));
+}
+
+.actionBtnDanger:hover {
+  background: var(--ocean, #c8102e);
+  color: var(--white, #ffffff);
+  border-color: var(--ocean, #c8102e);
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .topBar {
+    animation: none !important;
+  }
+}

@@ -8,7 +8,7 @@ export default function AdminNavbar() {
 
   function handleLogout() {
     sessionStorage.removeItem('adminAuthToken');
-    router.push('/admin/admin-login');
+    router.push('/admin-login');
   }
 
   return (

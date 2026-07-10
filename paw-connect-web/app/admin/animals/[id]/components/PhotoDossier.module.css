@@ -1,0 +1,137 @@
+/* ---------- Left: photo dossier ---------- */
+
+.photoPane {
+  position: sticky;
+  top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  animation: fadeInLeft 0.6s ease both;
+}
+
+@media (max-width: 860px) {
+  .photoPane {
+    position: static;
+  }
+}
+
+.photoCard {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--white, #ffffff);
+  box-shadow: 0 20px 45px var(--navy-12, rgba(23, 10, 12, 0.12));
+  border: 1px solid var(--navy-06, #f1f5f9);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.photoCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 26px 55px var(--navy-12, rgba(23, 10, 12, 0.16));
+}
+
+.photoFrame {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+
+.heroPhoto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.idStamp {
+  position: absolute;
+  top: 14px;
+  right: -34px;
+  width: 150px;
+  padding: 0.3rem 0;
+  text-align: center;
+  transform: rotate(8deg);
+  background: var(--navy, #170a0c);
+  color: var(--white, #ffffff);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 10px var(--navy-12, rgba(23, 10, 12, 0.2));
+}
+
+.nameBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0 0.15rem;
+}
+
+.heroName {
+  font-family: inherit;
+  font-size: 1.7rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--navy, #170a0c);
+  margin: 0;
+}
+
+.heroMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  color: var(--navy-70, rgba(23, 10, 12, 0.7));
+}
+
+.heroId {
+  font-family: inherit;
+  letter-spacing: 0.02em;
+  color: var(--navy-40, #94a3b8);
+}
+
+.heroBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  padding: 0 0.15rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  border-radius: 9999px;
+  white-space: nowrap;
+}
+
+.bgOcean { background-color: var(--ocean-14, rgba(200, 16, 46, 0.14)); color: var(--ocean, #c8102e); }
+.bgRoyal { background-color: var(--royal-14, rgba(122, 13, 30, 0.14)); color: var(--royal, #7a0d1e); }
+.bgNavy { background-color: var(--navy-12, rgba(23, 10, 12, 0.12)); color: var(--navy, #170a0c); }
+.bgDanger { background-color: var(--ocean, #c8102e); color: var(--white, #ffffff); }
+.bgSlate { background-color: var(--navy-06, rgba(23, 10, 12, 0.06)); color: var(--navy-70, rgba(23, 10, 12, 0.7)); }
+
+.bio {
+  font-size: 0.84rem;
+  line-height: 1.65;
+  color: var(--navy-70, rgba(23, 10, 12, 0.7));
+  padding: 0 0.15rem;
+}
+
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photoPane {
+    animation: none !important;
+  }
+  .photoCard:hover {
+    transform: none;
+  }
+}

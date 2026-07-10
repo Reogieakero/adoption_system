@@ -1,9 +1,9 @@
 "use client";
 
 import { Eye, EyeOff, ShieldCheck } from 'lucide-react';
-import Button from '../../components/ui/Button';
-import FormInput from '../../components/ui/FormInput';
-import { useAdminLoginForm } from '../../hooks/useAdminLoginForm';
+import Button from '../components/ui/Button';
+import FormInput from '../components/ui/FormInput';
+import { useAdminLoginForm } from '../hooks/useAdminLoginForm';
 import styles from './admin-login.module.css';
 
 const SECURITY_NOTES = [

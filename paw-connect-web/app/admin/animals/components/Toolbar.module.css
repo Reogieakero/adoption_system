@@ -1,0 +1,211 @@
+@import url('https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/font/mono.css');
+
+/* ---------- Toolbar (no boxed container — controls sit directly on the page) ---------- */
+
+.toolbarRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--navy-12, #e2e8f0);
+}
+
+.leftControls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  max-width: 480px;
+}
+
+.supabaseSearchWrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.supabaseSearchInput {
+  width: 100%;
+  height: 36px;
+  background-color: var(--soft-white, #f8fafc);
+  border: 1px solid var(--navy-12, #e2e8f0);
+  border-radius: 6px;
+  padding: 0 2.25rem;
+  font-family: 'Geist Mono', Monaco, Consolas, 'Liberation Mono', monospace;
+  font-size: 0.8125rem;
+  color: var(--navy, #0f172a);
+  outline: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.supabaseSearchInput:focus {
+  background-color: var(--white, #ffffff);
+  border-color: var(--navy-40, #94a3b8);
+  box-shadow: 0 0 0 2px var(--navy-12, #f1f5f9);
+}
+
+.rightControls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--navy-40, #94a3b8);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+.cmdKShortcut {
+  position: absolute;
+  right: 0.6rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--white, #ffffff);
+  border: 1px solid var(--navy-12, #e2e8f0);
+  border-radius: 4px;
+  padding: 0.1rem 0.35rem;
+  font-family: 'Geist Mono', Monaco, Consolas, 'Liberation Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--navy-70, #64748b);
+  font-weight: 600;
+  pointer-events: none;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.03);
+}
+
+/* ---------- Shadcn UI Styled Select Framework ---------- */
+
+.selectContainer {
+  position: relative;
+  display: inline-block;
+  min-width: 150px;
+}
+
+.selectTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 36px;
+  padding: 0 0.75rem;
+  font-family: 'Geist Mono', Monaco, Consolas, 'Liberation Mono', monospace;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--navy, #0f172a);
+  background-color: var(--white, #ffffff);
+  border: 1px solid var(--navy-12, #e2e8f0);
+  border-radius: 6px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.selectTrigger:hover {
+  background-color: var(--soft-white, #f8fafc);
+  border-color: var(--navy-40, #cbd5e1);
+}
+
+.selectTriggerActive,
+.selectTrigger:focus {
+  border-color: var(--navy-40, #94a3b8);
+  box-shadow: 0 0 0 2px var(--navy-12, #f1f5f9);
+}
+
+.chevronIcon {
+  color: var(--navy-40, #94a3b8);
+  transition: transform 0.15s ease;
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+}
+
+.selectTriggerActive .chevronIcon {
+  transform: rotate(180deg);
+}
+
+/* Floating dropdown popover */
+.selectContent {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 50;
+  min-width: 100%;
+  max-height: 260px;
+  overflow-y: auto;
+  background-color: var(--white, #ffffff);
+  border: 1px solid var(--navy-12, #e2e8f0);
+  border-radius: 6px;
+  padding: 4px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  animation: slideIn 0.1s ease-out;
+}
+
+.selectItem {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0.37rem 0.5rem;
+  font-family: 'Geist Mono', Monaco, Consolas, 'Liberation Mono', monospace;
+  font-size: 0.8125rem;
+  color: var(--navy, #0f172a);
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.1s ease, color 0.1s ease;
+}
+
+.selectItem:hover {
+  background-color: var(--soft-white, #f1f5f9);
+}
+
+.selectItemActive {
+  background-color: var(--soft-white, #f1f5f9);
+  font-weight: 600;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- Action Button ---------- */
+
+.addBtn {
+  background-color: var(--navy, #0f172a);
+  color: var(--white, #ffffff);
+  border: none;
+  height: 36px;
+  padding: 0 1rem;
+  font-family: 'Geist Mono', Monaco, Consolas, 'Liberation Mono', monospace;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+  transition: background-color 0.15s ease;
+}
+
+.addBtn:hover {
+  background-color: #1e293b;
+}
+
+.addBtn:active {
+  transform: scale(0.98);
+}

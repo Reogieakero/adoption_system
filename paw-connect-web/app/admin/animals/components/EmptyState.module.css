@@ -1,0 +1,10 @@
+.emptyState {
+  width: 100%;
+  padding: 3rem 1rem;
+  text-align: center;
+  color: var(--navy-70, #64748b);
+  font-size: 0.9rem;
+  border: 1px dashed var(--navy-12, #cbd5e1);
+  border-radius: 12px;
+  background: var(--soft-white, #f8fafc);
+}
