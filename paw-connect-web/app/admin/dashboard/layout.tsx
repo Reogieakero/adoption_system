@@ -23,9 +23,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   // Avoid flashing protected content before the auth check resolves
   if (!token) return null;
 
+  // Inside layout.tsx
   return (
     <div className={styles.layout}>
+      {/* Navbar is typically fixed, keep it outside the flex container or adjust accordingly */}
       <AdminNavbar />
+      
+      {/* Sidebar and Page content sit side-by-side */}
       <AdminSidebar />
 
       <div className={styles.page}>
