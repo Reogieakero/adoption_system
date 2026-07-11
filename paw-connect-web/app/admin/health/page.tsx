@@ -4,7 +4,7 @@ import HealthHeader from './components/HealthHeader'
 import HealthFilters from './components/HealthFilters'
 import AnimalGrid from './components/AnimalGrid'
 import HealthHistoryView from './components/HealthHistoryView'
-import { animalsHealthData } from './data'
+import { useAnimalsHealth, useAnimalHealthDetail } from '../../hooks/admin/useAnimalsHealth'
 import { Animal, DropdownName } from './types'
 import styles from './page.module.css'
 
@@ -15,8 +15,17 @@ export default function HealthMonitoringPage() {
   const [selectedHealth, setSelectedHealth] = useState<string>("Health Status")
   const [selectedVaccine, setSelectedVaccine] = useState<string>("Vaccination")
 
-  // Health History Detail State
-  const [activeHistoryAnimal, setActiveHistoryAnimal] = useState<Animal | null>(null)
+  // Grid data — fetched from the database
+  const { animals, isLoading, error, refetch, setAnimals } = useAnimalsHealth()
+
+  // Health History Detail State — only the id is tracked here; the full
+  // record (including history) is fetched on demand when a card is opened
+  const [activeHistoryAnimalId, setActiveHistoryAnimalId] = useState<string | null>(null)
+  const {
+    animal: activeHistoryAnimal,
+    isLoading: isHistoryLoading,
+    refetch: refetchHistoryAnimal,
+  } = useAnimalHealthDetail(activeHistoryAnimalId)
 
   const toggleDropdown = (name: DropdownName) => {
     setOpenDropdown(openDropdown === name ? null : name)
@@ -37,6 +46,23 @@ export default function HealthMonitoringPage() {
     setOpenDropdown(null)
   }
 
+  const handleViewHistory = (animal: Animal) => {
+    setActiveHistoryAnimalId(animal.id)
+  }
+
+  const handleCloseHistory = () => {
+    setActiveHistoryAnimalId(null)
+  }
+
+  const handleVitalsUpdated = (updatedAnimal: Animal) => {
+    setAnimals((prev) =>
+      prev.map((a) => (a.id === updatedAnimal.id ? updatedAnimal : a))
+    )
+    if (activeHistoryAnimalId === updatedAnimal.id) {
+      refetchHistoryAnimal()
+    }
+  }
+
   return (
     <>
       <link
@@ -50,7 +76,7 @@ export default function HealthMonitoringPage() {
           <div className={styles.dropdownBackdrop} onClick={() => setOpenDropdown(null)} />
         )}
 
-        {!activeHistoryAnimal ? (
+        {!activeHistoryAnimalId ? (
           <>
             <HealthFilters
               openDropdown={openDropdown}
@@ -63,15 +89,28 @@ export default function HealthMonitoringPage() {
               onSelectVaccine={handleSelectVaccine}
             />
 
-            <AnimalGrid
-              animals={animalsHealthData}
-              onViewHistory={setActiveHistoryAnimal}
-            />
+            {isLoading && <p>Loading animals…</p>}
+            {!isLoading && error && (
+              <p role="alert">
+                {error}{' '}
+                <button onClick={() => refetch()}>Retry</button>
+              </p>
+            )}
+            {!isLoading && !error && (
+              <AnimalGrid
+                animals={animals}
+                onViewHistory={handleViewHistory}
+                onVitalsUpdated={handleVitalsUpdated}
+              />
+            )}
           </>
+        ) : isHistoryLoading || !activeHistoryAnimal ? (
+          <p>Loading health history…</p>
         ) : (
           <HealthHistoryView
             animal={activeHistoryAnimal}
-            onClose={() => setActiveHistoryAnimal(null)}
+            onClose={handleCloseHistory}
+            onVitalsUpdated={handleVitalsUpdated}
           />
         )}
       </div>

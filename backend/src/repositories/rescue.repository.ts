@@ -106,4 +106,12 @@ export const rescueRepository = {
       [rescueCaseId, stepOrder, title, timestamp, isActive]
     );
   },
+
+  async updateLocation(id: string, latitude: number, longitude: number): Promise<boolean> {
+    const [result] = await pool.query<ResultSetHeader>(
+      'UPDATE rescue_cases SET latitude = ?, longitude = ? WHERE id = ?',
+      [latitude, longitude, id]
+    );
+    return result.affectedRows > 0;
+  },
 };

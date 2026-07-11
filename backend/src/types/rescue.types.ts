@@ -116,8 +116,6 @@ export interface RescueTimelineStepRow extends RowDataPacket {
   is_active: number;
 }
 
-// ---- Request bodies ----
-
 export interface UpdateRescueStageInput {
   stage: RescueStage;
 }
@@ -138,4 +136,9 @@ export interface UpdateRescuePriorityInput {
 
 export interface UpdateRescueNotesInput {
   internalNotes: string;
+}
+
+export interface UpdateRescueLocationInput {
+  latitude: number;
+  longitude: number;
 }

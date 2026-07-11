@@ -1,5 +1,5 @@
-export type HealthStatus = "Healthy" | "Under Treatment" | "Critical"
-export type VaccinationStatus = "Vaccinated" | "Due" | "Not Vaccinated"
+export type HealthStatus = "Healthy" | "Under Treatment" | "Recovering" | "Critical"
+export type VaccinationStatus = "Vaccinated" | "Not Fully Vaccinated" | "Due" | "Not Vaccinated"
 export type DropdownName = "species" | "health" | "vaccine" | null
 
 export interface HistoryEntry {
@@ -9,7 +9,7 @@ export interface HistoryEntry {
 }
 
 export interface Animal {
-  id: number
+  id: string
   tag: string
   name: string
   species: string

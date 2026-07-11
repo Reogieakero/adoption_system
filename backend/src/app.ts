@@ -6,6 +6,8 @@ import adminAuthRoutes from './routes/adminAuth.routes';
 import animalsRoutes from './routes/animals.routes';
 import adoptionsRoutes from './routes/adoptions.routes';
 import rescuesRoutes from './routes/rescues.routes';
+import healthRoutes from './routes/health.routes';
+import heatmapRoutes from './routes/heatmap.routes';
 import { errorHandler, notFound } from './middleware/errorHandler';
 import path from 'path';
 
@@ -26,6 +28,8 @@ app.use('/api/admin', adminAuthRoutes);
 app.use('/api/admin/animals', animalsRoutes);
 app.use('/api/admin/adoptions', adoptionsRoutes);
 app.use('/api/admin/rescues', rescuesRoutes);
+app.use('/api/admin/health', healthRoutes);
+app.use('/api/admin/heatmap', heatmapRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

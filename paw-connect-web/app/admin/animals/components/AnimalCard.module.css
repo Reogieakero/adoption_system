@@ -9,7 +9,7 @@
 .animalCard {
   background: var(--white, #ffffff);
   border: 1px solid var(--navy-12, #e2e8f0);
-  border-radius: 12px;
+  border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 1px 3px var(--navy-06, rgba(0, 0, 0, 0.04));
   position: relative;

@@ -82,4 +82,21 @@ export const rescueService = {
     await rescueRepository.updateInternalNotes(id, internalNotes);
     return this.getCaseDetails(id);
   },
+
+  // NOTE: the route-level `validateMatiLandLocation` middleware already
+  // confirmed (lat, lng) is on land within Mati City before this ever runs —
+  // this method just needs a valid, existing case id.
+  async updateLocation(id: string, latitude: number, longitude: number): Promise<RescueCase> {
+    if (Number.isNaN(latitude) || Number.isNaN(longitude)) {
+      throw new AppError(400, 'Latitude and longitude must be valid numbers');
+    }
+
+    const exists = await rescueRepository.exists(id);
+    if (!exists) {
+      throw new AppError(404, 'Rescue case not found');
+    }
+
+    await rescueRepository.updateLocation(id, latitude, longitude);
+    return this.getCaseDetails(id);
+  },
 };

@@ -1,15 +1,32 @@
 'use client'
-import React from 'react'
-import { X, Calendar, Activity, ShieldAlert, ArrowLeft } from 'lucide-react'
+import React, { useState } from 'react'
+import { X, Calendar, Activity, ShieldAlert, ArrowLeft, Syringe } from 'lucide-react'
 import { Animal } from '../types'
+import LogVitalsModal from './LogVitalsModal'
 import styles from './HealthHistoryView.module.css'
 
 interface HealthHistoryViewProps {
   animal: Animal
   onClose: () => void
+  onVitalsUpdated?: (updatedAnimal: Animal) => void
 }
 
-export default function HealthHistoryView({ animal, onClose }: HealthHistoryViewProps) {
+// Self-contained fallback so a missing photo_url never renders <img src="">
+const FALLBACK_PHOTO =
+  "data:image/svg+xml;charset=UTF-8," +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+      <rect width="400" height="400" fill="#170A0C"/>
+      <text x="50%" y="50%" fill="#ffffff" fill-opacity="0.4" font-family="monospace"
+            font-size="20" text-anchor="middle" dominant-baseline="middle">No Photo</text>
+    </svg>`
+  )
+
+export default function HealthHistoryView({ animal, onClose, onVitalsUpdated }: HealthHistoryViewProps) {
+  const [isLogVitalsOpen, setIsLogVitalsOpen] = useState(false)
+
+  const photoSrc = animal.photo && animal.photo.trim() !== "" ? animal.photo : FALLBACK_PHOTO
+
   return (
     <div className={styles.historyFullPage}>
       <button className={styles.backBtn} onClick={onClose}>
@@ -19,9 +36,14 @@ export default function HealthHistoryView({ animal, onClose }: HealthHistoryView
 
       <div className={styles.historyHero}>
         <img
-          src={animal.photo}
+          src={photoSrc}
           alt={animal.name}
           className={styles.historyHeroImage}
+          onError={(e) => {
+            if (e.currentTarget.src !== FALLBACK_PHOTO) {
+              e.currentTarget.src = FALLBACK_PHOTO
+            }
+          }}
         />
         <div className={styles.historyHeroOverlay} />
         <div className={styles.historyHeroContent}>
@@ -29,6 +51,13 @@ export default function HealthHistoryView({ animal, onClose }: HealthHistoryView
           <h2 className={styles.panelTitle}>{animal.name}'s Health Log</h2>
           <p className={styles.historyHeroBreed}>{animal.breed}</p>
         </div>
+        <button
+          className={`${styles.closeBtn} ${styles.logVitalsBtn}`}
+          onClick={() => setIsLogVitalsOpen(true)}
+        >
+          <Syringe size={14} />
+          Log Vitals
+        </button>
         <button className={styles.closeBtn} onClick={onClose}>
           <X size={16} />
         </button>
@@ -68,6 +97,16 @@ export default function HealthHistoryView({ animal, onClose }: HealthHistoryView
           </div>
         )}
       </div>
+
+      {isLogVitalsOpen && (
+        <LogVitalsModal
+          animal={animal}
+          onClose={() => setIsLogVitalsOpen(false)}
+          onSaved={(updatedAnimal) => {
+            onVitalsUpdated?.(updatedAnimal)
+          }}
+        />
+      )}
     </div>
   )
 }

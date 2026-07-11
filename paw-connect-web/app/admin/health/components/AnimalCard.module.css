@@ -2,7 +2,7 @@
 .card {
   position: relative;
   aspect-ratio: 3 / 4;
-  border-radius: 12px;
+  border-radius: 8px;
   overflow: hidden;
   border: 1px solid var(--navy-12);
   background-color: var(--navy);
@@ -22,7 +22,6 @@
   right: 0;
   height: 3px;
   z-index: 3;
-  background: linear-gradient(90deg, var(--navy) 0%, var(--royal) 50%, var(--ocean) 100%);
 }
 
 .cardImage {

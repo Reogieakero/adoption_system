@@ -10,10 +10,6 @@ export default function HealthHeader() {
         <h1 className={styles.title}>Health Monitoring</h1>
         <p className={styles.subtitle}>Real-time vital tracking and medical statuses for shelter residents.</p>
       </div>
-      <button className={styles.btnPrimary}>
-        <Plus size={14} />
-        Log Vitals
-      </button>
     </div>
   )
 }

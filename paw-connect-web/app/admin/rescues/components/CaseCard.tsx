@@ -12,8 +12,22 @@ export default function CaseCard({ item, onView }: CaseCardProps) {
     ? `${item.condition.substring(0, 55)}...`
     : item.condition;
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onView(item);
+    }
+  };
+
   return (
-    <div className={styles.caseCard}>
+    <div 
+      className={styles.caseCard} 
+      onClick={() => onView(item)}
+      onKeyDown={handleKeyDown}
+      role="button"
+      tabIndex={0}
+      aria-label={`View details for ${item.animalType} case ${item.id}`}
+    >
       <div className={styles.cardBlobBottomLeft} />
 
       <div className={styles.cardAvatarHeader}>
@@ -29,20 +43,6 @@ export default function CaseCard({ item, onView }: CaseCardProps) {
         <div>
           <h3 className={styles.animalName}>{item.animalType}</h3>
           <p className={styles.cardBody}>{truncatedCondition}</p>
-        </div>
-
-        <div className={styles.cardFooterRow}>
-          <button
-            type="button"
-            className={styles.viewDetailsTrigger}
-            onClick={() => onView(item)}
-            aria-label="Inspect comprehensive dashboard details panel"
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-              <circle cx="12" cy="12" r="3" />
-            </svg>
-          </button>
         </div>
       </div>
     </div>
