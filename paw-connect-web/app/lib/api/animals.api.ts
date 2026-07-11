@@ -30,8 +30,6 @@ async function adminRequest<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${ANIMALS_BASE}${path}`, {
     ...init,
     headers: {
-      // Let the browser set the multipart/form-data boundary itself —
-      // setting Content-Type manually for FormData breaks the upload.
       ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
       Authorization: `Bearer ${getAdminToken()}`,
       ...init?.headers,
@@ -50,8 +48,6 @@ async function adminRequest<T>(path: string, init?: RequestInit): Promise<T> {
   return data as T;
 }
 
-// Builds a multipart form: every Animal field as a text part, plus the
-// actual photo File (if provided) — never a base64 string.
 function buildAnimalFormData(payload: object, photoFile: File | null): FormData {
   const formData = new FormData();
   Object.entries(payload as Record<string, unknown>).forEach(([key, value]) => {

@@ -4,6 +4,7 @@ import { env } from './config/env';
 import authRoutes from './routes/auth.routes';
 import adminAuthRoutes from './routes/adminAuth.routes';
 import animalsRoutes from './routes/animals.routes';
+import adoptionsRoutes from './routes/adoptions.routes';
 import { errorHandler, notFound } from './middleware/errorHandler';
 import path from 'path';
 
@@ -22,6 +23,7 @@ app.get('/api/health', (_req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminAuthRoutes);
 app.use('/api/admin/animals', animalsRoutes);
+app.use('/api/admin/adoptions', adoptionsRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

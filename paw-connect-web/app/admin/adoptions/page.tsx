@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import type { AdoptionApplication, StatusType, ViewModeType } from './types';
-import { INITIAL_DATA } from './data';
+import type { StatusType, ViewModeType } from './types';
+import { useAdoptions } from '../../hooks/admin/useAdoptions';
+import { updateAdoptionStatus } from '../../lib/api/adoptions.api';
 import { SummaryCards } from './components/SummaryCards/SummaryCards';
 import { StatusTabs } from './components/StatusTabs/StatusTabs';
 import { Toolbar } from './components/Toolbar/Toolbar';
@@ -13,13 +14,13 @@ import { ApplicationDetailsModal } from './components/ApplicationDetailsModal/Ap
 import styles from './page.module.css';
 
 export default function AdoptionManagementPage() {
-  const [applications, setApplications] = useState<AdoptionApplication[]>(INITIAL_DATA);
+  const { applications, isLoading, error, setApplications } = useAdoptions();
   const [activeTab, setActiveTab] = useState<StatusType>('Pending');
   const [viewMode, setViewMode] = useState<ViewModeType>('table');
   const [searchQuery, setSearchQuery] = useState('');
   const [speciesFilter, setSpeciesFilter] = useState('All species');
   const [dateFilter, setDateFilter] = useState('');
-  const [selectedApplication, setSelectedApplication] = useState<AdoptionApplication | null>(null);
+  const [selectedApplicationId, setSelectedApplicationId] = useState<string | null>(null);
 
   const counts = useMemo((): Record<StatusType, number> => {
     return {
@@ -38,10 +39,22 @@ export default function AdoptionManagementPage() {
       .slice(0, 5);
   }, [applications]);
 
-  const updateStatus = (id: string, newStatus: StatusType) => {
+  const selectedApplication = useMemo(
+    () => applications.find((a) => a.id === selectedApplicationId) ?? null,
+    [applications, selectedApplicationId]
+  );
+
+  const updateStatus = async (id: string, newStatus: StatusType) => {
+    const previous = applications;
     setApplications((prev) =>
       prev.map((app) => (app.id === id ? { ...app, status: newStatus } : app))
     );
+    try {
+      await updateAdoptionStatus(id, newStatus);
+    } catch (err) {
+      setApplications(previous);
+      console.error('Failed to update status', err);
+    }
   };
 
   const filteredApplications = useMemo(() => {
@@ -73,6 +86,8 @@ export default function AdoptionManagementPage() {
         <AdoptedCarousel animals={latestAdopted} />
       </header>
 
+      {error && <p style={{ color: '#b91c1c', fontSize: '0.82rem' }}>{error}</p>}
+
       <SummaryCards counts={counts} activeTab={activeTab} onSelect={setActiveTab} />
 
       <StatusTabs counts={counts} activeTab={activeTab} onChange={setActiveTab} />
@@ -89,24 +104,26 @@ export default function AdoptionManagementPage() {
           onViewModeChange={setViewMode}
         />
 
-        {viewMode === 'table' ? (
+        {isLoading ? (
+          <p style={{ padding: '2rem', textAlign: 'center', color: '#94a3b8' }}>Loading applications…</p>
+        ) : viewMode === 'table' ? (
           <ApplicationsTable
             applications={filteredApplications}
             onUpdateStatus={updateStatus}
-            onViewDetails={setSelectedApplication}
+            onViewDetails={(app) => setSelectedApplicationId(app.id)}
           />
         ) : (
           <ApplicationsCardGrid
             applications={filteredApplications}
             onUpdateStatus={updateStatus}
-            onViewDetails={setSelectedApplication}
+            onViewDetails={(app) => setSelectedApplicationId(app.id)}
           />
         )}
       </div>
 
       <ApplicationDetailsModal
         application={selectedApplication}
-        onClose={() => setSelectedApplication(null)}
+        onClose={() => setSelectedApplicationId(null)}
       />
     </div>
   );

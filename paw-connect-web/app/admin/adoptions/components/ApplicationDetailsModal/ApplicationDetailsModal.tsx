@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import type { AdoptionApplication } from '../../types';
-import { getApplicationDetails } from '../../data-details';
+import { useAdoptionDetails } from '../../../../hooks/admin/useAdoptions';
 import { StatusBadge } from '../StatusBadge/StatusBadge';
 import styles from './ApplicationDetailsModal.module.css';
 
@@ -47,7 +47,6 @@ function ExternalLinkIcon() {
   );
 }
 
-// Updated props to handle preview instead of standard href redirection
 interface DocumentChipProps {
   label: string;
   href?: string;
@@ -85,7 +84,6 @@ function DocumentChip({ label, href, onPreview }: DocumentChipProps) {
 }
 
 export function ApplicationDetailsModal({ application, onClose }: ApplicationDetailsModalProps) {
-  // State for the Image Preview Overlay
   const [previewData, setPreviewData] = useState<{ url: string; label: string } | null>(null);
 
   const handleOpenPreview = (url: string, label: string) => {
@@ -96,13 +94,11 @@ export function ApplicationDetailsModal({ application, onClose }: ApplicationDet
     setPreviewData(null);
   };
 
-  // Keyboard and scroll locking manager
   useEffect(() => {
     if (!application) return;
 
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') {
-        // If preview is open, close that first. Otherwise close the entire modal.
         if (previewData) {
           handleClosePreview();
         } else {
@@ -120,9 +116,9 @@ export function ApplicationDetailsModal({ application, onClose }: ApplicationDet
     };
   }, [application, onClose, previewData]);
 
-  const details = useMemo(() => (application ? getApplicationDetails(application) : null), [application]);
+  const { details, isLoading, error } = useAdoptionDetails(application?.id ?? null);
 
-  if (!application || !details) return null;
+  if (!application) return null;
 
   return (
     <>
@@ -132,15 +128,23 @@ export function ApplicationDetailsModal({ application, onClose }: ApplicationDet
             <div className={styles.panelHeaderIdentity}>
               <button
                 type="button"
-                onClick={() => handleOpenPreview(details.personal.profilePhoto, `${details.personal.fullName} - Profile Photo`)}
+                onClick={() =>
+                  details &&
+                  handleOpenPreview(details.personal.profilePhoto, `${details.personal.fullName} - Profile Photo`)
+                }
                 title="Preview profile photo"
                 className={styles.headerAvatarLink}
                 style={{ background: 'none', border: 'none', padding: 0 }}
+                disabled={!details}
               >
-                <img src={details.personal.profilePhoto} alt={details.personal.fullName} className={styles.headerAvatar} />
+                <img
+                  src={details?.personal.profilePhoto ?? application.animalPhoto}
+                  alt={application.applicantName}
+                  className={styles.headerAvatar}
+                />
               </button>
               <div>
-                <div className={styles.headerName}>{details.personal.fullName}</div>
+                <div className={styles.headerName}>{application.applicantName}</div>
                 <div className={styles.headerSubline}>
                   Applying for <strong>{application.animalName}</strong> · {application.id}
                 </div>
@@ -155,115 +159,122 @@ export function ApplicationDetailsModal({ application, onClose }: ApplicationDet
           </header>
 
           <div className={styles.panelBody}>
-            <DetailSection title="Personal Information">
-              <DetailRow label="Applicant ID" value={details.personal.applicantId} />
-              <DetailRow label="Full Name" value={details.personal.fullName} />
-              <DetailRow label="Date of Birth" value={details.personal.dateOfBirth} />
-              <DetailRow label="Age" value={details.personal.age} />
-              <DetailRow label="Sex/Gender" value={details.personal.sex} />
-              <DetailRow label="Civil Status" value={details.personal.civilStatus} />
-              <DetailRow label="Nationality" value={details.personal.nationality} />
-            </DetailSection>
+            {isLoading && (
+              <p style={{ padding: '2rem', textAlign: 'center', color: '#94a3b8' }}>Loading details…</p>
+            )}
 
-            <DetailSection title="Contact Information">
-              <DetailRow label="Email Address" value={details.contact.email} />
-              <DetailRow label="Mobile Number" value={details.contact.mobileNumber} />
-              <DetailRow label="Alternate Contact Number" value={details.contact.alternateContactNumber} />
-            </DetailSection>
+            {error && (
+              <p style={{ padding: '2rem', textAlign: 'center', color: '#b91c1c' }}>{error}</p>
+            )}
 
-            <DetailSection title="Address Information">
-              <DetailRow label="Complete Home Address" value={details.address.homeAddress} />
-              <DetailRow label="Barangay" value={details.address.barangay} />
-              <DetailRow label="City/Municipality" value={details.address.cityMunicipality} />
-              <DetailRow label="Province" value={details.address.province} />
-              <DetailRow label="ZIP Code" value={details.address.zipCode} />
-            </DetailSection>
+            {details && !isLoading && !error && (
+              <>
+                <DetailSection title="Personal Information">
+                  <DetailRow label="Applicant ID" value={details.personal.applicantId} />
+                  <DetailRow label="Full Name" value={details.personal.fullName} />
+                  <DetailRow label="Date of Birth" value={details.personal.dateOfBirth} />
+                  <DetailRow label="Age" value={details.personal.age} />
+                  <DetailRow label="Sex/Gender" value={details.personal.sex} />
+                  <DetailRow label="Civil Status" value={details.personal.civilStatus} />
+                  <DetailRow label="Nationality" value={details.personal.nationality} />
+                </DetailSection>
 
-            <DetailSection title="Identification">
-              <DetailRow label="Government ID Type" value={details.identification.govIdType} />
-              <DetailRow label="Government ID Number" value={details.identification.govIdNumber} />
-              <div className={styles.sectionGridFull}>
-                <DocumentChip label="Uploaded Government ID" href={details.identification.govIdPhoto} onPreview={handleOpenPreview} />
-              </div>
-            </DetailSection>
+                <DetailSection title="Contact Information">
+                  <DetailRow label="Email Address" value={details.contact.email} />
+                  <DetailRow label="Mobile Number" value={details.contact.mobileNumber} />
+                  <DetailRow label="Alternate Contact Number" value={details.contact.alternateContactNumber} />
+                </DetailSection>
 
-            <DetailSection title="Employment Information">
-              <DetailRow label="Occupation" value={details.employment.occupation} />
-              <DetailRow label="Employer/Company" value={details.employment.employer} />
-              <DetailRow label="Monthly Income Range" value={details.employment.monthlyIncomeRange} />
-            </DetailSection>
+                <DetailSection title="Address Information">
+                  <DetailRow label="Complete Home Address" value={details.address.homeAddress} />
+                  <DetailRow label="Barangay" value={details.address.barangay} />
+                  <DetailRow label="City/Municipality" value={details.address.cityMunicipality} />
+                  <DetailRow label="Province" value={details.address.province} />
+                  <DetailRow label="ZIP Code" value={details.address.zipCode} />
+                </DetailSection>
 
-            <DetailSection title="Household Information">
-              <DetailRow label="Type of Residence" value={details.household.residenceType} />
-              <DetailRow label="Home Ownership" value={details.household.homeOwnership} />
-              <DetailRow label="Number of Household Members" value={details.household.householdMembers} />
-              <DetailRow label="Number of Children" value={details.household.children} />
-              <DetailRow label="Existing Pets" value={details.household.hasExistingPets ? 'Yes' : 'No'} />
-              <DetailRow label="Number of Existing Pets" value={details.household.existingPetsCount} />
-            </DetailSection>
+                <DetailSection title="Identification">
+                  <DetailRow label="Government ID Type" value={details.identification.govIdType} />
+                  <DetailRow label="Government ID Number" value={details.identification.govIdNumber} />
+                  <div className={styles.sectionGridFull}>
+                    <DocumentChip label="Uploaded Government ID" href={details.identification.govIdPhoto} onPreview={handleOpenPreview} />
+                  </div>
+                </DetailSection>
 
-            <DetailSection title="Adoption Questionnaire">
-              <div className={styles.sectionGridFull}>
-                <DetailRow label="Why do you want to adopt this pet?" value={details.questionnaire.whyAdopt} />
-              </div>
-              <DetailRow label="Have you owned a pet before?" value={details.questionnaire.ownedPetBefore} />
-              <DetailRow label="Primary caregiver" value={details.questionnaire.primaryCaregiver} />
-              <DetailRow label="Hours left alone" value={details.questionnaire.hoursAlone} />
-              <DetailRow label="Can provide regular vet care?" value={details.questionnaire.canProvideVetCare} />
-              <DetailRow label="Household in favor of adoption?" value={details.questionnaire.householdInFavor} />
-              <DetailRow label="Secure area for the pet?" value={details.questionnaire.hasSecureArea} />
-            </DetailSection>
+                <DetailSection title="Employment Information">
+                  <DetailRow label="Occupation" value={details.employment.occupation} />
+                  <DetailRow label="Employer/Company" value={details.employment.employer} />
+                  <DetailRow label="Monthly Income Range" value={details.employment.monthlyIncomeRange} />
+                </DetailSection>
 
-            <DetailSection title="Uploaded Documents">
-              <div className={styles.sectionGridFull}>
-                <div className={styles.documentGrid}>
-                  <DocumentChip label="Government ID" href={details.documents.governmentId} onPreview={handleOpenPreview} />
-                  <DocumentChip label="Proof of Address" href={details.documents.proofOfAddress} onPreview={handleOpenPreview} />
-                  <DocumentChip label="Proof of Income" href={details.documents.proofOfIncome} onPreview={handleOpenPreview} />
-                  {details.documents.otherDocuments.map((doc, idx) => (
-                    <DocumentChip key={idx} label={`Other Document ${idx + 1}`} href={doc} onPreview={handleOpenPreview} />
-                  ))}
-                </div>
-              </div>
-            </DetailSection>
+                <DetailSection title="Household Information">
+                  <DetailRow label="Type of Residence" value={details.household.residenceType} />
+                  <DetailRow label="Home Ownership" value={details.household.homeOwnership} />
+                  <DetailRow label="Number of Household Members" value={details.household.householdMembers} />
+                  <DetailRow label="Number of Children" value={details.household.children} />
+                  <DetailRow label="Existing Pets" value={details.household.hasExistingPets ? 'Yes' : 'No'} />
+                  <DetailRow label="Number of Existing Pets" value={details.household.existingPetsCount} />
+                </DetailSection>
 
-            <DetailSection title="Application Information">
-              <DetailRow label="Request ID" value={details.applicationInfo.requestId} />
-              <DetailRow label="Date Submitted" value={details.applicationInfo.dateSubmitted} />
-              <DetailRow label="Application Status" value={details.applicationInfo.status} />
-              <DetailRow label="Preferred Contact Method" value={details.applicationInfo.preferredContactMethod} />
-              <DetailRow label="Preferred Adoption Date" value={details.applicationInfo.preferredAdoptionDate} />
-            </DetailSection>
+                <DetailSection title="Adoption Questionnaire">
+                  <div className={styles.sectionGridFull}>
+                    <DetailRow label="Why do you want to adopt this pet?" value={details.questionnaire.whyAdopt} />
+                  </div>
+                  <DetailRow label="Have you owned a pet before?" value={details.questionnaire.ownedPetBefore} />
+                  <DetailRow label="Primary caregiver" value={details.questionnaire.primaryCaregiver} />
+                  <DetailRow label="Hours left alone" value={details.questionnaire.hoursAlone} />
+                  <DetailRow label="Can provide regular vet care?" value={details.questionnaire.canProvideVetCare} />
+                  <DetailRow label="Household in favor of adoption?" value={details.questionnaire.householdInFavor} />
+                  <DetailRow label="Secure area for the pet?" value={details.questionnaire.hasSecureArea} />
+                </DetailSection>
 
-            <DetailSection title="Emergency Contact">
-              <DetailRow label="Full Name" value={details.emergencyContact.fullName} />
-              <DetailRow label="Relationship" value={details.emergencyContact.relationship} />
-              <DetailRow label="Contact Number" value={details.emergencyContact.contactNumber} />
-            </DetailSection>
+                <DetailSection title="Uploaded Documents">
+                  <div className={styles.sectionGridFull}>
+                    <div className={styles.documentGrid}>
+                      <DocumentChip label="Government ID" href={details.documents.governmentId} onPreview={handleOpenPreview} />
+                      <DocumentChip label="Proof of Address" href={details.documents.proofOfAddress} onPreview={handleOpenPreview} />
+                      <DocumentChip label="Proof of Income" href={details.documents.proofOfIncome} onPreview={handleOpenPreview} />
+                      {details.documents.otherDocuments.map((doc, idx) => (
+                        <DocumentChip key={idx} label={`Other Document ${idx + 1}`} href={doc} onPreview={handleOpenPreview} />
+                      ))}
+                    </div>
+                  </div>
+                </DetailSection>
+
+                <DetailSection title="Application Information">
+                  <DetailRow label="Request ID" value={details.applicationInfo.requestId} />
+                  <DetailRow label="Date Submitted" value={details.applicationInfo.dateSubmitted} />
+                  <DetailRow label="Application Status" value={details.applicationInfo.status} />
+                  <DetailRow label="Preferred Contact Method" value={details.applicationInfo.preferredContactMethod} />
+                  <DetailRow label="Preferred Adoption Date" value={details.applicationInfo.preferredAdoptionDate} />
+                </DetailSection>
+
+                <DetailSection title="Emergency Contact">
+                  <DetailRow label="Full Name" value={details.emergencyContact.fullName} />
+                  <DetailRow label="Relationship" value={details.emergencyContact.relationship} />
+                  <DetailRow label="Contact Number" value={details.emergencyContact.contactNumber} />
+                </DetailSection>
+              </>
+            )}
           </div>
         </div>
       </div>
 
-      {/* --- User Friendly Lightbox Modal View --- */}
       {previewData && (
         <div className={styles.previewOverlay} onClick={handleClosePreview}>
           <div className={styles.previewContainer} onClick={(e) => e.stopPropagation()}>
             <header className={styles.previewHeader}>
               <span className={styles.previewTitle}>{previewData.label}</span>
-              <button 
-                type="button" 
-                className={styles.previewCloseButton} 
+              <button
+                type="button"
+                className={styles.previewCloseButton}
                 onClick={handleClosePreview}
                 aria-label="Close preview"
               >
                 ✕
               </button>
             </header>
-            <img 
-              src={previewData.url} 
-              alt={previewData.label} 
-              className={styles.previewImage} 
-            />
+            <img src={previewData.url} alt={previewData.label} className={styles.previewImage} />
           </div>
         </div>
       )}
