@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap');
+
+.container {
+  font-family: 'Geist Mono', var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  min-height: 100vh;
+  color: var(--navy);
+  font-weight: 400;
+}
+
+/* Backdrop used to close an open dropdown on outside click */
+.dropdownBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  background: transparent;
+}

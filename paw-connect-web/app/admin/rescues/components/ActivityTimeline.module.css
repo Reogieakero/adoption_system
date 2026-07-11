@@ -1,0 +1,52 @@
+.timelineContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-left: 0.5rem;
+}
+
+.timelineNode {
+  display: flex;
+  gap: 0.75rem;
+  position: relative;
+}
+
+.timelineNode:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 14px;
+  bottom: -12px;
+  width: 2px;
+  background-color: #e2e8f0;
+}
+
+.timelineMarker {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #cbd5e1;
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+.timelineMarkerActive {
+  background-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+.timelineContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.timelineStepTitle {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.timelineTimestamp {
+  font-size: 0.68rem;
+  color: #94a3b8;
+}

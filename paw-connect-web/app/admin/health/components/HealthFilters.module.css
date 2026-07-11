@@ -1,0 +1,60 @@
+/* --- FILTERS & CONTROLS (SHADCN INPUT & SELECTS) --- */
+.controlsRow {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+@media (min-width: 640px) {
+  .controlsRow {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.searchWrapper {
+  position: relative;
+  flex: 1;
+  max-width: 384px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--navy-40);
+  pointer-events: none;
+}
+
+/* shadcn/ui Input Style */
+.input {
+  height: 36px;
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid var(--navy-12);
+  background-color: var(--white);
+  padding-left: 36px;
+  padding-right: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: inherit;
+  box-shadow: 0 1px 2px 0 rgba(23, 10, 12, 0.02);
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input:focus-visible {
+  outline: none;
+  border-color: var(--ocean);
+  box-shadow: 0 0 0 2px var(--ocean-14);
+}
+
+.filterGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
