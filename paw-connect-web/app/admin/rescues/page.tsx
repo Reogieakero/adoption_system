@@ -3,7 +3,15 @@
 import React, { useState } from 'react';
 import styles from './page.module.css';
 import { RescueCase, RescueStage, WorkflowAction } from './types';
-import { INITIAL_DATA, WORKFLOW_ACTIONS } from './mockData';
+import { WORKFLOW_ACTIONS } from './mockData';
+import { useRescues } from '../../hooks/admin/useRescues';
+import {
+  assignRescuer,
+  updateRescueNotes,
+  updateRescuePriority,
+  updateRescueStage,
+  updateRescueStatus,
+} from '../../lib/api/rescues.api';
 import CaseCard from './components/CaseCard';
 import CaseTable from './components/CaseTable';
 import StageTabs from './components/StageTabs';
@@ -15,7 +23,7 @@ const STAGES: RescueStage[] = ['New Reports', 'Verified Reports', 'Rescue Operat
 const PREVIEW_LIMIT = 3;
 
 export default function RescuesPage() {
-  const [cases] = useState<RescueCase[]>(INITIAL_DATA);
+  const { cases, isLoading, error, refetch, setCases } = useRescues();
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
   const [activeTableStage, setActiveTableStage] = useState<RescueStage>(STAGES[0]);
   const [selectedCaseDetails, setSelectedCaseDetails] = useState<RescueCase | null>(null);
@@ -34,9 +42,80 @@ export default function RescuesPage() {
     setIsDropdownOpen(false);
   };
 
-  const handleExecuteAction = () => {
-    if (selectedCaseDetails) {
-      alert(`Executed workflow parameter node: "${activeAction.label}" for ${selectedCaseDetails.id}`);
+  const handleExecuteAction = async () => {
+    if (!selectedCaseDetails) return;
+    const id = selectedCaseDetails.id;
+
+    try {
+      let updated: RescueCase | null = null;
+
+      switch (activeAction.id) {
+        case 'verify':
+          updated = await updateRescueStage(id, 'Verified Reports');
+          break;
+
+        case 'assign': {
+          const assignedRescuer = window.prompt('Assign to (rescuer name):', selectedCaseDetails.assignedRescuer);
+          if (!assignedRescuer) return;
+          const rescueTeam = window.prompt('Rescue team:', selectedCaseDetails.rescueTeam) ?? '';
+          const eta = window.prompt('ETA (e.g. "15 Minutes"):', selectedCaseDetails.eta) ?? undefined;
+          updated = await assignRescuer(id, assignedRescuer, rescueTeam, eta);
+          break;
+        }
+
+        case 'priority': {
+          const priority = window.prompt(
+            'New priority (Critical / High / Medium / Low):',
+            selectedCaseDetails.priority
+          );
+          if (!priority) return;
+          updated = await updateRescuePriority(id, priority);
+          break;
+        }
+
+        case 'status': {
+          const status = window.prompt('New status:', selectedCaseDetails.status);
+          if (!status) return;
+          updated = await updateRescueStatus(id, status);
+          break;
+        }
+
+        case 'notes': {
+          const internalNotes = window.prompt('Internal dispatch notes:', selectedCaseDetails.internalNotes);
+          if (internalNotes === null) return;
+          updated = await updateRescueNotes(id, internalNotes);
+          break;
+        }
+
+        case 'close':
+          if (!window.confirm(`Close case ${id}? This sets its status to "Closed".`)) return;
+          updated = await updateRescueStatus(id, 'Closed');
+          break;
+
+        case 'contact':
+          if (selectedCaseDetails.anonymous === 'Yes') {
+            alert('Reporter contact details are withheld for this anonymous report.');
+          } else {
+            window.location.href = `mailto:${selectedCaseDetails.email}`;
+          }
+          return;
+
+        case 'map':
+          alert('The location is already shown in the map panel on the right side of this modal.');
+          return;
+
+        default:
+          alert(`"${activeAction.label}" isn't wired to the backend yet.`);
+          return;
+      }
+
+      if (updated) {
+        const updatedCase = updated;
+        setCases((prev) => prev.map((c) => (c.id === updatedCase.id ? updatedCase : c)));
+        setSelectedCaseDetails(updatedCase);
+      }
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Action failed');
     }
   };
 
@@ -54,7 +133,16 @@ export default function RescuesPage() {
         <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
       </header>
 
-      {viewMode === 'cards' ? (
+      {isLoading ? (
+        <div className={styles.emptyState}>Loading rescue cases…</div>
+      ) : error ? (
+        <div className={styles.emptyState}>
+          {error}{' '}
+          <button type="button" onClick={() => refetch()}>
+            Retry
+          </button>
+        </div>
+      ) : viewMode === 'cards' ? (
         <div className={styles.sectionsArea}>
           {STAGES.map((stage) => {
             const stageCases = cases.filter((c) => c.stage === stage);

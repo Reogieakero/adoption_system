@@ -5,6 +5,7 @@ import authRoutes from './routes/auth.routes';
 import adminAuthRoutes from './routes/adminAuth.routes';
 import animalsRoutes from './routes/animals.routes';
 import adoptionsRoutes from './routes/adoptions.routes';
+import rescuesRoutes from './routes/rescues.routes';
 import { errorHandler, notFound } from './middleware/errorHandler';
 import path from 'path';
 
@@ -24,6 +25,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminAuthRoutes);
 app.use('/api/admin/animals', animalsRoutes);
 app.use('/api/admin/adoptions', adoptionsRoutes);
+app.use('/api/admin/rescues', rescuesRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
