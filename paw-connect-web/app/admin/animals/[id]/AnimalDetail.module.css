@@ -43,3 +43,18 @@
   flex-direction: column;
   gap: 1.1rem;
 }
+
+.loadingState,
+.errorState {
+  padding: 2rem;
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+.loadingState {
+  color: #64748b;
+}
+
+.errorState {
+  color: #b91c1c;
+}

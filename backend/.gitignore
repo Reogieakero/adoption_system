@@ -1,6 +1,8 @@
 node_modules/
+dist/
 .env
 .env.local
 .env.*.local
 firebase-service-account.json
 *.log
+backend/uploads/

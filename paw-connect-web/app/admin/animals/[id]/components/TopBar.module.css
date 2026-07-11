@@ -33,6 +33,12 @@
   gap: 0.5rem;
 }
 
+.actionError {
+  font-size: 0.72rem;
+  color: #b91c1c;
+  max-width: 220px;
+}
+
 .actionBtn {
   display: inline-flex;
   align-items: center;

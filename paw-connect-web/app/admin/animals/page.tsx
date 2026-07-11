@@ -2,35 +2,61 @@
 
 import React, { useMemo, useState } from 'react';
 import styles from './AnimalsPage.module.css';
-import { MOCK_ANIMALS } from './animalsData';
+import type { Animal } from './animalsData';
+import { useAnimals } from '../../hooks/admin/useAnimals';
+import { createAnimal } from '../../lib/api/animals.api';
 import PageHeader from './components/PageHeader';
 import StatsGrid, { StatItem } from './components/StatsGrid';
 import Toolbar from './components/Toolbar';
 import AnimalGrid from './components/AnimalGrid';
 import Pagination from './components/Pagination';
+import AddAnimalModal from './components/AddAnimalModal';
 
 const SPECIES_OPTIONS = ['Dog', 'Cat'];
 const ADOPTION_STATUSES = ['All', 'Available', 'Pending', 'Adopted', 'Unavailable'];
 
-const STATS: StatItem[] = [
-  { label: 'Total Animals', value: 148 },
-  { label: 'Available', value: 64, color: 'var(--ocean)' },
-  { label: 'Under Rescue', value: 18, color: 'var(--royal)' },
-  { label: 'Under Treatment', value: 12, color: 'var(--ocean)' },
-  { label: 'Adopted', value: 54, color: 'var(--navy)' },
-  { label: 'Archived', value: 8, color: 'var(--navy-70)' },
-];
+function buildStats(animals: Animal[]): StatItem[] {
+  return [
+    { label: 'Total Animals', value: animals.length },
+    {
+      label: 'Available',
+      value: animals.filter((a) => a.adoptionStatus === 'Available').length,
+      color: 'var(--ocean)',
+    },
+    {
+      label: 'Under Rescue',
+      value: animals.filter((a) => a.rescueStatus !== 'In Shelter').length,
+      color: 'var(--royal)',
+    },
+    {
+      label: 'Under Treatment',
+      value: animals.filter((a) => a.healthStatus === 'Under Treatment').length,
+      color: 'var(--ocean)',
+    },
+    {
+      label: 'Adopted',
+      value: animals.filter((a) => a.adoptionStatus === 'Adopted').length,
+      color: 'var(--navy)',
+    },
+    {
+      label: 'Unavailable',
+      value: animals.filter((a) => a.adoptionStatus === 'Unavailable').length,
+      color: 'var(--navy-70)',
+    },
+  ];
+}
 
 export default function AnimalsPage() {
+  const { animals, isLoading, error, refetch } = useAnimals();
   const [searchQuery, setSearchQuery] = useState('');
   const [speciesFilter, setSpeciesFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
+  const [isAddOpen, setIsAddOpen] = useState(false);
 
   const filteredAnimals = useMemo(() => {
-    // Robust safety fallback protecting against internal unhandled event assignments
     const query = typeof searchQuery === 'string' ? searchQuery.trim().toLowerCase() : '';
-    
-    return MOCK_ANIMALS.filter((animal) => {
+
+    return animals.filter((animal) => {
       const matchesQuery =
         !query ||
         animal.name.toLowerCase().includes(query) ||
@@ -40,9 +66,10 @@ export default function AnimalsPage() {
       const matchesStatus = statusFilter === 'All' || animal.adoptionStatus === statusFilter;
       return matchesQuery && matchesSpecies && matchesStatus;
     });
-  }, [searchQuery, speciesFilter, statusFilter]);
+  }, [animals, searchQuery, speciesFilter, statusFilter]);
 
-  // Clean explicit setter sanitizers ensuring absolute safety from event pollution
+  const stats = useMemo(() => buildStats(animals), [animals]);
+
   const handleSearchChange = (val: string) => {
     if (typeof val === 'string') setSearchQuery(val);
   };
@@ -55,6 +82,14 @@ export default function AnimalsPage() {
     if (typeof val === 'string') setStatusFilter(val);
   };
 
+  // NOTE: photoFile is now accepted and forwarded to createAnimal — previously
+  // this only took `animal`, which silently dropped the selected photo file
+  // on every submission (buildAnimalFormData always ran with photoFile=null).
+  const handleCreateAnimal = async (animal: Animal, photoFile: File | null) => {
+    await createAnimal(animal, photoFile);
+    await refetch();
+  };
+
   return (
     <div className={styles.outerShell}>
       <div className={styles.container}>
@@ -63,7 +98,13 @@ export default function AnimalsPage() {
           subtitle="Manage, monitor, and update rescue and adoption records."
         />
 
-        <StatsGrid stats={STATS} />
+        {error && (
+          <div className={styles.errorBanner} role="alert">
+            {error}
+          </div>
+        )}
+
+        <StatsGrid stats={stats} />
 
         <Toolbar
           searchQuery={typeof searchQuery === 'string' ? searchQuery : ''}
@@ -74,16 +115,32 @@ export default function AnimalsPage() {
           statusFilter={typeof statusFilter === 'string' ? statusFilter : 'All'}
           onStatusChange={handleStatusChange}
           statusOptions={ADOPTION_STATUSES}
+          onAddClick={() => setIsAddOpen(true)}
+          addLabel="Add Animal"
         />
 
-        <AnimalGrid
-          animals={filteredAnimals}
-          getHref={(animal) => `/admin/animals/${animal.id}`}
-        />
+        {isLoading ? (
+          <div className={styles.loadingState}>Loading animals…</div>
+        ) : (
+          <AnimalGrid
+            animals={filteredAnimals}
+            getHref={(animal) => `/admin/animals/${animal.id}`}
+          />
+        )}
 
-        <Pagination shownCount={filteredAnimals.length} totalCount={148} hasNextPage />
+        <Pagination
+          shownCount={filteredAnimals.length}
+          totalCount={animals.length}
+          hasNextPage={false}
+        />
       </div>
+
+      <AddAnimalModal
+        open={isAddOpen}
+        existingAnimals={animals}
+        onClose={() => setIsAddOpen(false)}
+        onCreate={handleCreateAnimal}
+      />
     </div>
   );
 }
-

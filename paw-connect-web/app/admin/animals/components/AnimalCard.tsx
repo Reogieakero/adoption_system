@@ -1,6 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
 import styles from './AnimalCard.module.css';
+// NOTE: adjust this relative path to wherever resolvePhotoUrl actually lives
+// in your tree — it should point at src/lib/api/resolvePhotoUrl.ts
+import { resolvePhotoUrl } from '../../../lib/api/resolvePhotoUrl';
 
 export interface AnimalCardData {
   id: string;
@@ -49,11 +52,30 @@ function healthBadgeClass(status: string) {
 }
 
 export default function AnimalCard({ animal, href }: AnimalCardProps) {
+  const photoSrc = resolvePhotoUrl(animal.photo);
+
   return (
     <Link href={href} className={styles.cardLink}>
       <div className={styles.animalCard}>
         <div className={styles.imageWrapper}>
-          <img src={animal.photo} alt={animal.name} className={styles.cardPhoto} />
+          {photoSrc ? (
+            <img src={photoSrc} alt={animal.name} className={styles.cardPhoto} />
+          ) : (
+            <div
+              className={styles.cardPhoto}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: '#e2e8f0',
+                color: '#94a3b8',
+                fontSize: '0.75rem',
+                fontWeight: 600,
+              }}
+            >
+              No photo
+            </div>
+          )}
           <div className={styles.overlayInfo}>
             <div className={styles.cardHeader}>
               <h3 className={styles.cardName}>{animal.name}</h3>

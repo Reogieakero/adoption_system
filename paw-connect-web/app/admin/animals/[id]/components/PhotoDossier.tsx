@@ -1,5 +1,8 @@
 import React from 'react';
 import styles from './PhotoDossier.module.css';
+// NOTE: adjust this relative path to wherever resolvePhotoUrl actually lives
+// in your tree — it should point at src/lib/api/resolvePhotoUrl.ts
+import { resolvePhotoUrl } from '../../../../lib/api/resolvePhotoUrl';
 
 /** The subset of an animal record this component needs to render. */
 export interface PhotoDossierAnimal {
@@ -58,11 +61,30 @@ function rescueBadgeClass(status: string) {
 }
 
 export default function PhotoDossier({ animal }: PhotoDossierProps) {
+  const photoSrc = resolvePhotoUrl(animal.photo);
+
   return (
     <div className={styles.photoPane}>
       <div className={styles.photoCard}>
         <div className={styles.photoFrame}>
-          <img src={animal.photo} alt={animal.name} className={styles.heroPhoto} />
+          {photoSrc ? (
+            <img src={photoSrc} alt={animal.name} className={styles.heroPhoto} />
+          ) : (
+            <div
+              className={styles.heroPhoto}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: '#e2e8f0',
+                color: '#94a3b8',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+              }}
+            >
+              No photo
+            </div>
+          )}
         </div>
         <div className={styles.idStamp}>{animal.id}</div>
       </div>

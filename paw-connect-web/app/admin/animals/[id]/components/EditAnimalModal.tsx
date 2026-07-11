@@ -245,7 +245,15 @@ export default function EditAnimalModal({ open, animal, onClose, onSave }: EditA
   if (open !== wasOpen) {
     setWasOpen(open);
     if (open) {
-      setForm(animal);
+      setForm({
+        ...animal,
+        shelterLocation:
+          'shelterLocation' in animal && typeof animal.shelterLocation === 'string'
+            ? animal.shelterLocation
+            : 'location' in animal && typeof animal.location === 'string'
+              ? animal.location
+              : '',
+      });
       setStep(0);
       setFileName(null);
     }
