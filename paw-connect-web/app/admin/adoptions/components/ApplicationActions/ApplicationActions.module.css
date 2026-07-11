@@ -1,0 +1,31 @@
+.actionRow {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.3rem;
+}
+
+.actionBtnPrimary,
+.actionBtnSecondary,
+.actionBtnSuccess,
+.actionBtnDanger,
+.actionBtnFinal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 0.6rem;
+  font-size: 0.76rem;
+  font-family: inherit;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.1s ease;
+}
+
+.actionBtnSecondary { background: #ffffff; border-color: #cbd5e1; color: #0f172a; }
+.actionBtnSecondary:hover { background: #f1f5f9; }
+.actionBtnPrimary { background: #0f172a; color: #ffffff; }
+.actionBtnSuccess { background: #16a34a; color: #ffffff; }
+.actionBtnDanger { background: #ffffff; border-color: #fee2e2; color: #b91c1c; }
+.actionBtnFinal { background: #7c3aed; color: #ffffff; }

@@ -1,0 +1,486 @@
+.dashboardContainer {
+  font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.pageHeader {
+  margin-bottom: 1.5rem;
+}
+
+.pageTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.25rem 0;
+}
+
+.pageDescription {
+  font-size: 0.82rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.01);
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+  border-color: #cbd5e1;
+}
+
+.cardActive {
+  border-color: #0f172a;
+  box-shadow: 0 0 0 1px #0f172a;
+}
+
+.cardHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+.cardLabel {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: none;
+}
+
+.iconBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+}
+
+.cardMetric {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.tabBar {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 0.75rem;
+}
+
+.tabItem {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  font-family: inherit;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  white-space: nowrap;
+  text-transform: none;
+}
+
+.tabItem:hover {
+  color: #0f172a;
+}
+
+.tabItemActive {
+  color: #0f172a;
+  border-bottom-color: #0f172a;
+  font-weight: 600;
+}
+
+.tabCountBadge {
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 0.7rem;
+  padding: 0.05rem 0.35rem;
+  border-radius: 9999px;
+}
+
+.tabItemActive .tabCountBadge {
+  background: #0f172a;
+  color: #ffffff;
+}
+
+.tableWorkspaceCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: visible;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+  flex-wrap: wrap;
+}
+
+.searchWrapper {
+  position: relative;
+  flex: 1;
+  min-width: 240px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.7rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  box-sizing: border-box;
+  height: 34px;
+  padding: 0 1rem 0 2rem;
+  font-family: inherit;
+  font-size: 0.8rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.1s ease;
+}
+
+.searchInput:focus {
+  border-color: #0f172a;
+}
+
+.filterGroup {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.selectWrapper {
+  position: relative;
+  min-width: 165px;
+}
+
+.selectTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+  height: 34px;
+  padding: 0 0.75rem;
+  font-family: inherit;
+  font-size: 0.8rem;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.selectTrigger:focus {
+  border-color: #0f172a;
+}
+
+.selectValueText {
+  color: #0f172a !important;
+  font-weight: 500;
+  opacity: 1 !important;
+  display: inline-block;
+}
+
+.datePickerTriggerContent {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #0f172a;
+}
+
+.selectChevron {
+  color: #475569;
+  transition: transform 0.15s ease;
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.clearDateBtn {
+  margin-left: 0.4rem;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.clearDateBtn:hover {
+  color: #f43f5e;
+}
+
+.selectContent {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 100%;
+  z-index: 999;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+  padding: 4px;
+  margin: 0;
+  list-style: none;
+  box-sizing: border-box;
+}
+
+.selectItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.45rem 0.6rem;
+  font-size: 0.78rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.selectItem:hover {
+  background: #f1f5f9;
+}
+
+.selectItemActive {
+  background: #f1f5f9;
+  font-weight: 600;
+}
+
+.checkIcon {
+  color: #0f172a;
+  flex-shrink: 0;
+}
+
+.calendarPopover {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 999;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+  padding: 0.5rem;
+  width: 240px;
+  box-sizing: border-box;
+}
+
+.calendarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.calendarNavBtn {
+  background: transparent;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f172a;
+}
+
+.calendarMonthLabel {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  text-align: center;
+}
+
+.calendarWeekDay {
+  font-size: 0.7rem;
+  color: #64748b;
+  padding: 2px 0;
+}
+
+.calendarDay {
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 0.75rem;
+  padding: 4px 0;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #0f172a;
+}
+
+.calendarDay:hover {
+  background: #f1f5f9;
+}
+
+.calendarDaySelected {
+  background: #0f172a !important;
+  color: #ffffff !important;
+}
+
+.toggleGroup {
+  display: flex;
+  background: #f1f5f9;
+  padding: 2px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.toggleItem {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.toggleItemActive {
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.tableResponsiveWrapper {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.82rem;
+}
+
+.dataTable th {
+  background: #fafafa;
+  padding: 0.65rem 0.85rem;
+  font-weight: 600;
+  color: #64748b;
+  font-size: 0.74rem;
+  text-transform: none;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.dataTable td {
+  padding: 0.75rem 0.85rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.cardWorkspaceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.recordItemCard {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.recordCardTopRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.85rem;
+}
+
+.recordCardBody {
+  font-size: 0.78rem;
+  margin-bottom: 1rem;
+}
+
+.cardDataField {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.2rem 0;
+  align-items: center;
+}
+
+.cardDataLabel {
+  color: #64748b;
+}
+
+.recordCardFooter {
+  display: flex;
+  gap: 0.4rem;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 0.75rem;
+}
+
+.primaryCellText { font-weight: 600; color: #0f172a; }
+.secondaryCellText { font-size: 0.76rem; color: #64748b; }
+.animalProfileCell { display: flex; align-items: center; gap: 0.6rem; }
+.animalAvatar { width: 30px; height: 30px; border-radius: 6px; object-fit: cover; border: 1px solid #e2e8f0; }
+.speciesTag { display: inline-flex; padding: 0.1rem 0.4rem; background: #f1f5f9; border: 1px solid #e2e8f0; color: #0f172a; font-size: 0.72rem; border-radius: 4px; }
+.statusBadge { display: inline-flex; align-items: center; padding: 0.15rem 0.5rem; font-size: 0.72rem; font-weight: 600; border-radius: 4px; text-transform: none; }
+
+.badgePending { background-color: #fef3c7; color: #b45309; }
+.badgeReview { background-color: #e0f2fe; color: #0369a1; }
+.badgeApproved { background-color: #dcfce7; color: #15803d; }
+.badgeAdopted { background-color: #f3e8ff; color: #6d28d9; }
+.badgeRejected { background-color: #fee2e2; color: #b91c1c; }
+
+.actionRow { display: flex; justify-content: flex-end; gap: 0.3rem; }
+.actionBtnPrimary, .actionBtnSecondary, .actionBtnSuccess, .actionBtnDanger, .actionBtnFinal {
+  display: inline-flex; align-items: center; justify-content: center; height: 28px; padding: 0 0.6rem; font-size: 0.76rem; font-family: inherit; font-weight: 500; border-radius: 6px; cursor: pointer; border: 1px solid transparent; transition: all 0.1s ease;
+}
+.actionBtnSecondary { background: #ffffff; border-color: #cbd5e1; color: #0f172a; }
+.actionBtnSecondary:hover { background: #f1f5f9; }
+.actionBtnPrimary { background: #0f172a; color: #ffffff; }
+.actionBtnSuccess { background: #16a34a; color: #ffffff; }
+.actionBtnDanger { background: #ffffff; border-color: #fee2e2; color: #b91c1c; }
+.actionBtnFinal { background: #7c3aed; color: #ffffff; }
+
+.emptyStateContainer { text-align: center; padding: 3rem 1rem !important; }
+.emptyStateMessage { color: #94a3b8; font-size: 0.8rem; }

@@ -1,0 +1,122 @@
+.selectWrapper {
+  position: relative;
+  min-width: 165px;
+}
+
+.selectTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+  height: 34px;
+  padding: 0 0.75rem;
+  font-family: inherit;
+  font-size: 0.8rem;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.selectTrigger:focus {
+  border-color: #0f172a;
+}
+
+.selectValueText {
+  color: #0f172a !important;
+  font-weight: 500;
+  opacity: 1 !important;
+  display: inline-block;
+}
+
+.datePickerTriggerContent {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #0f172a;
+}
+
+.clearDateBtn {
+  margin-left: 0.4rem;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.clearDateBtn:hover {
+  color: #f43f5e;
+}
+
+.calendarPopover {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 999;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+  padding: 0.5rem;
+  width: 240px;
+  box-sizing: border-box;
+}
+
+.calendarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.calendarNavBtn {
+  background: transparent;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f172a;
+}
+
+.calendarMonthLabel {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  text-align: center;
+}
+
+.calendarWeekDay {
+  font-size: 0.7rem;
+  color: #64748b;
+  padding: 2px 0;
+}
+
+.calendarDay {
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 0.75rem;
+  padding: 4px 0;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #0f172a;
+}
+
+.calendarDay:hover {
+  background: #f1f5f9;
+}
+
+.calendarDaySelected {
+  background: #0f172a !important;
+  color: #ffffff !important;
+}

@@ -33,7 +33,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Users', fullLabel: 'User Management', href: '/admin/users', icon: Users },
   { label: 'Clinics', fullLabel: 'Clinic Management', href: '/admin/clinics', icon: Building2 },
   { label: 'Animals', fullLabel: 'Animal Records', href: '/admin/animals', icon: PawPrint },
-  { label: 'Adoptions', fullLabel: 'Adoption Requests', href: '/admin/adoption-requests', icon: ClipboardCheck },
+  { label: 'Adoptions', fullLabel: 'Adoption Requests', href: '/admin/adoptions', icon: ClipboardCheck },
   { label: 'Rescues', fullLabel: 'Rescue Reports', href: '/admin/rescue-reports', icon: Siren },
   { label: 'Health', fullLabel: 'Health Monitoring', href: '/admin/health-monitoring', icon: HeartPulse },
   { label: 'Heatmap', fullLabel: 'Heatmap & Mapping', href: '/admin/heatmap', icon: Map },
