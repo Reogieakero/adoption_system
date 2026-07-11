@@ -1,0 +1,77 @@
+.carouselWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.carouselLabel {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.carouselTrack {
+  width: 300px;
+  max-width: 100%;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 0.5rem 0.4rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.01);
+  /* fade the left/right edges so items don't pop in/out abruptly */
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+}
+
+.carouselTrackInner {
+  display: flex;
+  gap: 0.85rem;
+  width: max-content;
+  animation: adoptedCarouselScroll 18s linear infinite;
+}
+
+.carouselTrack:hover .carouselTrackInner {
+  animation-play-state: paused;
+}
+
+.carouselItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  width: 56px;
+  flex-shrink: 0;
+}
+
+.carouselImage {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #f3e8ff;
+}
+
+.carouselName {
+  font-size: 0.66rem;
+  font-weight: 600;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 56px;
+}
+
+@keyframes adoptedCarouselScroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    /* content is duplicated once, so -50% is exactly one full loop */
+    transform: translateX(-50%);
+  }
+}

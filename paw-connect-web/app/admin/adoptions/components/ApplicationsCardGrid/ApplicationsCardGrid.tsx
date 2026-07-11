@@ -7,9 +7,10 @@ import styles from './ApplicationsCardGrid.module.css';
 interface ApplicationsCardGridProps {
   applications: AdoptionApplication[];
   onUpdateStatus: (id: string, newStatus: StatusType) => void;
+  onViewDetails: (application: AdoptionApplication) => void;
 }
 
-export function ApplicationsCardGrid({ applications, onUpdateStatus }: ApplicationsCardGridProps) {
+export function ApplicationsCardGrid({ applications, onUpdateStatus, onViewDetails }: ApplicationsCardGridProps) {
   if (applications.length === 0) {
     return (
       <div className={styles.cardWorkspaceGrid}>
@@ -59,6 +60,7 @@ export function ApplicationsCardGrid({ applications, onUpdateStatus }: Applicati
               status={app.status}
               layout="stacked"
               onUpdateStatus={(newStatus) => onUpdateStatus(app.id, newStatus)}
+              onViewDetails={() => onViewDetails(app)}
             />
           </div>
         </div>

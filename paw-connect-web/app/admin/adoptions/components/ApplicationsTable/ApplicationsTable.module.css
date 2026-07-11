@@ -1,3 +1,4 @@
+/* --- Updated Table Styles --- */
 .tableResponsiveWrapper {
   overflow-x: auto;
   width: 100%;
@@ -20,9 +21,18 @@
   border-bottom: 1px solid #e2e8f0;
 }
 
+/* Fix: Explicitly center align all cell columns vertically */
 .dataTable td {
   padding: 0.75rem 0.85rem;
   border-bottom: 1px solid #e2e8f0;
+  vertical-align: middle;
+}
+
+/* Fix: Ensure the flex action buttons align correctly inside the column spacing */
+.actionsColumn {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .primaryCellText { font-weight: 600; color: #0f172a; }

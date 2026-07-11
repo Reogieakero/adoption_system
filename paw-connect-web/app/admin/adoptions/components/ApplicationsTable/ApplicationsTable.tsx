@@ -7,9 +7,10 @@ import styles from './ApplicationsTable.module.css';
 interface ApplicationsTableProps {
   applications: AdoptionApplication[];
   onUpdateStatus: (id: string, newStatus: StatusType) => void;
+  onViewDetails: (application: AdoptionApplication) => void;
 }
 
-export function ApplicationsTable({ applications, onUpdateStatus }: ApplicationsTableProps) {
+export function ApplicationsTable({ applications, onUpdateStatus, onViewDetails }: ApplicationsTableProps) {
   return (
     <div className={styles.tableResponsiveWrapper}>
       <table className={styles.dataTable}>
@@ -50,11 +51,15 @@ export function ApplicationsTable({ applications, onUpdateStatus }: Applications
                 </td>
                 <td className={styles.secondaryCellText}>{app.assignedStaff || '—'}</td>
                 <td>
-                  <ApplicationActions
-                    status={app.status}
-                    layout="row"
-                    onUpdateStatus={(newStatus) => onUpdateStatus(app.id, newStatus)}
-                  />
+                  {/* Fix: Centered flex container wrapper applied here */}
+                  <div className={styles.actionsColumn}>
+                    <ApplicationActions
+                      status={app.status}
+                      layout="row"
+                      onUpdateStatus={(newStatus) => onUpdateStatus(app.id, newStatus)}
+                      onViewDetails={() => onViewDetails(app)}
+                    />
+                  </div>
                 </td>
               </tr>
             ))

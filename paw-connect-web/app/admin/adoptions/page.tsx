@@ -8,6 +8,8 @@ import { StatusTabs } from './components/StatusTabs/StatusTabs';
 import { Toolbar } from './components/Toolbar/Toolbar';
 import { ApplicationsTable } from './components/ApplicationsTable/ApplicationsTable';
 import { ApplicationsCardGrid } from './components/ApplicationsCardGrid/ApplicationsCardGrid';
+import { AdoptedCarousel } from './components/AdoptedCarousel/AdoptedCarousel';
+import { ApplicationDetailsModal } from './components/ApplicationDetailsModal/ApplicationDetailsModal';
 import styles from './page.module.css';
 
 export default function AdoptionManagementPage() {
@@ -17,6 +19,7 @@ export default function AdoptionManagementPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [speciesFilter, setSpeciesFilter] = useState('All species');
   const [dateFilter, setDateFilter] = useState('');
+  const [selectedApplication, setSelectedApplication] = useState<AdoptionApplication | null>(null);
 
   const counts = useMemo((): Record<StatusType, number> => {
     return {
@@ -26,6 +29,13 @@ export default function AdoptionManagementPage() {
       Rejected: applications.filter((a) => a.status === 'Rejected').length,
       Adopted: applications.filter((a) => a.status === 'Adopted').length,
     };
+  }, [applications]);
+
+  const latestAdopted = useMemo(() => {
+    return applications
+      .filter((a) => a.status === 'Adopted')
+      .sort((a, b) => (a.applicationDate < b.applicationDate ? 1 : -1))
+      .slice(0, 5);
   }, [applications]);
 
   const updateStatus = (id: string, newStatus: StatusType) => {
@@ -53,12 +63,14 @@ export default function AdoptionManagementPage() {
   return (
     <div className={styles.dashboardContainer}>
       <header className={styles.pageHeader}>
-        <div>
+        <div className={styles.headerText}>
           <h1 className={styles.pageTitle}>Adoption Management</h1>
           <p className={styles.pageDescription}>
             Review applications, track interviews, and orchestrate animal placements.
           </p>
         </div>
+
+        <AdoptedCarousel animals={latestAdopted} />
       </header>
 
       <SummaryCards counts={counts} activeTab={activeTab} onSelect={setActiveTab} />
@@ -78,11 +90,24 @@ export default function AdoptionManagementPage() {
         />
 
         {viewMode === 'table' ? (
-          <ApplicationsTable applications={filteredApplications} onUpdateStatus={updateStatus} />
+          <ApplicationsTable
+            applications={filteredApplications}
+            onUpdateStatus={updateStatus}
+            onViewDetails={setSelectedApplication}
+          />
         ) : (
-          <ApplicationsCardGrid applications={filteredApplications} onUpdateStatus={updateStatus} />
+          <ApplicationsCardGrid
+            applications={filteredApplications}
+            onUpdateStatus={updateStatus}
+            onViewDetails={setSelectedApplication}
+          />
         )}
       </div>
+
+      <ApplicationDetailsModal
+        application={selectedApplication}
+        onClose={() => setSelectedApplication(null)}
+      />
     </div>
   );
 }

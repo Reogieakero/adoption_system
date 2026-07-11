@@ -29,3 +29,65 @@
 .actionBtnSuccess { background: #16a34a; color: #ffffff; }
 .actionBtnDanger { background: #ffffff; border-color: #fee2e2; color: #b91c1c; }
 .actionBtnFinal { background: #7c3aed; color: #ffffff; }
+
+/* --- New Confirmation Overlay Styles --- */
+.actionContainer {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.actionContainerStacked {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 0.4rem;
+}
+
+.confirmOverlay {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  padding: 0.2rem 0.4rem;
+  border-radius: 6px;
+  animation: slideIn 0.15s ease-out;
+}
+
+.confirmOverlayStacked {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  padding: 0.5rem;
+  border-radius: 8px;
+  animation: fadeIn 0.15s ease-out;
+  width: 100%;
+}
+
+.confirmMessage {
+  font-size: 0.72rem;
+  color: #475569;
+  font-weight: 500;
+  margin-right: 0.2rem;
+}
+
+.confirmMessageStacked {
+  font-size: 0.74rem;
+  color: #475569;
+  font-weight: 600;
+  text-align: center;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(4px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
