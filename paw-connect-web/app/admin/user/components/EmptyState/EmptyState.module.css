@@ -1,0 +1,33 @@
+/* Empty States Graphics */
+.emptyStateContainer {
+  padding: 4rem 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.emptyIconCircle {
+  width: 3rem;
+  height: 3rem;
+  background-color: #f8fafc;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  border: 1px solid #f1f5f9;
+}
+
+.emptyStateContainer h3 {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+}
+
+.emptyStateContainer p {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin: 0;
+  max-width: 22rem;
+}

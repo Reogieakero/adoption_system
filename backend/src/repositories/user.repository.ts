@@ -1,15 +1,6 @@
 import  pool  from '../config/db'; // TODO: adjust to your actual db pool import path
 import { AdminUserRow, UserStatus } from '../types/user.types';
 
-/**
- * TODO: the JOINs below assume:
- *   - adoption_applications(user_id)
- *   - rescue_reports(user_id)
- *   - animals(posted_by_user_id)
- * Rename table/column names to match your actual schema
- * (see backend/src/repositories/adoption.repository.ts, rescue.repository.ts,
- * animal.repository.ts for the real names).
- */
 const ADMIN_USER_LIST_QUERY = `
   SELECT * FROM users u
   ORDER BY u.created_at DESC

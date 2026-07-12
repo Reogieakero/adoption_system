@@ -1,0 +1,127 @@
+/* Premium Card Table Box Architecture */
+.cardShadcn {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.01);
+  overflow: hidden;
+}
+
+.tableResponsiveContainer {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.tableShadcn {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.75rem;
+}
+
+.tableShadcn th {
+  background-color: #fafafa;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  color: #475569;
+  border-bottom: 1px solid #e2e8f0;
+  letter-spacing: 0.02em;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tableShadcn td {
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+  vertical-align: middle;
+}
+
+.tableRowAnimation {
+  transition: background-color 0.15s ease;
+}
+
+.tableRowAnimation:hover {
+  background-color: #f8fafc;
+}
+
+/* Cells formatting */
+.userProfileCell {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.avatarMock {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background-color: #f1f5f9;
+  color: #475569;
+  font-weight: 600;
+  font-size: 0.6875rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e2e8f0;
+}
+
+.userNameText {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.monoCellText {
+  color: #64748b;
+}
+
+.btnRowAction {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  display: inline-flex;
+}
+
+.btnRowAction:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+/* Integrated Clean Pagination Panel styling */
+.paginationContainer {
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #e2e8f0;
+  background-color: #ffffff;
+}
+
+.paginationText {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.paginationButtonGroup {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.paginationBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
+  border-radius: 0.375rem;
+  cursor: not-allowed;
+  opacity: 0.5;
+  color: #64748b;
+  font-family: inherit;
+}

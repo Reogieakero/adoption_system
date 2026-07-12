@@ -1,0 +1,54 @@
+/* Summary Analytics Statistics Row */
+.summaryGrid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 640px) {
+  .summaryGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+  .summaryGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+.summaryCard {
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: box-shadow 0.2s ease;
+}
+
+.summaryCard:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.summaryCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.summaryCardHeader p {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #64748b;
+  margin: 0;
+}
+
+.summaryCardValue {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0.35rem 0 0.15rem 0;
+  letter-spacing: -0.02em;
+}
+
+.summaryCardDesc {
+  font-size: 0.6875rem;
+  color: #94a3b8;
+  margin: 0;
+}

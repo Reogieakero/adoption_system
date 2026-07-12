@@ -1,0 +1,14 @@
+/* Clean UI Primitives Badges - Status */
+.badgeStatus {
+  display: inline-flex;
+  padding: 0.15rem 0.45rem;
+  font-size: 0.625rem;
+  font-weight: 600;
+  border-radius: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.statusActive { background-color: #dcfce7; color: #15803d; }
+.statusPending { background-color: #fef3c7; color: #b45309; }
+.statusSuspended { background-color: #fee2e2; color: #b91c1c; }

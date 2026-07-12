@@ -1,0 +1,75 @@
+/* Custom Shadcn Native Drops components style */
+.selectWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.selectTrigger {
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #334155;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  min-width: 8.5rem;
+}
+
+.selectTrigger:hover {
+  background-color: #f8fafc;
+}
+
+.selectArrow {
+  color: #94a3b8;
+}
+
+.selectContent {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.25rem;
+  width: 100%;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+  padding: 0.25rem;
+  z-index: 40;
+}
+
+.selectItem {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0.375rem 0.5rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  border-radius: 0.25rem;
+  color: #334155;
+  font-family: inherit;
+}
+
+.selectItem:hover {
+  background-color: #f1f5f9;
+}
+
+.selectItemActive {
+  font-weight: 500;
+  color: #0f172a;
+}
+
+.itemCheckWrapper {
+  width: 1rem;
+  display: inline-flex;
+  align-items: center;
+  color: #0f172a;
+}
