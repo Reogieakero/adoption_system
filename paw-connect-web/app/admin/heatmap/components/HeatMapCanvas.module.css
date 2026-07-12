@@ -7,7 +7,6 @@
     z-index: 0;
   }
   
-  /* Popup content injected into Leaflet's popup pane via bindPopup(html) */
   .popup {
     font-family: 'Geist Mono', var(--font-mono), ui-monospace, monospace;
     font-size: 0.75rem;

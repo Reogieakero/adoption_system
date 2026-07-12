@@ -1,5 +1,3 @@
-/* ---------- Right: record section ---------- */
-
 .section {
   position: relative;
   display: flex;
@@ -10,6 +8,36 @@
   overflow: hidden;
   animation: fadeInUp 0.55s ease both;
   transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.section::before {
+  content: "";
+  position: absolute;
+  bottom: -100px;
+  left: -100px;
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ef4444, #ffffff);
+  filter: blur(60px);
+  opacity: 0.08;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.section::after {
+  content: "";
+  position: absolute;
+  bottom: -150px;
+  left: -50px;
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #ffffff);
+  filter: blur(55px);
+  opacity: 0.1;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .section:hover {
@@ -23,12 +51,15 @@
 
 .sectionSpine {
   flex: 0 0 5px;
+  position: relative;
+  z-index: 1;
 }
-
 
 .sectionBody {
   flex: 1;
   padding: 1.4rem 1.6rem;
+  position: relative;
+  z-index: 1;
 }
 
 .sectionEyebrow {

@@ -5,7 +5,6 @@ import EmptyState from './EmptyState';
 
 interface AnimalGridProps {
   animals: AnimalCardData[];
-  /** Builds the detail-page href for a given animal. */
   getHref: (animal: AnimalCardData) => string;
   emptyMessage?: string;
 }

@@ -15,7 +15,7 @@ interface HealthHistoryViewProps {
 const FALLBACK_PHOTO =
   "data:image/svg+xml;charset=UTF-8," +
   encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox=" 0 400 400">
       <rect width="400" height="400" fill="#170A0C"/>
       <text x="50%" y="50%" fill="#ffffff" fill-opacity="0.4" font-family="monospace"
             font-size="20" text-anchor="middle" dominant-baseline="middle">No Photo</text>
@@ -55,7 +55,6 @@ export default function HealthHistoryView({ animal, onClose, onVitalsUpdated }: 
           className={`${styles.closeBtn} ${styles.logVitalsBtn}`}
           onClick={() => setIsLogVitalsOpen(true)}
         >
-          <Syringe size={14} />
           Log Vitals
         </button>
         <button className={styles.closeBtn} onClick={onClose}>

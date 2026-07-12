@@ -43,8 +43,6 @@
   gap: 4px;
   padding: 4px;
   border-radius: 8px;
-  background-color: rgba(0, 0, 0, 0.03);
-  border: 1px solid var(--navy-12);
 }
 
 .modeBtn {

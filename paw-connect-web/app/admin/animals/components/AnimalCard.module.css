@@ -21,9 +21,8 @@
 }
 
 .animalCard:hover {
-  box-shadow: 0 10px 24px var(--navy-12, rgba(15, 23, 42, 0.12));
-  border-color: var(--ocean, #cbd5e1);
-  transform: translateY(-3px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  transform: translateY(-4px);
 }
 
 .imageWrapper {
@@ -152,7 +151,7 @@
   padding: 0.2rem 0.55rem;
   font-size: 0.68rem;
   font-weight: 600;
-  border-radius: 4px; /* Crisp Shadcn-like radius */
+  border-radius: 4px;
   white-space: nowrap;
   transition: transform 0.15s ease;
 }
@@ -161,13 +160,11 @@
   transform: translateY(-1px);
 }
 
-/* Color Tokens */
 .bgTeal { background-color: rgba(20, 184, 166, 0.15); color: #2dd4bf; border: 1px solid rgba(20, 184, 166, 0.25); }
 .bgOrange { background-color: rgba(249, 115, 22, 0.15); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.25); }
 .bgPrimary { background-color: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.25); }
 .bgSlate { background-color: rgba(148, 163, 184, 0.15); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.25); }
 
-/* Premium Pro Admin Critical Tag (Stark high-visibility white tag) */
 .bgWhite { 
   background-color: #ffffff; 
   color: #0f172a; 

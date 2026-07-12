@@ -26,9 +26,6 @@ export default function Modal({ open, onClose, title, description, children, foo
     const previouslyFocused = document.activeElement as HTMLElement | null;
     document.addEventListener('keydown', onKeyDown);
 
-    // Lock scroll without letting the page shift sideways: measure how wide
-    // the scrollbar is before hiding it, then pad the body by that amount so
-    // removing the scrollbar doesn't change the page's visible width.
     const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
     const previousOverflow = document.body.style.overflow;
     const previousPaddingRight = document.body.style.paddingRight;
@@ -37,20 +34,16 @@ export default function Modal({ open, onClose, title, description, children, foo
       document.body.style.paddingRight = `${scrollbarWidth}px`;
     }
 
-    dialogRef.current?.focus();
+    if (dialogRef.current) dialogRef.current.focus();
 
     return () => {
       document.removeEventListener('keydown', onKeyDown);
       document.body.style.overflow = previousOverflow;
       document.body.style.paddingRight = previousPaddingRight;
-      previouslyFocused?.focus();
+      if (previouslyFocused) previouslyFocused.focus();
     };
   }, [open, onClose]);
 
-  // `open` starts false and only ever flips to true from a user click after
-  // the component has mounted on the client, so `document` is always
-  // available by the time this branch is reached — no separate "mounted"
-  // state (and no setState-in-effect) needed to guard the portal target.
   if (!open || typeof document === 'undefined') return null;
 
   return createPortal(
@@ -64,7 +57,7 @@ export default function Modal({ open, onClose, title, description, children, foo
         className={styles.dialog}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="modal-title"
+        aria-labelledby="modal-title\"
         tabIndex={-1}
         ref={dialogRef}
       >
@@ -77,11 +70,13 @@ export default function Modal({ open, onClose, title, description, children, foo
           </div>
           <button type="button" className={styles.closeBtn} onClick={onClose} aria-label="Close">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
         </div>
-        <div className={styles.body}>{children}</div>
+
+        <div className={styles.content}>{children}</div>
+
         {footer && <div className={styles.footer}>{footer}</div>}
       </div>
     </div>,

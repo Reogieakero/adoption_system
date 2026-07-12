@@ -4,7 +4,6 @@ import styles from './StatsGrid.module.css';
 export interface StatItem {
   label: string;
   value: number | string;
-  /** Optional CSS color value (e.g. 'var(--ocean)') for the number. */
   color?: string;
 }
 

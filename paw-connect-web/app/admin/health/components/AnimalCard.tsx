@@ -11,7 +11,6 @@ interface AnimalCardProps {
   onVitalsUpdated?: (updatedAnimal: Animal) => void
 }
 
-// Self-contained fallback so a missing photo_url never renders <img src="">
 const FALLBACK_PHOTO =
   "data:image/svg+xml;charset=UTF-8," +
   encodeURIComponent(
@@ -40,7 +39,6 @@ export default function AnimalCard({ animal, onViewHistory, onVitalsUpdated }: A
       : styles.vaccineNotVaccinated
 
   const isCritical = animal.healthStatus === "Critical"
-
   const photoSrc = animal.photo && animal.photo.trim() !== "" ? animal.photo : FALLBACK_PHOTO
 
   return (
@@ -50,7 +48,6 @@ export default function AnimalCard({ animal, onViewHistory, onVitalsUpdated }: A
         alt={animal.name}
         className={styles.cardImage}
         onError={(e) => {
-          // covers broken/expired URLs too, not just empty strings
           if (e.currentTarget.src !== FALLBACK_PHOTO) {
             e.currentTarget.src = FALLBACK_PHOTO
           }
@@ -83,13 +80,13 @@ export default function AnimalCard({ animal, onViewHistory, onVitalsUpdated }: A
 
         <div className={styles.cardFooter} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           <button
-            className={styles.btnSecondary}
+            className={styles.btnWhite}
             onClick={() => onViewHistory(animal)}
           >
             View Health History
           </button>
           <button
-            className={styles.btnSecondary}
+            className={styles.btnBlack}
             onClick={() => setIsLogVitalsOpen(true)}
           >
             Log Vitals

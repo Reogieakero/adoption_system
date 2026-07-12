@@ -6,14 +6,11 @@ export type SpineColor = 'ocean' | 'royal' | 'navy';
 export interface RecordField {
   label: string;
   value: React.ReactNode;
-  /** Render the value in the monospace/data style used for IDs and dates. */
   mono?: boolean;
-  /** Show the live heart-rate pulse dot next to the value. */
   showPulse?: boolean;
 }
 
 interface RecordSectionProps {
-  /** Small uppercase label above the title, e.g. "Record 01". */
   eyebrow: string;
   title: string;
   spine: SpineColor;

@@ -1,4 +1,3 @@
-/* --- IMAGE CARD --- */
 .card {
   position: relative;
   aspect-ratio: 3 / 4;
@@ -6,12 +5,13 @@
   overflow: hidden;
   border: 1px solid var(--navy-12);
   background-color: var(--navy);
-  box-shadow: 0 1px 2px 0 rgba(23, 10, 12, 0.05);
-  transition: box-shadow 0.2s ease;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .card:hover {
-  box-shadow: 0 8px 16px -4px rgba(23, 10, 12, 0.25), 0 2px 6px -1px rgba(23, 10, 12, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
 }
 
 .card::before {
@@ -148,7 +148,6 @@
   line-height: 1.4;
 }
 
-/* State classes for badges — solid, legible over photography */
 .healthHealthy    { background-color: #10b981; color: var(--white); }
 .healthTreatment  { background-color: var(--royal); color: var(--white); }
 .healthCritical   { background-color: var(--ocean); color: var(--white); }
@@ -161,26 +160,38 @@
   margin-top: 10px;
 }
 
-/* --- SHADCN UI BUTTON (secondary, used over photography) --- */
-.btnSecondary {
+.btnWhite, .btnBlack {
   width: 100%;
+  height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 6px;
+  line-height: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  border-radius: 6px;
-  background-color: rgba(255, 255, 255, 0.1);
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--white);
-  height: 32px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
   cursor: pointer;
-  backdrop-filter: blur(6px);
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  border: none;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
 }
 
-.btnSecondary:hover {
-  background-color: rgba(255, 255, 255, 0.18);
-  border-color: rgba(255, 255, 255, 0.3);
+.btnWhite {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.btnWhite:hover {
+  background-color: #f3f4f6;
+}
+
+.btnBlack {
+  background-color: #000000;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.btnBlack:hover {
+  background-color: #111111;
 }

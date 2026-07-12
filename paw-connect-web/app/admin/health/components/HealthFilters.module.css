@@ -17,7 +17,7 @@
 .searchWrapper {
   position: relative;
   flex: 1;
-  max-width: 384px;
+  max-width: 280px;
 }
 
 .searchIcon {
@@ -31,7 +31,7 @@
 
 /* shadcn/ui Input Style */
 .input {
-  height: 36px;
+  height: 32px;
   width: 100%;
   border-radius: 6px;
   border: 1px solid var(--navy-12);

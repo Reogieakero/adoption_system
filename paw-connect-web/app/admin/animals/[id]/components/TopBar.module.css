@@ -1,4 +1,4 @@
-/* ---------- Top bar ---------- */
+@import url('https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/font/mono.css');
 
 .topBar {
   display: flex;
@@ -6,6 +6,7 @@
   justify-content: space-between;
   gap: 1rem;
   animation: fadeInDown 0.5s ease both;
+  font-family: 'Geist Mono', Monaco, Consolas, monospace;
 }
 
 .backLink {
@@ -23,7 +24,7 @@
 }
 
 .backLink:hover {
-  color: var(--ocean, #c8102e);
+  color: #000000;
   gap: 0.6rem;
 }
 
@@ -35,56 +36,57 @@
 
 .actionError {
   font-size: 0.72rem;
-  color: #b91c1c;
+  color: #ef4444;
   max-width: 220px;
 }
 
 .actionBtn {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 6px;
+  line-height: 1;
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  height: 36px;
-  padding: 0 0.9rem;
+  justify-content: center;
+  gap: 6px;
   font-family: inherit;
-  font-size: 0.74rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  border-radius: 8px;
-  border: 1px solid var(--navy-12, #e2e8f0);
-  background: var(--white, #ffffff);
-  color: var(--navy, #170a0c);
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #0f172a;
   cursor: pointer;
   transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease, color 0.15s ease;
 }
 
 .actionBtn:hover {
   transform: translateY(-1px);
-  border-color: var(--ocean, #c8102e);
-  color: var(--ocean, #c8102e);
+  border-color: #cbd5e1;
+  background-color: #f8fafc;
 }
 
 .actionBtnPrimary {
-  background: var(--navy, #170a0c);
-  color: var(--white, #ffffff);
-  border-color: var(--navy, #170a0c);
+  background: #000000;
+  color: #ffffff;
+  border-color: #000000;
 }
 
 .actionBtnPrimary:hover {
-  background: var(--ocean, #c8102e);
-  border-color: var(--ocean, #c8102e);
-  color: var(--white, #ffffff);
+  background: #1a1a1a;
+  border-color: #1a1a1a;
+  color: #ffffff;
 }
 
 .actionBtnDanger {
-  background: var(--white, #ffffff);
-  color: var(--ocean, #c8102e);
-  border-color: var(--ocean-14, rgba(200, 16, 46, 0.14));
+  background: #ffffff;
+  color: #ef4444;
+  border-color: #fee2e2;
 }
 
 .actionBtnDanger:hover {
-  background: var(--ocean, #c8102e);
-  color: var(--white, #ffffff);
-  border-color: var(--ocean, #c8102e);
+  background: #ef4444;
+  color: #ffffff;
+  border-color: #ef4444;
 }
 
 @keyframes fadeInDown {

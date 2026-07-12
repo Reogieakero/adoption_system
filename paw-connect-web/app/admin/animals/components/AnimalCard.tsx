@@ -1,8 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
 import styles from './AnimalCard.module.css';
-// NOTE: adjust this relative path to wherever resolvePhotoUrl actually lives
-// in your tree — it should point at src/lib/api/resolvePhotoUrl.ts
 import { resolvePhotoUrl } from '../../../lib/api/resolvePhotoUrl';
 
 export interface AnimalCardData {
@@ -45,7 +43,7 @@ function healthBadgeClass(status: string) {
     case 'Under Treatment':
       return styles.bgPrimary;
     case 'Critical':
-      return styles.bgWhite; /* Clear, clean pop-out contrast tag for admins */
+      return styles.bgWhite;
     default:
       return styles.bgSlate;
   }
@@ -82,8 +80,6 @@ export default function AnimalCard({ animal, href }: AnimalCardProps) {
               <span className={styles.cardSpecies}>{animal.species}</span>
             </div>
             <div className={styles.cardId}>{animal.id}</div>
-
-            {/* <p className={styles.cardBio}>{animal.bio}</p> */}
 
             <div className={styles.hoverContent}>
               <div className={styles.detailRow}>

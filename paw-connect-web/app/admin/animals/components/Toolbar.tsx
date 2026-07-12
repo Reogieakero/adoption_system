@@ -18,7 +18,7 @@ interface ToolbarProps {
 export default function Toolbar({
   searchQuery,
   onSearchChange,
-  searchPlaceholder = 'Search by name, breed, or ID...',
+  searchPlaceholder = 'Search by name, breed ...',
   speciesFilter,
   onSpeciesChange,
   speciesOptions,
@@ -34,7 +34,6 @@ export default function Toolbar({
   const speciesRef = useRef<HTMLDivElement>(null);
   const statusRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdowns when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (speciesRef.current && !speciesRef.current.contains(event.target as Node)) {
@@ -65,12 +64,10 @@ export default function Toolbar({
             onChange={(e) => onSearchChange(e.target.value)}
             className={styles.supabaseSearchInput}
           />
-          <div className={styles.cmdKShortcut}>⌘K</div>
         </div>
       </div>
 
       <div className={styles.rightControls}>
-        {/* Custom Species Selector */}
         <div className={styles.selectContainer} ref={speciesRef}>
           <button 
             className={`${styles.selectTrigger} ${speciesOpen ? styles.selectTriggerActive : ''}`}
@@ -104,7 +101,6 @@ export default function Toolbar({
           )}
         </div>
 
-        {/* Custom Status Selector */}
         <div className={styles.selectContainer} ref={statusRef}>
           <button 
             className={`${styles.selectTrigger} ${statusOpen ? styles.selectTriggerActive : ''}`}

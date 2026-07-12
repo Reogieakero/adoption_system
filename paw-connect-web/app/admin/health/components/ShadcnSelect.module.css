@@ -8,7 +8,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  height: 36px;
+  height: 32px;
   border-radius: 6px;
   border: 1px solid var(--navy-12);
   background-color: var(--white);

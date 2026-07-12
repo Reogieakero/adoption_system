@@ -27,33 +27,10 @@ export default function Pagination({
       <div className={styles.toolbarCard}>
         <div className={styles.row}>
           <div className={styles.pageSizeGroup}>
-            <span>Cards per page:</span>
-            <select className={styles.selectFilter}>
-              {pageSizeOptions.map((size) => (
-                <option key={size}>{size}</option>
-              ))}
-            </select>
           </div>
           <div className={styles.pageControls}>
-            <span>1-{shownCount} of {totalCount}</span>
+            <span>{totalCount} animals</span>
             <div className={styles.pageButtons}>
-              <button
-                disabled={!hasPrevPage}
-                onClick={onPrevPage}
-                className={styles.pageBtn}
-              >
-                &larr;
-              </button>
-              <button className={`${styles.pageBtn} ${styles.pageBtnActive}`}>
-                {currentPage}
-              </button>
-              <button
-                disabled={!hasNextPage}
-                onClick={onNextPage}
-                className={styles.pageBtn}
-              >
-                &rarr;
-              </button>
             </div>
           </div>
         </div>

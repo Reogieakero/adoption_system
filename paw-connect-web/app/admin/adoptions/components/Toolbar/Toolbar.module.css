@@ -10,8 +10,8 @@
 
 .searchWrapper {
   position: relative;
-  flex: 1;
-  min-width: 240px;
+  flex: 0 0 280px;
+  width: 280px;
 }
 
 .searchIcon {
@@ -26,14 +26,19 @@
 .searchInput {
   width: 100%;
   box-sizing: border-box;
-  height: 34px;
+  height: 32px;
   padding: 0 1rem 0 2rem;
-  font-family: inherit;
+  font-family: 'Geist Mono', monospace;
   font-size: 0.8rem;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
   outline: none;
   transition: border-color 0.1s ease;
+}
+
+.searchInput::placeholder {
+  color: #94a3b8;
+  opacity: 1;
 }
 
 .searchInput:focus {

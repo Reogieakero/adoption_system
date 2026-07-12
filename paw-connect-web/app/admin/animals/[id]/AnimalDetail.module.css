@@ -1,13 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700;800&display=swap');
 
-/* ==========================================================
-   Animal Detail — page shell only.
-   The photo dossier, top bar, record sections, and not-found
-   state each own their layout/visuals in their own component
-   + module CSS file under ./components. This file just sets
-   up the page background, container, and the two-column split.
-   ========================================================== */
-
 .page {
   min-height: 100vh;
   width: 100%;
@@ -17,9 +9,7 @@
 }
 
 .container {
-  max-width: 1180px;
   margin: 0 auto;
-  padding: 2rem 2rem 5rem;
   display: flex;
   flex-direction: column;
   gap: 2rem;

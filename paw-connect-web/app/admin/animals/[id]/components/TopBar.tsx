@@ -25,11 +25,8 @@ type EditableAnimal = AnimalCardData &
   }>;
 
 interface TopBarProps {
-  /** Where the back link should navigate to. */
   backHref: string;
-  /** Optional label override for the back link. */
   backLabel?: string;
-  /** The animal shown on this detail page — powers the edit/delete modals. */
   animal: AnimalCardData;
   onArchive?: () => void;
   onUpdated?: () => void | Promise<void>;

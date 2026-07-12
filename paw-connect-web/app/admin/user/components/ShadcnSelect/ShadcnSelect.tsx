@@ -16,7 +16,6 @@ export interface ShadcnSelectProps {
   placeholder: string;
 }
 
-// Custom Shadcn Dropdown/Select Primitive to respect design directives
 export default function ShadcnSelect({
   value,
   onChange,
@@ -46,7 +45,7 @@ export default function ShadcnSelect({
         className={styles.selectTrigger}
       >
         <span>{selected ? selected.label : placeholder}</span>
-        <ChevronDown size={14} className={styles.selectArrow} />
+        <ChevronDown size={12} className={styles.selectArrow} />
       </button>
 
       {isOpen && (

@@ -15,14 +15,13 @@ export interface FilterBarProps {
 
 const ROLE_OPTIONS = [
   { label: "All Roles", value: "All" },
-  { label: "Administrator", value: "Administrator" },
   { label: "Citizen", value: "Citizen" },
   { label: "Adopter", value: "Adopter" },
   { label: "Rescuer", value: "Rescuer" },
 ];
 
 const STATUS_OPTIONS = [
-  { label: "All Statuses", value: "All" },
+  { label: "All", value: "All" },
   { label: "Active", value: "Active" },
   { label: "Pending", value: "Pending" },
   { label: "Suspended", value: "Suspended" },
@@ -51,7 +50,6 @@ export default function FilterBar({
 
       <div className={styles.filterGroup}>
         <div className={styles.selectComponentContainer}>
-          <SlidersHorizontal size={12} color="#94a3b8" />
           <ShadcnSelect
             value={roleFilter}
             onChange={onRoleFilterChange}

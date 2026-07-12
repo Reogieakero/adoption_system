@@ -94,7 +94,7 @@ export default function AnimalsPage() {
     <div className={styles.outerShell}>
       <div className={styles.container}>
         <PageHeader
-          title="Animals Module"
+          title="Animals"
           subtitle="Manage, monitor, and update rescue and adoption records."
         />
 

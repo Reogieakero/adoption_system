@@ -261,7 +261,6 @@
   text-align: center;
 }
 
-/* Log Vitals trigger, sits to the left of the hero's close (X) button */
 .historyHero .logVitalsBtn {
   position: absolute;
   top: 16px;
