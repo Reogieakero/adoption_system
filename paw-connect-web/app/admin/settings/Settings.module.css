@@ -536,12 +536,11 @@
     justify-content: center;
     gap: 0.375rem;
     border-radius: 0.375rem;
-    background-color: #3ecf8e; /* Supabase Premium Brand Mint Emerald */
+    background-color: #000; /* Supabase Premium Brand Mint Emerald */
     color: #ffffff;
     padding: 0.45rem 0.85rem;
     font-size: 0.8125rem;
     font-weight: 500; /* Button Labels: 500 */
-    border: 1px solid #30b479;
     cursor: pointer;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     transition: background-color 0.1s ease;

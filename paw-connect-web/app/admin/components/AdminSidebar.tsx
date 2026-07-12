@@ -30,7 +30,7 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { label: 'Dashboard', fullLabel: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
-  { label: 'Users', fullLabel: 'User Management', href: '/admin/users', icon: Users },
+  { label: 'Users', fullLabel: 'User Management', href: '/admin/user', icon: Users },
   { label: 'Clinics', fullLabel: 'Clinic Management', href: '/admin/clinics', icon: Building2 },
   { label: 'Animals', fullLabel: 'Animal Records', href: '/admin/animals', icon: PawPrint },
   { label: 'Adoptions', fullLabel: 'Adoption Requests', href: '/admin/adoptions', icon: ClipboardCheck },
@@ -42,7 +42,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Messaging', fullLabel: 'Messaging', href: '/admin/messages', icon: MessageSquare },
   { label: 'Learning', fullLabel: 'E-learning Management', href: '/admin/learning', icon: GraduationCap },
   { label: 'Settings', fullLabel: 'System Settings', href: '/admin/settings', icon: Settings },
-  { label: 'Logs', fullLabel: 'Activity Logs', href: '/admin/activity-logs', icon: History },
+  { label: 'Logs', fullLabel: 'Activity Logs', href: '/admin/logs', icon: History },
 ];
 
 export default function AdminSidebar() {
