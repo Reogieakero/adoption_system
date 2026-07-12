@@ -40,7 +40,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Analytics', fullLabel: 'Analytics & Reports', href: '/admin/analytics', icon: BarChart3 },
   { label: 'Notifications', fullLabel: 'Notifications', href: '/admin/notifications', icon: Bell },
   { label: 'Messaging', fullLabel: 'Messaging', href: '/admin/messages', icon: MessageSquare },
-  { label: 'Learning', fullLabel: 'E-learning Management', href: '/admin/e-learning', icon: GraduationCap },
+  { label: 'Learning', fullLabel: 'E-learning Management', href: '/admin/learning', icon: GraduationCap },
   { label: 'Settings', fullLabel: 'System Settings', href: '/admin/settings', icon: Settings },
   { label: 'Logs', fullLabel: 'Activity Logs', href: '/admin/activity-logs', icon: History },
 ];
