@@ -22,25 +22,11 @@ import {
   Info
 } from "lucide-react";
 import styles from "./User.module.css";
+import { useUsers } from "../../hooks/admin/useUsers";
+import { deleteUser, updateUserStatus, type AdminUserSummary } from "../../lib/api/users.api";
 
-// TypeScript Interfaces for Users Blueprint
-interface UserEntry {
-  id: string;
-  name: string;
-  email: string;
-  role: "Administrator" | "Citizen" | "Adopter" | "Rescuer";
-  phone: string;
-  status: "Active" | "Pending" | "Suspended";
-  dateRegistered: string;
-  lastLogin: string;
-  avatarUrl?: string;
-  initials: string;
-  address: string;
-  adoptionApps: number;
-  rescueReports: number;
-  animalsPosted: number;
-  completedModules: number;
-}
+// UserEntry now comes from the backend via AdminUserSummary
+type UserEntry = AdminUserSummary;
 
 // Custom Shadcn Dropdown/Select Primitives to respect design directives
 function ShadcnSelect({
@@ -104,92 +90,8 @@ function ShadcnSelect({
   );
 }
 
-// Seed Database Mock matching premium system profiles
-const INITIAL_USERS: UserEntry[] = [
-  {
-    id: "usr-9101",
-    name: "Alexander Wright",
-    email: "a.wright@rescue-core.org",
-    role: "Administrator",
-    phone: "+1 (555) 234-5678",
-    status: "Active",
-    dateRegistered: "2025-01-14",
-    lastLogin: "2026-07-12 09:32",
-    initials: "AW",
-    address: "742 Evergreen Terrace, Sector 4, Metro City",
-    adoptionApps: 0,
-    rescueReports: 14,
-    animalsPosted: 32,
-    completedModules: 12
-  },
-  {
-    id: "usr-9102",
-    name: "Elena Rostova",
-    email: "elena.rostova@gmail.com",
-    role: "Rescuer",
-    phone: "+1 (555) 876-5432",
-    status: "Active",
-    dateRegistered: "2025-03-22",
-    lastLogin: "2026-07-12 08:15",
-    initials: "ER",
-    address: "102 Ocean View Drive, Apt 4B, Coastal District",
-    adoptionApps: 1,
-    rescueReports: 47,
-    animalsPosted: 5,
-    completedModules: 8
-  },
-  {
-    id: "usr-9103",
-    name: "Marcus Vance",
-    email: "marcus.vance@outlook.com",
-    role: "Adopter",
-    phone: "+1 (555) 456-7890",
-    status: "Pending",
-    dateRegistered: "2026-07-11",
-    lastLogin: "Never Verified",
-    initials: "MV",
-    address: "589 Pine Ridge Avenue, Woodland Hills",
-    adoptionApps: 2,
-    rescueReports: 0,
-    animalsPosted: 0,
-    completedModules: 1
-  },
-  {
-    id: "usr-9104",
-    name: "Sarah Jenkins",
-    email: "s.jenkins@citizen-net.org",
-    role: "Citizen",
-    phone: "+1 (555) 789-0123",
-    status: "Suspended",
-    dateRegistered: "2024-11-05",
-    lastLogin: "2026-06-20 14:22",
-    initials: "SJ",
-    address: "12 Valley Lane, River Junction",
-    adoptionApps: 0,
-    rescueReports: 2,
-    animalsPosted: 0,
-    completedModules: 0
-  },
-  {
-    id: "usr-9105",
-    name: "David Miller",
-    email: "david.miller@rescue-core.org",
-    role: "Rescuer",
-    phone: "+1 (555) 345-6789",
-    status: "Active",
-    dateRegistered: "2025-06-18",
-    lastLogin: "2026-07-11 19:40",
-    initials: "DM",
-    address: "333 Maple Boulevard, Industrial Heights",
-    adoptionApps: 0,
-    rescueReports: 89,
-    animalsPosted: 12,
-    completedModules: 10
-  }
-];
-
 export default function UserManagementPage() {
-  const [users, setUsers] = useState<UserEntry[]>(INITIAL_USERS);
+  const { users, isLoading, error, setUsers } = useUsers();
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
@@ -213,22 +115,38 @@ export default function UserManagementPage() {
   }, [users, search, roleFilter, statusFilter]);
 
   // Operational Logic Actions
-  const handleToggleStatus = (id: string) => {
-    setUsers(users.map(u => {
-      if (u.id === id) {
-        const nextStatus = u.status === "Suspended" ? "Active" : "Suspended";
-        return { ...u, status: nextStatus };
-      }
-      return u;
-    }));
+  const handleToggleStatus = async (id: string) => {
     setActiveRowMenuId(null);
+    const target = users.find(u => u.id === id);
+    if (!target) return;
+    const nextStatus = target.status === "Suspended" ? "Active" : "Suspended";
+
+    // optimistic update
+    setUsers(users.map(u => (u.id === id ? { ...u, status: nextStatus } : u)));
+
+    try {
+      const updated = await updateUserStatus(id, nextStatus);
+      setUsers(prev => prev.map(u => (u.id === id ? updated : u)));
+    } catch (err) {
+      // revert on failure
+      setUsers(prev => prev.map(u => (u.id === id ? target : u)));
+      alert(err instanceof Error ? err.message : "Failed to update user status");
+    }
   };
 
-  const handleDeleteUser = (id: string) => {
-    if (confirm("Are you sure you want to permanently purge this user record?")) {
-      setUsers(users.filter(u => u.id !== id));
-    }
+  const handleDeleteUser = async (id: string) => {
     setActiveRowMenuId(null);
+    if (!confirm("Are you sure you want to permanently purge this user record?")) return;
+
+    const previous = users;
+    setUsers(users.filter(u => u.id !== id));
+
+    try {
+      await deleteUser(id);
+    } catch (err) {
+      setUsers(previous);
+      alert(err instanceof Error ? err.message : "Failed to delete user");
+    }
   };
 
   const handleOpenSheet = (user: UserEntry) => {
@@ -247,6 +165,27 @@ export default function UserManagementPage() {
   const activeCount = users.filter(u => u.status === "Active").length;
   const pendingCount = users.filter(u => u.status === "Pending").length;
   const suspendedCount = users.filter(u => u.status === "Suspended").length;
+
+  if (isLoading) {
+    return (
+      <div className={styles.adminContainer}>
+        <div className={styles.emptyStateContainer}>
+          <p>Loading users...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.adminContainer}>
+        <div className={styles.emptyStateContainer}>
+          <h3>Couldn&apos;t load users</h3>
+          <p>{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.adminContainer}>
