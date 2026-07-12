@@ -2,9 +2,6 @@
 
 .adminContainer {
     font-family: 'Geist Mono', monospace, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, sans-serif;
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 2.5rem 2rem;
     color: #0f172a;
     background-color: #ffffff;
   }
