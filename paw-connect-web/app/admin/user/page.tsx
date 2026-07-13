@@ -6,12 +6,12 @@ import { useUsers } from "../../hooks/admin/useUsers";
 import { deleteUser, updateUserStatus } from "../../lib/api/users.api";
 import type { UserEntry, RoleFilterValue, StatusFilterValue } from "./types";
 
-import PageHeader from "./components/PageHeader/PageHeader";
-import SummaryCards from "./components/SummaryCards/SummaryCards";
-import FilterBar from "./components/FilterBar/FilterBar";
-import UserTable from "./components/UserTable/UserTable";
-import UserDetailsDrawer from "./components/UserDetailsDrawer/UserDetailsDrawer";
-import EmptyState from "./components/EmptyState/EmptyState";
+import PageHeader from "./components/PageHeader";
+import SummaryCards from "./components/SummaryCards";
+import FilterBar from "./components/FilterBar";
+import UserTable from "./components/UserTable";
+import UserDetailsDrawer from "./components/UserDetailsDrawer";
+import EmptyState from "./components/EmptyState";
 
 export default function UserManagementPage() {
   const { users, isLoading, error, setUsers } = useUsers();

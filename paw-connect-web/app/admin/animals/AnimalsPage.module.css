@@ -1,13 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;600&display=swap');
 
-/* ==========================================================
-   Animals Module — page shell only.
-   Header, stats, toolbar, card grid, and pagination each own
-   their layout/visuals in their own component + module CSS
-   file under ./components. This file just sets up the page
-   background and the outer container.
-   ========================================================== */
-
 .outerShell {
   width: 100%;
   max-width: 100%;

@@ -1,4 +1,3 @@
-/* --- FILTERS & CONTROLS (SHADCN INPUT & SELECTS) --- */
 .controlsRow {
   display: flex;
   flex-direction: column;
@@ -29,7 +28,6 @@
   pointer-events: none;
 }
 
-/* shadcn/ui Input Style */
 .input {
   height: 32px;
   width: 100%;

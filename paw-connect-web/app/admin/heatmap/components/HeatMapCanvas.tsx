@@ -5,17 +5,8 @@ import 'leaflet/dist/leaflet.css'
 import type { AdoptionHeatPoint, RescueHeatPoint } from '../../../lib/api/heatmap.api'
 import styles from './HeatMapCanvas.module.css'
 
-// leaflet.heat expects a global `window.L` to already exist so it can patch
-// `L.heatLayer` onto it — that's how the plugin is written (it targets the
-// old script-tag style of using Leaflet, not ES modules). A plain
-// `import 'leaflet.heat'` gets hoisted above this code by the bundler, so
-// window.L would still be undefined when the plugin runs, and it silently
-// no-ops (no error, no heat layer, just a blank map). Setting window.L
-// first and then requiring the plugin at runtime (not as a static import)
-// guarantees the correct order.
 if (typeof window !== 'undefined') {
   ;(window as any).L = L
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   require('leaflet.heat')
 }
 
@@ -29,10 +20,6 @@ interface HeatMapCanvasProps {
   view: HeatmapView
 }
 
-// This system serves Mati City, Davao Oriental only — the map is locked to
-// the city so the view can never be panned/zoomed out to anywhere else.
-// Center is Mati's city proper; the bounds give a generous buffer around
-// the city's ~589 sq km land area (must match backend MATI_CITY_BOUNDS).
 const MATI_CITY_CENTER: [number, number] = [6.9500, 126.2167]
 const MATI_CITY_BOUNDS: [[number, number], [number, number]] = [
   [6.75, 126.05], // southwest
@@ -41,9 +28,6 @@ const MATI_CITY_BOUNDS: [[number, number], [number, number]] = [
 const DEFAULT_ZOOM = 12
 const MIN_ZOOM = 11
 
-// "Ironbow" thermal-camera palette: black -> purple -> red -> orange ->
-// yellow -> white, for that classic infrared-camera look rather than
-// leaflet.heat's default blue-green-yellow-red.
 const IRONBOW_GRADIENT: Record<number, string> = {
   0.0: '#00000a',
   0.15: '#1e0a78',
@@ -55,9 +39,6 @@ const IRONBOW_GRADIENT: Record<number, string> = {
   1.0: '#ffffff',
 }
 
-// Pin colors: rescue reports scale from amber (low priority) to red
-// (critical); adoption points get a fixed teal so the two types read
-// distinctly at a glance even before opening a popup.
 const RESCUE_PIN_COLOR: Record<RescueHeatPoint['priority'], string> = {
   Critical: '#dc2626',
   High: '#f2452e',
@@ -72,8 +53,6 @@ interface AnyPoint {
   weight: number
 }
 
-// Defensive filter: only ever plot/fit to points that actually fall inside
-// Mati City, even if something upstream slips through.
 function isInsideMati(p: AnyPoint): boolean {
   const [[south, west], [north, east]] = MATI_CITY_BOUNDS
   return p.lat >= south && p.lat <= north && p.lng >= west && p.lng <= east

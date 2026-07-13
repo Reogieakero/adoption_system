@@ -82,9 +82,6 @@ export default function AnimalsPage() {
     if (typeof val === 'string') setStatusFilter(val);
   };
 
-  // NOTE: photoFile is now accepted and forwarded to createAnimal — previously
-  // this only took `animal`, which silently dropped the selected photo file
-  // on every submission (buildAnimalFormData always ran with photoFile=null).
   const handleCreateAnimal = async (animal: Animal, photoFile: File | null) => {
     await createAnimal(animal, photoFile);
     await refetch();
@@ -95,7 +92,6 @@ export default function AnimalsPage() {
       <div className={styles.container}>
         <PageHeader
           title="Animals"
-          subtitle="Manage, monitor, and update rescue and adoption records."
         />
 
         {error && (

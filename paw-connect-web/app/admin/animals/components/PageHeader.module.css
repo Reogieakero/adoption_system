@@ -1,18 +1,7 @@
-.pageHeader {
-  margin-bottom: 0.25rem;
-}
-
 .pageTitle {
   font-family: 'Geist Mono', var(--font-display, inherit);
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--navy, #0f172a);
-  margin: 0;
+  color: var(--navy, #000);
 }
 
-.pageSubtitle {
-  font-family: 'Geist Mono', var(--font-display, inherit);;
-  font-size: 0.9rem;
-  color: var(--navy-70, #475569);
-  margin: 0.25rem 0 0 0;
-}

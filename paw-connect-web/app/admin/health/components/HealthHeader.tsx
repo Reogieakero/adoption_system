@@ -8,7 +8,6 @@ export default function HealthHeader() {
     <div className={styles.header}>
       <div>
         <h1 className={styles.title}>Health Monitoring</h1>
-        <p className={styles.subtitle}>Real-time vital tracking and medical statuses for shelter residents.</p>
       </div>
     </div>
   )

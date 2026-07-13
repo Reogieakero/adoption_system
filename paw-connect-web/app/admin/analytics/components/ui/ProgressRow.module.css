@@ -1,0 +1,6 @@
+.progressTrack {
+  composes: progressTrack from "../../styles/theme.module.css";
+}
+.progressFill {
+  composes: progressFill from "../../styles/theme.module.css";
+}

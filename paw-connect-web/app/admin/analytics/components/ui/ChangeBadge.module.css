@@ -1,0 +1,6 @@
+.badgeSuccess {
+  composes: badgeSuccess from "../../styles/theme.module.css";
+}
+.badgeDanger {
+  composes: badgeDanger from "../../styles/theme.module.css";
+}

@@ -4,13 +4,13 @@ import React, { useState, useMemo } from 'react';
 import type { StatusType, ViewModeType } from './types';
 import { useAdoptions } from '../../hooks/admin/useAdoptions';
 import { updateAdoptionStatus } from '../../lib/api/adoptions.api';
-import { SummaryCards } from './components/SummaryCards/SummaryCards';
-import { StatusTabs } from './components/StatusTabs/StatusTabs';
-import { Toolbar } from './components/Toolbar/Toolbar';
-import { ApplicationsTable } from './components/ApplicationsTable/ApplicationsTable';
-import { ApplicationsCardGrid } from './components/ApplicationsCardGrid/ApplicationsCardGrid';
-import { AdoptedCarousel } from './components/AdoptedCarousel/AdoptedCarousel';
-import { ApplicationDetailsModal } from './components/ApplicationDetailsModal/ApplicationDetailsModal';
+import { SummaryCards } from './components/SummaryCards';
+import { StatusTabs } from './components/StatusTabs';
+import { Toolbar } from './components/Toolbar';
+import { ApplicationsTable } from './components/ApplicationsTable';
+import { ApplicationsCardGrid } from './components/ApplicationsCardGrid';
+import { AdoptedCarousel } from './components/AdoptedCarousel';
+import { ApplicationDetailsModal } from './components/ApplicationDetailsModal';
 import styles from './page.module.css';
 
 export default function AdoptionManagementPage() {
@@ -77,10 +77,8 @@ export default function AdoptionManagementPage() {
     <div className={styles.dashboardContainer}>
       <header className={styles.pageHeader}>
         <div className={styles.headerText}>
-          <h1 className={styles.pageTitle}>Adoption Management</h1>
-          <p className={styles.pageDescription}>
-            Review applications, track interviews, and orchestrate animal placements.
-          </p>
+          <h1 className={styles.pageTitle}>Adoption</h1>
+          
         </div>
 
         <AdoptedCarousel animals={latestAdopted} />

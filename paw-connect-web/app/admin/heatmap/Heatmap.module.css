@@ -54,7 +54,7 @@
   font-family: inherit;
   font-size: 0.75rem;
   font-weight: 500;
-  color: var(--navy-70);
+  color: #000;
   cursor: pointer;
   transition: background-color 0.15s ease, color 0.15s ease;
 }
@@ -64,7 +64,7 @@
 }
 
 .modeBtnActive {
-  background-color: var(--navy);
+  background-color: #000;
   color: var(--white);
 }
 

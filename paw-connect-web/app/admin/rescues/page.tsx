@@ -129,7 +129,7 @@ export default function RescuesPage() {
   return (
     <div className={styles.container}>
       <header className={styles.headerSection}>
-        <h1 className={styles.pageTitle}>Rescue Pipeline Registry</h1>
+        <h1 className={styles.pageTitle}>Rescue</h1>
         <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
       </header>
 

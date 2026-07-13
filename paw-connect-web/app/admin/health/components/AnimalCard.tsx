@@ -1,5 +1,6 @@
 'use client'
 import React, { useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Heart } from 'lucide-react'
 import { Animal } from '../types'
 import LogVitalsModal from './LogVitalsModal'
@@ -78,30 +79,31 @@ export default function AnimalCard({ animal, onViewHistory, onVitalsUpdated }: A
           </span>
         </div>
 
-        <div className={styles.cardFooter} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div className={styles.cardFooter} style={{ display: 'flex', flexDirection: 'row', gap: 6 }}>
           <button
             className={styles.btnWhite}
             onClick={() => onViewHistory(animal)}
           >
-            View Health History
+            History
           </button>
           <button
             className={styles.btnBlack}
             onClick={() => setIsLogVitalsOpen(true)}
           >
-            Log Vitals
+            Vitals
           </button>
         </div>
       </div>
 
-      {isLogVitalsOpen && (
+      {isLogVitalsOpen && typeof window !== 'undefined' && createPortal(
         <LogVitalsModal
           animal={animal}
           onClose={() => setIsLogVitalsOpen(false)}
           onSaved={(updatedAnimal) => {
             onVitalsUpdated?.(updatedAnimal)
           }}
-        />
+        />,
+        document.body
       )}
     </div>
   )

@@ -1,0 +1,3 @@
+.chartTooltip {
+  composes: chartTooltip from "../../styles/theme.module.css";
+}

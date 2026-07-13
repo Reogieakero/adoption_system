@@ -1,300 +1,189 @@
-"use client";
+'use client';
 
-import React, { useState } from 'react';
-import { 
-  Sparkles, 
-  ShieldAlert, 
-  FileText, 
-  Heart, 
-  Check, 
-  Trash2, 
-  CheckSquare, 
-  AlertTriangle, 
-  Clock, 
-  ArrowUpRight 
+import { useState } from 'react';
+import {
+  PawPrint,
+  AlertTriangle,
+  MessageSquare,
+  HeartPulse,
+  UserPlus,
+  Settings,
+  Check,
+  Trash2,
 } from 'lucide-react';
-import styles from './Notification.module.css';
+import styles from './Notifications.module.css';
+import { useNotifications } from '../../hooks/admin/useNotifications';
+import type { NotificationType } from './types';
 
-interface NotificationItem {
-  id: string;
-  category: 'Adoption' | 'Rescue' | 'Reports' | 'Health';
-  title: string;
-  description: string;
-  animalName?: string;
-  priority: 'High' | 'Medium' | 'Low';
-  time: string;
-  isRead: boolean;
-  metaData?: string;
+const TYPE_LABELS: Record<NotificationType, string> = {
+  adoption_application: 'Adoption',
+  rescue_case: 'Rescue',
+  message: 'Message',
+  health_alert: 'Health',
+  user_registration: 'New User',
+  system: 'System',
+};
+
+const TYPE_ICONS: Record<NotificationType, React.ComponentType<{ size?: number; className?: string }>> = {
+  adoption_application: PawPrint,
+  rescue_case: AlertTriangle,
+  message: MessageSquare,
+  health_alert: HeartPulse,
+  user_registration: UserPlus,
+  system: Settings,
+};
+
+function formatRelativeTime(dateStr: string): string {
+  const date = new Date(dateStr);
+  const diffMs = Date.now() - date.getTime();
+  const diffMin = Math.floor(diffMs / 60000);
+  if (diffMin < 1) return 'just now';
+  if (diffMin < 60) return `${diffMin}m ago`;
+  const diffHr = Math.floor(diffMin / 60);
+  if (diffHr < 24) return `${diffHr}h ago`;
+  const diffDay = Math.floor(diffHr / 24);
+  if (diffDay < 7) return `${diffDay}d ago`;
+  return date.toLocaleDateString();
 }
 
-const INITIAL_NOTIFICATIONS: NotificationItem[] = [
-  {
-    id: '1',
-    category: 'Adoption',
-    title: 'New adoption application received.',
-    description: 'Applicant Jane Doe submitted an application for processing pipeline authorization.',
-    animalName: 'Max',
-    priority: 'Medium',
-    time: '5m ago',
-    isRead: false,
-    metaData: 'Adopter: Jane Doe'
-  },
-  {
-    id: '2',
-    category: 'Rescue',
-    title: 'New stray animal reported.',
-    description: 'Urgent field emergency reported near the North Industrial Sector.',
-    animalName: 'Unknown Feline',
-    priority: 'High',
-    time: '12m ago',
-    isRead: false,
-    metaData: 'Location: Route 4 Block'
-  },
-  {
-    id: '3',
-    category: 'Health',
-    title: 'Abnormal heart rate detected.',
-    description: 'Biometric tracker flagged consistent spike telemetry alerts.',
-    animalName: 'Bella',
-    priority: 'High',
-    time: '45m ago',
-    isRead: false,
-    metaData: 'BPM: 168 (Critical)'
-  },
-  {
-    id: '4',
-    category: 'Reports',
-    title: 'Injured animal reported.',
-    description: 'Citizen report filed regarding an injured canine with a fractured limb.',
-    priority: 'High',
-    time: '1h ago',
-    isRead: true,
-    metaData: 'Location: West End Dock'
+type FilterTab = 'all' | 'unread' | NotificationType;
+
+export default function NotificationsPage() {
+  const [filter, setFilter] = useState<FilterTab>('all');
+  const [page, setPage] = useState(1);
+  const limit = 20;
+
+  const { notifications, total, unreadCount, isLoading, error, markAsRead, markAllAsRead, remove } =
+    useNotifications({
+      unreadOnly: filter === 'unread',
+      type: filter !== 'all' && filter !== 'unread' ? filter : undefined,
+      page,
+      limit,
+    });
+
+  const totalPages = Math.max(1, Math.ceil(total / limit));
+
+  const tabs: { key: FilterTab; label: string }[] = [
+    { key: 'all', label: 'All' },
+    { key: 'unread', label: `Unread${unreadCount ? ` (${unreadCount})` : ''}` },
+    { key: 'adoption_application', label: 'Adoptions' },
+    { key: 'rescue_case', label: 'Rescues' },
+    { key: 'message', label: 'Messages' },
+    { key: 'health_alert', label: 'Health' },
+    { key: 'system', label: 'System' },
+  ];
+
+  function handleFilterChange(next: FilterTab) {
+    setFilter(next);
+    setPage(1);
   }
-];
 
-export default function IntegratedAdminDashboard() {
-  const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
-  const [activeTab, setActiveTab] = useState<string>('All');
-
-  // Mutation Handlers
-  const toggleReadStatus = (id: string) => {
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: !n.isRead } : n));
-  };
-
-  const deleteNotification = (id: string) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
-  };
-
-  const markAllAsRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
-  };
-
-  // Derived Connected Counts
-  const totalCount = notifications.length;
-  const unreadCount = notifications.filter(n => !n.isRead).length;
-  const highPriority = notifications.filter(n => n.priority === 'High').length;
-  
-  const pendingAdoptionsCount = notifications.filter(n => n.category === 'Adoption' && !n.isRead).length;
-  const activeRescuesCount = notifications.filter(n => n.category === 'Rescue' && !n.isRead).length;
-
-  const filteredFeed = notifications.filter(n => {
-    if (activeTab === 'All') return true;
-    if (activeTab === 'Unread') return !n.isRead;
-    return n.category === activeTab;
-  });
-
-  const resolveContextAction = (category: 'Adoption' | 'Rescue' | 'Health') => {
-    const target = notifications.find(n => n.category === category && !n.isRead);
-    if (target) toggleReadStatus(target.id);
-  };
+  function handleDelete(id: number) {
+    remove(id);
+  }
 
   return (
     <div className={styles.container}>
-      
-      {/* Top Dynamic Stat Strip */}
-      <section className={styles.summaryGrid}>
-        <div className={styles.summaryCard}>
-          <div className={styles.summaryHeader}>
-            <span>Active Feed Pool</span>
-            <Clock size={14} />
-          </div>
-          <p className={styles.summaryValue}>{totalCount}</p>
-          <p className={styles.summarySubtext}>Total tracked alerts</p>
+      <div className={styles.header}>
+        <div>
+          <h1 className={styles.title}>Notifications</h1>
+          <p className={styles.subtitle}>
+            Updates from adoptions, rescues, messages, and animal health
+          </p>
         </div>
-        <div className={styles.summaryCard}>
-          <div className={styles.summaryHeader}>
-            <span>Unread Actions</span>
-            <AlertTriangle size={14} style={{ color: unreadCount > 0 ? '#09090b' : '#71717a' }} />
-          </div>
-          <p className={styles.summaryValue}>{unreadCount}</p>
-          <p className={styles.summarySubtext}>Requires immediate check</p>
-        </div>
-        <div className={styles.summaryCard}>
-          <div className={styles.summaryHeader}>
-            <span>High Priority Alerts</span>
-            <AlertTriangle size={14} />
-          </div>
-          <p className={styles.summaryValue}>{highPriority}</p>
-          <p className={styles.summarySubtext}>Critical state conditions</p>
-        </div>
-      </section>
+        {unreadCount > 0 && (
+          <button className={styles.buttonPrimary} onClick={() => markAllAsRead()}>
+            Mark all as read
+          </button>
+        )}
+      </div>
 
-      {/* Main Workspace Grid Framework */}
-      <div className={styles.dashboardWorkspace}>
-        
-        {/* Left Workspace Panel: Central Notification Stream */}
-        <main className={styles.mainPanel}>
-          <div className={styles.panelHeader}>
-            <h2>Notifications Management Feed</h2>
-            <p>Action updates across adoption, rescue missions, and diagnostic metrics.</p>
-          </div>
+      <div className={styles.tabs}>
+        {tabs.map((tab) => (
+          <button
+            key={tab.key}
+            className={`${styles.tab} ${filter === tab.key ? styles.tabActive : ''}`}
+            onClick={() => handleFilterChange(tab.key)}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
 
-          <div className={styles.filterControlsBar}>
-            <div className={styles.toggleGroup}>
-              {['All', 'Unread', 'Adoption', 'Rescue', 'Reports', 'Health'].map((tab) => (
-                <button
-                  key={tab}
-                  className={`${styles.toggleButton} ${activeTab === tab ? styles.toggleButtonActive : ''}`}
-                  onClick={() => setActiveTab(tab)}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
+      {error && <div className={styles.errorBanner}>{error}</div>}
 
-            <button className={styles.actionButton} onClick={markAllAsRead}>
-              <Check size={14} /> Mark Feed Read
-            </button>
-          </div>
-
-          <div className={styles.feedList}>
-            {filteredFeed.map((item) => (
-              <article 
-                key={item.id} 
-                className={`${styles.feedCard} ${!item.isRead ? styles.feedCardUnread : ''}`}
-              >
-                {!item.isRead && <div className={styles.unreadDot} />}
-                
-                <div className={`${styles.categoryIcon} ${
-                  item.category === 'Adoption' ? styles.iconAdoption :
-                  item.category === 'Rescue' ? styles.iconRescue :
-                  item.category === 'Reports' ? styles.iconReports : styles.iconHealth
-                }`}>
-                  {item.category === 'Adoption' && <Sparkles size={16} />}
-                  {item.category === 'Rescue' && <ShieldAlert size={16} />}
-                  {item.category === 'Reports' && <FileText size={16} />}
-                  {item.category === 'Health' && <Heart size={16} />}
+      {isLoading ? (
+        <div className={styles.stateMessage}>Loading notifications…</div>
+      ) : notifications.length === 0 ? (
+        <div className={styles.stateMessage}>No notifications here.</div>
+      ) : (
+        <ul className={styles.list}>
+          {notifications.map((n) => {
+            const Icon = TYPE_ICONS[n.type];
+            return (
+              <li key={n.id} className={`${styles.card} ${!n.isRead ? styles.cardUnread : ''}`}>
+                {!n.isRead && <span className={styles.unreadDot} />}
+                <div className={styles.cardIcon}>
+                  <Icon size={18} />
                 </div>
-
-                <div className={styles.feedContent}>
-                  <div className={styles.feedTitleRow}>
-                    <h4 className={styles.feedTitle}>{item.title}</h4>
-                    <span className={styles.feedTime}>{item.time}</span>
+                <div className={styles.cardBody}>
+                  <div className={styles.cardTopRow}>
+                    <span className={styles.cardType}>{TYPE_LABELS[n.type]}</span>
+                    <span className={styles.cardTime}>{formatRelativeTime(n.createdAt)}</span>
                   </div>
-                  <p className={styles.feedDesc}>{item.description}</p>
-                  
-                  <div className={styles.badgeRow}>
-                    <span className={styles.badge}>{item.category}</span>
-                    <span className={`${styles.badge} ${item.priority === 'High' ? styles.priorityHigh : ''}`}>
-                      {item.priority}
+                  <p className={styles.cardTitle}>{n.title}</p>
+                  <p className={styles.cardMessage}>{n.message}</p>
+                  {(n.priority === 'high' || n.priority === 'urgent') && (
+                    <span className={`${styles.priorityBadge} ${styles[`priority-${n.priority}`]}`}>
+                      {n.priority}
                     </span>
-                    {item.animalName && <span className={styles.badge}>{item.animalName}</span>}
-                  </div>
+                  )}
                 </div>
-
-                <div className={styles.feedActions}>
-                  <button 
-                    className={styles.ghostButton} 
-                    title={item.isRead ? "Mark Unread" : "Mark Read"}
-                    onClick={() => toggleReadStatus(item.id)}
-                  >
-                    <CheckSquare size={14} style={{ color: item.isRead ? '#16a34a' : 'inherit' }} />
-                  </button>
-                  <button 
-                    className={styles.ghostButton} 
-                    title="Dismiss Notification"
-                    onClick={() => deleteNotification(item.id)}
+                <div className={styles.cardActions}>
+                  {!n.isRead && (
+                    <button
+                      className={styles.buttonIcon}
+                      onClick={() => markAsRead(n.id)}
+                      title="Mark as read"
+                    >
+                      <Check size={14} />
+                    </button>
+                  )}
+                  <button
+                    className={styles.buttonIconDanger}
+                    onClick={() => handleDelete(n.id)}
+                    title="Delete notification"
                   >
                     <Trash2 size={14} />
                   </button>
                 </div>
-              </article>
-            ))}
-          </div>
-        </main>
+              </li>
+            );
+          })}
+        </ul>
+      )}
 
-        {/* Right Sidebar: Contextual Dynamic Resolution Cards */}
-        <aside className={styles.rightSidebar}>
-          
-          <div>
-            <div className={styles.sidebarSectionHeader}>
-              <h3>Contextual Action Resolution</h3>
-            </div>
-
-            <div className={styles.cardStream}>
-              <div className={styles.opsCard}>
-                <div className={styles.opsCardTitle}>
-                  <span>Pending Screening</span>
-                  <span className={styles.animalMiniTag}>Queue: {pendingAdoptionsCount}</span>
-                </div>
-                <p className={styles.opsDataRow}>
-                  Process the unread application file alerts submitted for verification processing.
-                </p>
-                <div className={styles.opsActionWrapper}>
-                  <button 
-                    className={`${styles.miniButton} ${styles.miniButtonPrimary}`}
-                    onClick={() => resolveContextAction('Adoption')}
-                    disabled={pendingAdoptionsCount === 0}
-                  >
-                    Approve Application
-                  </button>
-                  <button className={styles.miniButton}>Review File</button>
-                </div>
-              </div>
-
-              <div className={styles.opsCard}>
-                <div className={styles.opsCardTitle}>
-                  <span>Active Emergency Dispatch</span>
-                  <span className={styles.animalMiniTag} style={{color: '#09090b'}}>Pending: {activeRescuesCount}</span>
-                </div>
-                <p className={styles.opsDataRow}>
-                  Coordinate dispatch vehicles to the logged location vectors instantly.
-                </p>
-                <div className={styles.opsActionWrapper}>
-                  <button 
-                    className={`${styles.miniButton} ${styles.miniButtonPrimary}`}
-                    onClick={() => resolveContextAction('Rescue')}
-                    disabled={activeRescuesCount === 0}
-                  >
-                    Deploy Unit
-                  </button>
-                </div>
-              </div>
-
-              <div className={styles.opsCard}>
-                <div className={styles.opsCardTitle}>
-                  <span>Critical Biometrics</span>
-                  <span className={styles.animalMiniTag}>Telemetry</span>
-                </div>
-                <p className={styles.opsDataRow}>
-                  Automated telemetry health alert flags requiring immediate veterinary check.
-                </p>
-                <div className={styles.opsActionWrapper}>
-                  <button 
-                    className={`${styles.miniButton} ${styles.miniButtonPrimary}`}
-                    onClick={() => resolveContextAction('Health')}
-                  >
-                    Acknowledge Pulse Alert <ArrowUpRight size={12} style={{display:'inline', marginLeft:'2px'}} />
-                  </button>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-        </aside>
-      </div>
+      {totalPages > 1 && (
+        <div className={styles.pagination}>
+          <button
+            disabled={page <= 1}
+            onClick={() => setPage((p) => p - 1)}
+            className={styles.buttonOutline}
+          >
+            Previous
+          </button>
+          <span className={styles.pageInfo}>
+            Page {page} of {totalPages}
+          </span>
+          <button
+            disabled={page >= totalPages}
+            onClick={() => setPage((p) => p + 1)}
+            className={styles.buttonOutline}
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 }

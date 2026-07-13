@@ -14,10 +14,8 @@ export default function AdminNavbar() {
   return (
     <header className={styles.navbar}>
       <div className={styles.brand}>
-        <span className={styles.brandMark}>PC</span>
-        <span className={styles.brandLabel}>PawConnect</span>
+        <span className={styles.brandLabel}>Paw Patrol</span>
         <span className={styles.divider} />
-        <span className={styles.eyebrow}>Admin Console</span>
       </div>
 
       <button type="button" className={styles.logoutBtn} onClick={handleLogout}>

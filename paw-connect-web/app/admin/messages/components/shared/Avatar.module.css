@@ -1,0 +1,21 @@
+.avatarImage {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  object-fit: cover;
+  border: 1px solid #e4e4e7;
+}
+
+.avatarFallback {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  background-color: #f4f4f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e4e4e7;
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: #52525b;
+}

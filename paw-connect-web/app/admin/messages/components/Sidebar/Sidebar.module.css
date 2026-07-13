@@ -1,0 +1,51 @@
+.chatSidebar {
+  width: 30%;
+  min-width: 320px;
+  max-width: 400px;
+  border-right: 1px solid #e4e4e7;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  height: 100%;
+  overflow: hidden;
+}
+
+.sidebarHeader {
+  padding: 1.25rem 1rem 0.75rem 1rem;
+  flex-shrink: 0;
+}
+
+.titleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.titleRow h1 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: #09090b;
+}
+
+.conversationList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.conversationList::-webkit-scrollbar {
+  width: 4px;
+}
+.conversationList::-webkit-scrollbar-track {
+  background: transparent;
+}
+.conversationList::-webkit-scrollbar-thumb {
+  background: #e4e4e7;
+  border-radius: 2px;
+}
