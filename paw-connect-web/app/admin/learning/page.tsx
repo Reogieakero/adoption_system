@@ -2,85 +2,49 @@
 "use client";
 
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import { 
-  BookOpen, 
-  CheckCircle2, 
-  FileEdit, 
-  Users, 
-  Plus, 
-  Search, 
-  SlidersHorizontal, 
-  MoreVertical, 
-  Eye, 
-  Trash2, 
-  Copy, 
-  Globe, 
-  Clock, 
+import {
+  BookOpen,
+  CheckCircle2,
+  FileEdit,
+  Users,
+  Plus,
+  Search,
+  SlidersHorizontal,
+  MoreVertical,
+  Eye,
+  Trash2,
+  Copy,
+  Globe,
+  Clock,
   TrendingUp,
   ChevronDown,
   Check,
   Image as ImageIcon,
-  FolderOpen
+  FolderOpen,
+  Loader2,
 } from "lucide-react";
 import styles from "./Learning.module.css";
-
-const INITIAL_MODULES = [
-  {
-    id: "mod-1",
-    title: "Introduction to Responsible Pet Ownership",
-    description: "Learn the foundational pillars of bringing a rescued animal into your home safely and sustainably.",
-    category: "Responsible Pet Ownership",
-    difficulty: "Beginner",
-    duration: "45 mins",
-    status: "Published",
-    views: 1240,
-    completionRate: "88%",
-    image: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=600&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "mod-2",
-    title: "Understanding Canine Separation Anxiety",
-    description: "Advanced behavioral analysis and training techniques to manage and treat severe separation anxiety in shelter dogs.",
-    category: "Dog Behavior",
-    difficulty: "Advanced",
-    duration: "120 mins",
-    status: "Published",
-    views: 890,
-    completionRate: "72%",
-    image: "https://images.unsplash.com/photo-1544568100-847a948585b9?w=600&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "mod-3",
-    title: "Feline Vaccination Timeline & Health Basics",
-    description: "A definitive guide on key immunizations, standard schedules, and recognizing early signs of medical distress.",
-    category: "Pet Health Care",
-    difficulty: "Intermediate",
-    duration: "60 mins",
-    status: "Draft",
-    views: 0,
-    completionRate: "0%",
-    image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&auto=format&fit=crop&q=60"
-  }
-];
+import { useLearningModules } from "../../hooks/admin/useLearningModules";
+import type { LearningModule, ModuleDifficulty, ModuleStatus } from "./types";
 
 const CATEGORIES = [
-  "Responsible Pet Ownership", "Dog Behavior", "Cat Behavior", 
-  "Basic Dog Training", "Basic Cat Training", "Pet Health Care", 
-  "Vaccination Awareness", "Animal Welfare Laws", "Adoption Preparation", 
+  "Responsible Pet Ownership", "Dog Behavior", "Cat Behavior",
+  "Basic Dog Training", "Basic Cat Training", "Pet Health Care",
+  "Vaccination Awareness", "Animal Welfare Laws", "Adoption Preparation",
   "Post-Adoption Care"
 ];
 
 // Helper Component for Custom Shadcn-styled Dropdowns
-function ShadcnSelect({ 
-  value, 
-  onChange, 
-  options, 
+function ShadcnSelect({
+  value,
+  onChange,
+  options,
   placeholder,
-  showLeftIcon = false 
-}: { 
-  value: string; 
-  onChange: (val: string) => void; 
-  options: { label: string; value: string }[]; 
+  showLeftIcon = false
+}: {
+  value: string;
+  onChange: (val: string) => void;
+  options: { label: string; value: string }[];
   placeholder: string;
   showLeftIcon?: boolean;
 }) {
@@ -101,9 +65,9 @@ function ShadcnSelect({
 
   return (
     <div className={styles.selectWrapperShadcn} ref={containerRef}>
-      <button 
+      <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)} 
+        onClick={() => setIsOpen(!isOpen)}
         className={`${styles.selectTriggerShadcn} ${showLeftIcon ? styles.triggerWithIcon : ""}`}
       >
         {showLeftIcon && <SlidersHorizontal size={12} className={styles.selectIconLeft} />}
@@ -135,26 +99,48 @@ function ShadcnSelect({
   );
 }
 
+const EMPTY_FORM = {
+  title: "",
+  category: CATEGORIES[0],
+  difficulty: "Beginner" as ModuleDifficulty,
+  duration: "",
+  description: "",
+  objectives: "",
+  content: "",
+  videoUrl: "",
+  pdfUrl: "",
+  status: "Draft" as ModuleStatus,
+};
+
 export default function LearningManagementPage() {
-  const [modules, setModules] = useState(INITIAL_MODULES);
+  const {
+    modules,
+    isLoading,
+    error,
+    addModule,
+    editModule,
+    removeModule,
+    duplicateModule,
+  } = useLearningModules();
+
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [selectedDifficulty, setSelectedDifficulty] = useState("All");
-  
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [activeDropdownId, setActiveDropdownId] = useState<string | null>(null);
-  
-  const [formTitle, setFormTitle] = useState("");
-  const [formCategory, setFormCategory] = useState(CATEGORIES[0]);
-  const [formDifficulty, setFormDifficulty] = useState("Beginner");
-  const [formDuration, setFormDuration] = useState("");
-  const [formDesc, setFormDesc] = useState("");
-  const [formStatus, setFormStatus] = useState("Draft");
+  const [isSaving, setIsSaving] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+
+  const [form, setForm] = useState(EMPTY_FORM);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const filteredModules = useMemo(() => {
     return modules.filter(mod => {
-      const matchesSearch = mod.title.toLowerCase().includes(search.toLowerCase()) || 
+      const matchesSearch = mod.title.toLowerCase().includes(search.toLowerCase()) ||
                             mod.description.toLowerCase().includes(search.toLowerCase());
       const matchesCategory = selectedCategory === "All" || mod.category === selectedCategory;
       const matchesStatus = selectedStatus === "All" || mod.status === selectedStatus;
@@ -163,50 +149,104 @@ export default function LearningManagementPage() {
     });
   }, [modules, search, selectedCategory, selectedStatus, selectedDifficulty]);
 
-  const handleCreateModule = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formTitle.trim()) return;
+  const openCreateModal = () => {
+    setEditingId(null);
+    setForm(EMPTY_FORM);
+    setImageFile(null);
+    setImagePreview(null);
+    setFormError(null);
+    setIsModalOpen(true);
+  };
 
-    const newModule = {
-      id: `mod-${Date.now()}`,
-      title: formTitle,
-      description: formDesc || "No description provided.",
-      category: formCategory,
-      difficulty: formDifficulty,
-      duration: formDuration || "30 mins",
-      status: formStatus,
-      views: 0,
-      completionRate: "0%",
-      image: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=600&auto=format&fit=crop&q=60"
-    };
-
-    setModules([newModule, ...modules]);
-    resetForm();
+  const openEditModal = (module: LearningModule) => {
+    setEditingId(module.id);
+    setForm({
+      title: module.title,
+      category: module.category,
+      difficulty: module.difficulty,
+      duration: module.duration,
+      description: module.description,
+      objectives: module.objectives,
+      content: module.content,
+      videoUrl: module.videoUrl,
+      pdfUrl: module.pdfUrl,
+      status: module.status,
+    });
+    setImageFile(null);
+    setImagePreview(module.image || null);
+    setFormError(null);
+    setIsModalOpen(true);
+    setActiveDropdownId(null);
   };
 
   const resetForm = () => {
-    setFormTitle("");
-    setFormDesc("");
-    setFormDuration("");
-    setFormDifficulty("Beginner");
-    setFormCategory(CATEGORIES[0]);
-    setFormStatus("Draft");
+    setForm(EMPTY_FORM);
+    setImageFile(null);
+    setImagePreview(null);
+    setEditingId(null);
+    setFormError(null);
     setIsModalOpen(false);
   };
 
-  const handleDelete = (id: string) => {
-    setModules(modules.filter(m => m.id !== id));
-    setActiveDropdownId(null);
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    setImageFile(file);
+    if (file) {
+      setImagePreview(URL.createObjectURL(file));
+    }
   };
 
-  const handleToggleStatus = (id: string) => {
-    setModules(modules.map(m => {
-      if (m.id === id) {
-        return { ...m, status: m.status === "Published" ? "Draft" : "Published" };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.title.trim()) {
+      setFormError('Module title is required.');
+      return;
+    }
+
+    setIsSaving(true);
+    setFormError(null);
+    try {
+      if (editingId) {
+        await editModule(editingId, { ...form }, imageFile);
+      } else {
+        await addModule({ ...form, image: '' }, imageFile);
       }
-      return m;
-    }));
+      resetForm();
+    } catch (err) {
+      setFormError(err instanceof Error ? err.message : 'Failed to save learning module');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
     setActiveDropdownId(null);
+    try {
+      await removeModule(id);
+    } catch (err) {
+      // Surface delete failures inline rather than losing them silently
+      alert(err instanceof Error ? err.message : 'Failed to delete module');
+    }
+  };
+
+  const handleDuplicate = async (id: string) => {
+    setActiveDropdownId(null);
+    try {
+      await duplicateModule(id);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to duplicate module');
+    }
+  };
+
+  const handleToggleStatus = async (module: LearningModule) => {
+    setActiveDropdownId(null);
+    try {
+      await editModule(module.id, {
+        status: module.status === "Published" ? "Draft" : "Published",
+      });
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to update status');
+    }
   };
 
   // Build filter options arrays
@@ -228,7 +268,7 @@ export default function LearningManagementPage() {
     { label: "Draft", value: "Draft" }
   ];
 
-  const modalCategoryOptions = useMemo(() => 
+  const modalCategoryOptions = useMemo(() =>
     CATEGORIES.map(cat => ({ label: cat, value: cat })), []
   );
 
@@ -245,17 +285,23 @@ export default function LearningManagementPage() {
 
   return (
     <div className={styles.adminContainer}>
-      
+
       {/* PAGE HEADER */}
       <div className={styles.headerContainer}>
         <div className={styles.titleArea}>
           <h1>E-Learning</h1>
           <p>Create and manage educational modules that promote responsible pet ownership and animal welfare.</p>
         </div>
-        <button onClick={() => setIsModalOpen(true)} className={styles.btnPrimarySupabase}>
+        <button onClick={openCreateModal} className={styles.btnPrimarySupabase}>
           <Plus size={14} strokeWidth={2.5} /> Add Learning Module
         </button>
       </div>
+
+      {error && (
+        <div style={{ marginBottom: "1.5rem", padding: "0.75rem 1rem", borderRadius: "0.375rem", border: "1px solid #fecaca", background: "#fef2f2", color: "#b91c1c", fontSize: "0.8125rem" }}>
+          {error}
+        </div>
+      )}
 
       {/* SUMMARY CARDS */}
       <div className={styles.summaryGrid}>
@@ -306,35 +352,49 @@ export default function LearningManagementPage() {
           />
         </div>
         <div className={styles.filterGroup}>
-          <ShadcnSelect 
-            value={selectedCategory} 
-            onChange={setSelectedCategory} 
-            options={categoryOptions} 
+          <ShadcnSelect
+            value={selectedCategory}
+            onChange={setSelectedCategory}
+            options={categoryOptions}
             placeholder="All Categories"
             showLeftIcon
           />
-          <ShadcnSelect 
-            value={selectedDifficulty} 
-            onChange={setSelectedDifficulty} 
-            options={difficultyOptions} 
+          <ShadcnSelect
+            value={selectedDifficulty}
+            onChange={setSelectedDifficulty}
+            options={difficultyOptions}
             placeholder="All Difficulties"
           />
-          <ShadcnSelect 
-            value={selectedStatus} 
-            onChange={setSelectedStatus} 
-            options={statusOptions} 
+          <ShadcnSelect
+            value={selectedStatus}
+            onChange={setSelectedStatus}
+            options={statusOptions}
             placeholder="All Statuses"
           />
         </div>
       </div>
 
-      {/* LEARNING MODULES GRID */}
-      {filteredModules.length > 0 ? (
+      {/* LOADING STATE */}
+      {isLoading ? (
+        <div className={styles.emptyState}>
+          <div className={styles.emptyStateIcon}>
+            <Loader2 size={36} className="animate-spin" />
+          </div>
+          <h3>Loading learning modules…</h3>
+        </div>
+      ) : filteredModules.length > 0 ? (
+        /* LEARNING MODULES GRID */
         <div className={styles.modulesGrid}>
           {filteredModules.map((module) => (
             <div key={module.id} className={styles.moduleCard}>
               <div className={styles.imageContainer}>
-                <img src={module.image} alt={module.title} className={styles.cardImage} />
+                {module.image ? (
+                  <img src={module.image} alt={module.title} className={styles.cardImage} />
+                ) : (
+                  <div className={styles.cardImage} style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "#f1f5f9" }}>
+                    <ImageIcon size={28} color="#cbd5e1" />
+                  </div>
+                )}
                 <div className={styles.badgeContainer}>
                   <span className={styles.badge}>{module.difficulty}</span>
                   <span className={`${styles.badge} ${module.status === "Published" ? styles.badgePublished : styles.badgeDraft}`}>
@@ -343,7 +403,7 @@ export default function LearningManagementPage() {
                 </div>
 
                 <div className={styles.actionsTrigger}>
-                  <button 
+                  <button
                     onClick={() => setActiveDropdownId(activeDropdownId === module.id ? null : module.id)}
                     className={styles.dropdownTriggerBtn}
                   >
@@ -355,13 +415,13 @@ export default function LearningManagementPage() {
                       <button onClick={() => setActiveDropdownId(null)} className={styles.dropdownItem}>
                         <Eye size={14} /> View Module
                       </button>
-                      <button onClick={() => setActiveDropdownId(null)} className={styles.dropdownItem}>
+                      <button onClick={() => openEditModal(module)} className={styles.dropdownItem}>
                         <FileEdit size={14} /> Edit Module
                       </button>
-                      <button onClick={() => setActiveDropdownId(null)} className={styles.dropdownItem}>
+                      <button onClick={() => handleDuplicate(module.id)} className={styles.dropdownItem}>
                         <Copy size={14} /> Duplicate Module
                       </button>
-                      <button onClick={() => handleToggleStatus(module.id)} className={styles.dropdownItem} style={{ fontWeight: 600, color: "#2563eb" }}>
+                      <button onClick={() => handleToggleStatus(module)} className={styles.dropdownItem} style={{ fontWeight: 600, color: "#2563eb" }}>
                         <Globe size={14} /> {module.status === "Published" ? "Unpublish" : "Publish"}
                       </button>
                       <div className={styles.dropdownDivider}></div>
@@ -399,7 +459,7 @@ export default function LearningManagementPage() {
               <div className={styles.cardFooter}>
                 <span style={{ color: "#475569", cursor: "pointer" }}>Details</span>
                 <div className={styles.cardFooterActions}>
-                  <span style={{ color: "#475569", cursor: "pointer" }}>Edit</span>
+                  <span style={{ color: "#475569", cursor: "pointer" }} onClick={() => openEditModal(module)}>Edit</span>
                   <button onClick={() => handleDelete(module.id)} className={styles.btnDanger}>Delete</button>
                 </div>
               </div>
@@ -414,7 +474,7 @@ export default function LearningManagementPage() {
           </div>
           <h3>No learning modules available.</h3>
           <p>No content matches your selected filters. Refine the queries or create your first interactive module.</p>
-          <button onClick={() => setIsModalOpen(true)} className={styles.btnPrimarySupabase}>
+          <button onClick={openCreateModal} className={styles.btnPrimarySupabase}>
             Create Your First Module
           </button>
         </div>
@@ -424,17 +484,23 @@ export default function LearningManagementPage() {
       {isModalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-            
+
             <div className={styles.modalHeader}>
-              <h2>Add New Learning Module</h2>
+              <h2>{editingId ? "Edit Learning Module" : "Add New Learning Module"}</h2>
               <p>Configure content metrics, categorization pipelines, and media assets for deployment.</p>
             </div>
 
-            <form onSubmit={handleCreateModule} className={styles.modalForm}>
+            <form onSubmit={handleSubmit} className={styles.modalForm}>
+              {formError && (
+                <div style={{ padding: "0.6rem 0.75rem", borderRadius: "0.375rem", border: "1px solid #fecaca", background: "#fef2f2", color: "#b91c1c", fontSize: "0.8125rem" }}>
+                  {formError}
+                </div>
+              )}
+
               <div className={styles.formGroup}>
                 <label>Module Title *</label>
-                <input 
-                  type="text" required value={formTitle} onChange={(e) => setFormTitle(e.target.value)}
+                <input
+                  type="text" required value={form.title} onChange={(e) => setForm(f => ({ ...f, title: e.target.value }))}
                   placeholder="e.g., Post-Adoption Acclimation Blueprint" className={styles.formInputShadcn}
                 />
               </div>
@@ -442,44 +508,51 @@ export default function LearningManagementPage() {
               <div className={styles.formGrid3}>
                 <div className={styles.formGroup}>
                   <label>Category</label>
-                  <ShadcnSelect 
-                    value={formCategory} 
-                    onChange={setFormCategory} 
-                    options={modalCategoryOptions} 
+                  <ShadcnSelect
+                    value={form.category}
+                    onChange={(val) => setForm(f => ({ ...f, category: val }))}
+                    options={modalCategoryOptions}
                     placeholder="Select Category"
                   />
                 </div>
                 <div className={styles.formGroup}>
                   <label>Difficulty Level</label>
-                  <ShadcnSelect 
-                    value={formDifficulty} 
-                    onChange={setFormDifficulty} 
-                    options={modalDifficultyOptions} 
+                  <ShadcnSelect
+                    value={form.difficulty}
+                    onChange={(val) => setForm(f => ({ ...f, difficulty: val as ModuleDifficulty }))}
+                    options={modalDifficultyOptions}
                     placeholder="Select Difficulty"
                   />
                 </div>
                 <div className={styles.formGroup}>
                   <label>Estimated Duration</label>
-                  <input type="text" value={formDuration} onChange={(e) => setFormDuration(e.target.value)} placeholder="e.g., 45 mins" className={styles.formInputShadcn} />
+                  <input type="text" value={form.duration} onChange={(e) => setForm(f => ({ ...f, duration: e.target.value }))} placeholder="e.g., 45 mins" className={styles.formInputShadcn} />
                 </div>
               </div>
 
               <div className={styles.formGroup}>
                 <label>Cover Image</label>
-                <div className={styles.uploadBox}>
-                  <ImageIcon size={20} color="#94a3b8" />
-                  <span style={{ fontSize: "0.6875rem", color: "#64748b" }}>Click to upload file asset (PNG, JPG up to 5MB)</span>
-                </div>
+                <label className={styles.uploadBox} style={{ cursor: "pointer" }}>
+                  {imagePreview ? (
+                    <img src={imagePreview} alt="Cover preview" style={{ maxHeight: "8rem", borderRadius: "0.25rem" }} />
+                  ) : (
+                    <>
+                      <ImageIcon size={20} color="#94a3b8" />
+                      <span style={{ fontSize: "0.6875rem", color: "#64748b" }}>Click to upload file asset (PNG, JPG up to 5MB)</span>
+                    </>
+                  )}
+                  <input type="file" accept="image/png,image/jpeg" onChange={handleImageChange} style={{ display: "none" }} />
+                </label>
               </div>
 
               <div className={styles.formGroup}>
                 <label>Short Description</label>
-                <textarea rows={2} value={formDesc} onChange={(e) => setFormDesc(e.target.value)} placeholder="Provide a high-level educational summary overview..." className={styles.formTextareaShadcn} style={{ resize: "none" }} />
+                <textarea rows={2} value={form.description} onChange={(e) => setForm(f => ({ ...f, description: e.target.value }))} placeholder="Provide a high-level educational summary overview..." className={styles.formTextareaShadcn} style={{ resize: "none" }} />
               </div>
 
               <div className={styles.formGroup}>
                 <label>Learning Objectives</label>
-                <input type="text" placeholder="Objective tokens separated by commas" className={styles.formInputShadcn} />
+                <input type="text" value={form.objectives} onChange={(e) => setForm(f => ({ ...f, objectives: e.target.value }))} placeholder="Objective tokens separated by commas" className={styles.formInputShadcn} />
               </div>
 
               <div className={styles.formGroup}>
@@ -488,18 +561,18 @@ export default function LearningManagementPage() {
                   <div className={styles.editorToolbar}>
                     <span>BOLD</span> | <span>ITALIC</span> | <span>HEADER</span> | <span>HYPERLINK</span>
                   </div>
-                  <textarea rows={3} placeholder="Compose structured instructional lesson documentation..." className={styles.formTextareaShadcn} style={{ border: "none", borderRadius: 0, resize: "none" }} />
+                  <textarea rows={3} value={form.content} onChange={(e) => setForm(f => ({ ...f, content: e.target.value }))} placeholder="Compose structured instructional lesson documentation..." className={styles.formTextareaShadcn} style={{ border: "none", borderRadius: 0, resize: "none" }} />
                 </div>
               </div>
 
               <div className={styles.formGrid3} style={{ gridTemplateColumns: "repeat(2, minmax(0, 1fr))" }}>
                 <div className={styles.formGroup}>
                   <label>Video URL</label>
-                  <input type="url" placeholder="https://youtube.com/v/..." className={styles.formInputShadcn} />
+                  <input type="url" value={form.videoUrl} onChange={(e) => setForm(f => ({ ...f, videoUrl: e.target.value }))} placeholder="https://youtube.com/v/..." className={styles.formInputShadcn} />
                 </div>
                 <div className={styles.formGroup}>
-                  <label>PDF Attachment</label>
-                  <input type="file" className={styles.formInputShadcn} style={{ fontSize: "10px", padding: "0.35rem" }} />
+                  <label>PDF URL</label>
+                  <input type="url" value={form.pdfUrl} onChange={(e) => setForm(f => ({ ...f, pdfUrl: e.target.value }))} placeholder="https://.../worksheet.pdf" className={styles.formInputShadcn} />
                 </div>
               </div>
 
@@ -509,17 +582,19 @@ export default function LearningManagementPage() {
                   <span className={styles.switchSubtitle}>Instantly launch this module asset across live tables.</span>
                 </div>
                 <label className={styles.switchToggle}>
-                  <input 
-                    type="checkbox" checked={formStatus === "Published"}
-                    onChange={(e) => setFormStatus(e.target.checked ? "Published" : "Draft")} 
+                  <input
+                    type="checkbox" checked={form.status === "Published"}
+                    onChange={(e) => setForm(f => ({ ...f, status: e.target.checked ? "Published" : "Draft" }))}
                   />
                   <span className={styles.slider}></span>
                 </label>
               </div>
 
               <div className={styles.modalFooter}>
-                <button type="button" onClick={resetForm} className={styles.btnSecondaryShadcn}>Cancel</button>
-                <button type="submit" className={styles.btnPrimarySupabase}>Save & Deploy</button>
+                <button type="button" onClick={resetForm} className={styles.btnSecondaryShadcn} disabled={isSaving}>Cancel</button>
+                <button type="submit" className={styles.btnPrimarySupabase} disabled={isSaving}>
+                  {isSaving ? "Saving…" : "Save & Deploy"}
+                </button>
               </div>
             </form>
           </div>

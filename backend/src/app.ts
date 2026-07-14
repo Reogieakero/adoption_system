@@ -10,6 +10,7 @@ import healthRoutes from './routes/health.routes';
 import heatmapRoutes from './routes/heatmap.routes';
 import adminUsersRoutes from './routes/adminUsers.routes';
 import notificationsRoutes from './routes/notifications.routes';
+import learningModulesRoutes from './routes/learningModules.routes';
 import { errorHandler, notFound } from './middleware/errorHandler';
 import path from 'path';
 
@@ -34,6 +35,7 @@ app.use('/api/admin/health', healthRoutes);
 app.use('/api/admin/heatmap', heatmapRoutes);
 app.use('/api/admin/users', adminUsersRoutes);
 app.use('/api/admin/notifications', notificationsRoutes);
+app.use('/api/admin/learning-modules', learningModulesRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
