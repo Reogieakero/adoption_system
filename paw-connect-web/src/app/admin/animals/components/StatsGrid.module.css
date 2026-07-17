@@ -1,0 +1,88 @@
+.statsGrid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+@media (min-width: 640px) {
+  .statsGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+  .statsGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+.statCard {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  background-color: var(--background);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.statCard::after {
+  content: "";
+  position: absolute;
+  bottom: -40px;
+  right: -40px;
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle at center, var(--text-primary) 0%, transparent 70%);
+  opacity: 0.15;
+  pointer-events: none;
+  border-radius: 50%;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.statCard:hover {
+  border-color: var(--border);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.statCard:hover::after {
+  opacity: 0.22;
+  transform: scale(1.15);
+}
+
+.statHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+}
+
+.statLabel {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.statIconContainer {
+  color: var(--text-primary);
+  background-color: var(--hover);
+  padding: 6px;
+  border-radius: 6px;
+  display: flex;
+}
+
+.statBody {
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+}
+
+.statValue {
+  font-family: var(--font-geist-mono), 'Geist Mono', monospace;
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0.35rem 0 0.15rem 0;
+  letter-spacing: -0.02em;
+  position: relative;
+  z-index: 1;
+}

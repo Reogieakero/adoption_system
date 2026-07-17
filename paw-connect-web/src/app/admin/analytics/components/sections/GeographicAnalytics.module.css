@@ -1,0 +1,105 @@
+.badgeNeutral {
+  composes: badgeNeutral from "../../styles/theme.module.css";
+  cursor: pointer;
+}
+
+.actionGroup {
+  display: flex;
+  gap: 8px;
+}
+
+.mapCard {
+  padding: 0;
+  overflow: hidden;
+}
+
+.mapCanvasHeight {
+  height: 420px;
+}
+
+.mapPinDimmed {
+  opacity: 0.25;
+}
+
+.mapDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.mapInfo {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  background: rgba(255,255,255,0.9);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  backdrop-filter: blur(4px);
+}
+
+.mapCanvas {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(79, 70, 229, 0.06), transparent 40%),
+    radial-gradient(circle at 80% 60%, rgba(8, 145, 178, 0.06), transparent 45%),
+    var(--muted);
+  border: 1px solid var(--border);
+}
+.mapGrid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 32px 32px;
+  opacity: 0.5;
+}
+.mapPin {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 160ms ease;
+}
+.mapPinDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+}
+.mapPinPulse {
+  position: absolute;
+  inset: -6px;
+  border-radius: 999px;
+  animation: mapPulse 2.4s ease-out infinite;
+}
+@keyframes mapPulse {
+  0% { transform: scale(0.5); opacity: 0.55; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+.mapPopover {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--foreground);
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 140ms ease, transform 140ms ease;
+}
+.mapPin:hover .mapPopover {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-2px);
+}

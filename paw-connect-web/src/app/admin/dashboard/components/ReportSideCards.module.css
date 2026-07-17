@@ -1,0 +1,150 @@
+.sideCardsColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.carouselTrackContainer {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 4px 0;
+  mask-image: linear-gradient(to right, transparent, var(--background) 4%, var(--background) 96%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, var(--background) 4%, var(--background) 96%, transparent);
+}
+
+.carouselTrack {
+  display: flex;
+  gap: 16px;
+  width: max-content;
+  animation: scrollLeft infinite linear;
+}
+
+.trackReports {
+  animation-duration: 25s;
+}
+
+.trackAdopters {
+  animation-duration: 28s;
+}
+
+.carouselTrackContainer:hover .carouselTrack {
+  animation-play-state: paused;
+}
+
+@keyframes scrollLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.reportSideCard {
+  position: relative;
+  overflow: hidden;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.reportSideCard::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle at center, var(--text-primary) 0%, transparent 70%);
+  opacity: 0.08;
+  pointer-events: none;
+  border-radius: 50%;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.reportSideCard:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.reportSideCard:hover::after {
+  opacity: 0.12;
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.sideCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  z-index: 1;
+  gap: 12px;
+}
+
+.headerTextGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.sideCardLabel {
+  font-family: var(--font-geist-mono), 'Geist Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.iconReport {
+  color: var(--text-primary);
+}
+
+.iconAdopted {
+  color: var(--success);
+}
+
+.animalName {
+  font-family: var(--font-geist-mono), 'Geist Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.avatarImage {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  background-color: var(--hover);
+}
+
+.animalDetails {
+  font-family: var(--font-geist-mono), 'Geist Mono', monospace;
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+  z-index: 1;
+}

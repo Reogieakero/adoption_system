@@ -1,0 +1,6 @@
+/* Typography Base Alignment matching Geist Mono specifications */
+.adminContainer {
+  font-family: 'Geist Mono', monospace, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, sans-serif;
+  color: var(--text-primary);
+  background-color: var(--background);
+}

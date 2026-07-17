@@ -1,0 +1,162 @@
+.cardLink {
+  display: block;
+  color: inherit;
+  cursor: pointer;
+}
+
+.animalCard {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+}
+
+.animalCard:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+  border-color: var(--border);
+}
+
+.imageWrapper {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  position: relative;
+  overflow: hidden;
+  background: var(--hover);
+}
+
+.cardPhoto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.animalCard:hover .cardPhoto {
+  transform: scale(1.05);
+}
+
+.cardPhotoPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--hover);
+  color: var(--text-muted);
+}
+
+.overlayInfo {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(9, 9, 11, 0.95) 0%, rgba(9, 9, 11, 0.7) 75%, transparent 100%);
+  padding: 1.25rem;
+  color: #fafafa;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  box-sizing: border-box;
+  transition: padding 0.35s ease;
+}
+
+.animalCard:hover .overlayInfo {
+  padding-bottom: 1.5rem;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 0.25rem;
+}
+
+.cardName {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0;
+  color: #fafafa;
+}
+
+.cardSpecies {
+  font-size: 0.75rem;
+  opacity: 0.85;
+  letter-spacing: 0.01em;
+  color: #e2e8f0;
+}
+
+.cardId {
+  font-size: 0.65rem;
+  opacity: 0.6;
+  margin-bottom: 0.5rem;
+  color: #cbd5e1;
+}
+
+.hoverContent {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, opacity 0.4s ease, margin-top 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.animalCard:hover .hoverContent {
+  max-height: 140px;
+  opacity: 1;
+  margin-top: 0.5rem;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.2rem;
+}
+
+.detailLabel {
+  opacity: 0.7;
+  color: #cbd5e1;
+}
+
+.detailValue {
+  font-weight: 600;
+  color: #fafafa;
+}
+
+.cardBadge {
+  align-self: flex-start;
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  border-radius: 4px;
+  white-space: nowrap;
+  transition: transform 0.15s ease;
+}
+
+.badge:hover {
+  transform: translateY(-1px);
+}
+
+.bgTeal { background-color: rgba(20, 184, 166, 0.9); color: #ffffff; }
+.bgOrange { background-color: rgba(249, 115, 22, 0.9); color: #ffffff; }
+.bgPrimary { background-color: rgba(99, 102, 241, 0.9); color: #ffffff; }
+.bgSlate { background-color: rgba(100, 116, 139, 0.9); color: #ffffff; }
+.bgWhite { background-color: rgba(255, 255, 255, 0.95); color: #0f172a; border: 1px solid rgba(255, 255, 255, 0.3); }

@@ -1,0 +1,95 @@
+.summaryGrid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 640px) {
+  .summaryGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+  .summaryGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+.summaryCard {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  background-color: var(--background);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.summaryCard::after {
+  content: "";
+  position: absolute;
+  bottom: -40px;
+  right: -40px;
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle at center, var(--text-primary) 0%, transparent 70%);
+  opacity: 0.15;
+  pointer-events: none;
+  border-radius: 50%;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.summaryCard:hover {
+  border-color: var(--border);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.summaryCard:hover::after {
+  opacity: 0.22;
+  transform: scale(1.15);
+}
+
+.summaryCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+}
+
+.summaryCardHeader p {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.summaryCardValue {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0.35rem 0 0.15rem 0;
+  letter-spacing: -0.02em;
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-geist-mono), 'Geist Mono', monospace;
+}
+
+.summaryCardDesc {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.valueActive {
+  color: #10b981;
+}
+
+.valuePending {
+  color: #b45309;
+}
+
+.valueSuspended {
+  color: #ef4444;
+}

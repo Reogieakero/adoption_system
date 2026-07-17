@@ -1,0 +1,25 @@
+.grid5 {
+  composes: grid5 from "../../styles/theme.module.css";
+}
+
+.iconCircle {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--muted);
+  display: grid;
+  place-items: center;
+  margin-bottom: 12px;
+}
+
+.value {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.label {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  margin: 4px 0 10px;
+  font-weight: 500;
+}

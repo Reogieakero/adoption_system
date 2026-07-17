@@ -1,0 +1,23 @@
+.dashboardContainer {
+  font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.tableWorkspaceCard {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: visible;
+}
+
+.errorText {
+  color: var(--error);
+  font-size: 0.82rem;
+}
+
+.loadingText {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-muted);
+}

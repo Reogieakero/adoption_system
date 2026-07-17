@@ -1,0 +1,29 @@
+.grid2 {
+  composes: grid2 from "../../styles/theme.module.css";
+}
+.progressTrack {
+  composes: progressTrack from "../../styles/theme.module.css";
+}
+.progressFill {
+  composes: progressFill from "../../styles/theme.module.css";
+}
+.barangayList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.barangayRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  margin-bottom: 6px;
+}
+.barangayName {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+.barangayStats {
+  color: var(--muted-foreground);
+}

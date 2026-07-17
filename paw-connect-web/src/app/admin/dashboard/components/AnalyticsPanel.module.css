@@ -1,0 +1,270 @@
+.analyticsPanel {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 300px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s ease;
+}
+
+.analyticsPanel:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.panelHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.sectionSubtitle {
+  font-family: var(--font-geist-mono), 'Geist Mono', monospace;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.controlsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.toolsList {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.filterGroup {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.customSelectWrapper {
+  position: relative;
+}
+
+.customSelectTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  border-radius: 6px;
+  padding: 0 8px;
+  height: 26px;
+  font-family: var(--font-geist-mono), 'Geist Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  min-width: 80px;
+  text-align: left;
+  user-select: none;
+  transition: background-color 0.1s ease, color 0.1s ease, border-color 0.1s ease;
+}
+
+.customSelectTrigger:hover {
+  background: var(--hover);
+  color: var(--text-primary);
+}
+
+.customSelectTriggerActive {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+  background: var(--hover);
+}
+
+.chevronIcon {
+  color: var(--text-muted);
+  transition: transform 0.15s ease;
+  flex-shrink: 0;
+}
+
+.chevronIconOpen {
+  transform: rotate(180deg);
+  color: var(--text-primary);
+}
+
+.customSelectDropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: var(--shadow-md);
+  z-index: 10;
+  min-width: 110px;
+  overflow-y: visible;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.monthDropdown {
+  min-width: 120px;
+}
+
+.customSelectItem {
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 8px;
+  font-family: var(--font-geist-mono), 'Geist Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.1s ease, color 0.1s ease;
+}
+
+.customSelectItem:hover {
+  background: var(--hover);
+  color: var(--text-primary);
+}
+
+.customSelectItemActive {
+  background: var(--text-primary);
+  color: var(--background);
+}
+
+.customSelectItemActive:hover {
+  background: var(--text-primary);
+  color: var(--background);
+}
+
+.chartCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: fadeSlideIn 0.35s ease both;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chartHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.chartTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.chartDescription {
+  font-family: var(--font-geist-mono), 'Geist Mono', monospace;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 2px 0 0 0;
+  line-height: 1.5;
+}
+
+.trendBadge {
+  flex-shrink: 0;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--font-geist-mono), 'Geist Mono', monospace;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.trendUp {
+  background: var(--success-bg);
+  color: var(--success);
+}
+
+.trendDown {
+  background: var(--error-bg);
+  color: var(--error);
+}
+
+.chartArea {
+  border-bottom: 1px solid var(--border);
+  padding: 4px 0 12px 0;
+}
+
+.chartArea :global(.recharts-surface) {
+  overflow: visible;
+}
+
+.chartArea :global(.recharts-tooltip-wrapper) {
+  outline: none;
+}
+
+.tooltip {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--text-primary);
+  color: var(--background);
+  padding: 7px 10px;
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+  pointer-events: none;
+}
+
+.tooltipLabel {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--soft-white);
+  opacity: 0.8;
+}
+
+.tooltipValue {
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-geist-mono), 'Geist Mono', monospace;
+}
+
+.tooltipUnit {
+  font-size: 11px;
+  font-weight: 500;
+  font-family: var(--font-sans), sans-serif;
+  opacity: 0.75;
+}
+
+.chartUnit {
+  font-family: var(--font-geist-mono), 'Geist Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin: 0;
+}

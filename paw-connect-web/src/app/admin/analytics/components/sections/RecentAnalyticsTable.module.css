@@ -1,0 +1,85 @@
+.badgeSuccess {
+  composes: badgeSuccess from "../../styles/theme.module.css";
+}
+.badgeDanger {
+  composes: badgeDanger from "../../styles/theme.module.css";
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+}
+.table thead th {
+  text-align: left;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--muted);
+}
+.table thead th:first-child {
+  border-top-left-radius: var(--radius-sm);
+}
+.table thead th:last-child {
+  border-top-right-radius: var(--radius-sm);
+}
+.table tbody td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--foreground);
+  font-weight: 400;
+}
+.table tbody tr {
+  transition: background-color 120ms ease;
+}
+.table tbody tr:hover {
+  background: var(--muted);
+}
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.tableCard {
+  padding: 0;
+}
+
+.metricName {
+  font-weight: 500;
+}
+
+.prevValue {
+  color: var(--muted-foreground);
+}
+
+.tableFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.paginationInfo {
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+.paginationButtons {
+  display: flex;
+  gap: 4px;
+}
+
+.paginationBtn {
+  height: 30px;
+  padding: 0 10px;
+}

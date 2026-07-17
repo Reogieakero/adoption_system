@@ -1,0 +1,23 @@
+.toolbarRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.leftControls {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  max-width: 320px;
+}
+
+.rightControls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}

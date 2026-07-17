@@ -1,0 +1,15 @@
+.selectContent {
+  composes: selectContent from "./Select.module.css";
+  right: 0;
+  min-width: 170px;
+}
+
+.selectItem {
+  composes: selectItem from "./Select.module.css";
+}
+
+.itemLayout {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

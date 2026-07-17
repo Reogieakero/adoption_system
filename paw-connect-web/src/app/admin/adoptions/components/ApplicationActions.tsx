@@ -1,0 +1,96 @@
+﻿import React, { useState } from 'react';
+import type { StatusType } from '../types';
+import Button from '@/components/ui/button';
+import styles from './ApplicationActions.module.css';
+
+interface ApplicationActionsProps {
+  status: StatusType;
+  onUpdateStatus: (newStatus: StatusType) => void;
+  onViewDetails?: () => void;
+  /** 'row' for the compact table layout, 'stacked' for full-width card footer buttons */
+  layout?: 'row' | 'stacked';
+}
+
+export function ApplicationActions({ status, onUpdateStatus, onViewDetails, layout = 'row' }: ApplicationActionsProps) {
+  // Local state to hold the state change intention before confirmation
+  const [pendingStatus, setPendingStatus] = useState<StatusType | null>(null);
+
+  const isStacked = layout === 'stacked';
+
+  const handleActionIntent = (nextStatus: StatusType) => {
+    setPendingStatus(nextStatus);
+  };
+
+  const handleConfirm = () => {
+    if (pendingStatus) {
+      onUpdateStatus(pendingStatus);
+      setPendingStatus(null);
+    }
+  };
+
+  const handleCancel = () => {
+    setPendingStatus(null);
+  };
+
+  // If there is an active confirmation loop, render the Contextual Overlay
+  if (pendingStatus) {
+    if (!isStacked) {
+      return (
+        <div className={styles.confirmOverlay}>
+          <span className={styles.confirmMessage}>Change to {pendingStatus}?</span>
+          <Button variant="admin-primary" onClick={handleConfirm}>Yes</Button>
+          <Button variant="admin-secondary" onClick={handleCancel}>No</Button>
+        </div>
+      );
+    }
+
+    return (
+      <div className={styles.confirmOverlayStacked}>
+        <div className={styles.confirmMessageStacked}>
+          Are you sure you want to change status to: {pendingStatus}?
+        </div>
+        <div className={styles.buttonRow}>
+          <Button variant="admin-primary" className={styles.flex1} onClick={handleConfirm}>Confirm Action</Button>
+          <Button variant="admin-secondary" className={styles.flex1} onClick={handleCancel}>Cancel</Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Base actions mapping when no confirmation dialog is requested
+  return (
+      <div 
+        className={!isStacked ? `${styles.actionRow} ${styles.inlineFlex}` : styles.actionContainerStacked}
+      >
+        <Button variant="admin-secondary" className={isStacked ? styles.fullWidth : ''} onClick={onViewDetails}>
+          View details
+        </Button>
+
+        {status === 'Pending' && (
+          <Button variant="admin-primary" className={isStacked ? styles.fullWidth : ''} onClick={() => handleActionIntent('Under Review')}>
+            Review
+          </Button>
+        )}
+
+      {status === 'Under Review' && (
+        !isStacked ? (
+          <>
+            <Button variant="admin-primary" onClick={() => handleActionIntent('Approved')}>Approve</Button>
+            <Button variant="admin-primary" onClick={() => handleActionIntent('Rejected')}>Reject</Button>
+          </>
+        ) : (
+          <div className={styles.buttonRow}>
+            <Button variant="admin-primary" className={styles.flex1} onClick={() => handleActionIntent('Approved')}>Approve</Button>
+            <Button variant="admin-primary" className={styles.flex1} onClick={() => handleActionIntent('Rejected')}>Reject</Button>
+          </div>
+        )
+      )}
+
+      {status === 'Approved' && (
+        <Button variant="admin-primary" className={isStacked ? styles.fullWidth : ''} onClick={() => handleActionIntent('Adopted')}>
+          Mark as adopted
+        </Button>
+      )}
+    </div>
+  );
+}

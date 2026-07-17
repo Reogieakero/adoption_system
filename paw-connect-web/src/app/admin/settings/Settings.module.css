@@ -1,0 +1,563 @@
+.adminContainer {
+    font-family: 'Geist Mono', monospace, ui-monospace, sans-serif;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 6.5rem 2rem;
+    color: #0f172a;
+    background-color: #ffffff;
+  }
+  
+  /* PAGE HEADER */
+  .headerContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .titleArea h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0 0 0.35rem 0;
+    letter-spacing: -0.03em;
+  }
+  
+  .titleArea p {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: #64748b;
+    margin: 0;
+  }
+  
+  /* SHADCN TABS COMPONENT LIST RADIX LAYER */
+  .tabsListShadcn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    background-color: #f1f5f9;
+    padding: 0.25rem;
+    border-radius: 0.5rem;
+    margin-bottom: 2rem;
+    gap: 0.125rem;
+    box-sizing: border-box;
+  }
+  
+  /* LAYOUT STRUCTURAL MATRIX GRID */
+  .mainGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+  
+  @media (min-width: 1024px) {
+    .mainGrid {
+      grid-template-columns: 2fr 1fr;
+    }
+  }
+  
+  .formContentColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .sidebarColumn {
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 2rem;
+  }
+  
+  /* PREMIUM SHADCN CARD CONTAINER IMPLEMENTATION */
+  .cardShadcn {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem; /* rounded-xl specified */
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+    transition: box-shadow 0.2s ease;
+    overflow: visible;
+  }
+  
+  .cardShadcn:hover {
+    box-shadow: 0 4px 12px -1px rgba(0, 0, 0, 0.03);
+  }
+  
+  .cardHeaderShadcn {
+    padding: 1.5rem 1.5rem 1.25rem 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  
+  .cardHeaderFlex {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  .cardHeaderShadcn h2 {
+    font-size: 1.125rem;
+    font-weight: 600; /* Section Title: 600 */
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  
+  .cardHeaderShadcn p {
+    font-size: 0.8125rem;
+    color: #64748b;
+    margin: 0;
+    font-weight: 400;
+  }
+  
+  .cardContentShadcn {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  /* FORM ATOM LAYERS */
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+  
+  .formGroup label {
+    font-size: 0.8125rem;
+    font-weight: 500; /* Labels: 500 */
+    color: #334155;
+  }
+  
+  .formGrid2 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  @media (min-width: 640px) {
+    .formGrid2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  
+  .formInputShadcn {
+    font-family: 'Geist Mono', monospace;
+    width: 100%;
+    padding: 0.45rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 400; /* Body Text: 400 */
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+    box-sizing: border-box;
+    color: #0f172a;
+    background-color: #ffffff;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  
+  .formInputShadcn:focus {
+    outline: none;
+    border-color: #94a3b8;
+    box-shadow: 0 0 0 2px rgba(241, 245, 249, 1);
+  }
+  
+  /* INPUT COMPONENT WITH INTERNAL RADIX ICON POSITIONS */
+  .inputIconWrapper {
+    position: relative;
+    width: 100%;
+  }
+  
+  .innerIcon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    pointer-events: none;
+  }
+  
+  .formInputWithIcon {
+    font-family: 'Geist Mono', monospace;
+    width: 100%;
+    padding: 0.45rem 0.75rem 0.45rem 2.25rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+    box-sizing: border-box;
+    color: #0f172a;
+    background-color: #ffffff;
+    transition: border-color 0.15s ease;
+  }
+  
+  .formInputWithIcon:focus {
+    outline: none;
+    border-color: #94a3b8;
+  }
+  
+  /* CUSTOM ACCENT SELECT WITH ICONS */
+  .selectWithIconContainer {
+    position: relative;
+    width: 100%;
+  }
+  
+  .selectInnerIcon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+    z-index: 10;
+    pointer-events: none;
+  }
+  
+  .selectWithIconContainer .selectTriggerShadcn {
+    padding-left: 2.25rem;
+  }
+  
+  /* SHADCN CUSTOM SELECT OVERLAY INTERFACES */
+  .selectWrapperShadcn {
+    position: relative;
+    width: 100%;
+  }
+  
+  .selectTriggerShadcn {
+    font-family: 'Geist Mono', monospace;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.45rem 2rem 0.45rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: #0f172a;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+    cursor: pointer;
+    text-align: left;
+    box-sizing: border-box;
+  }
+  
+  .selectTriggerShadcn:focus {
+    outline: none;
+    border-color: #94a3b8;
+  }
+  
+  .selectIconRight {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+    pointer-events: none;
+  }
+  
+  .selectContentShadcn {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 50;
+    width: 100%;
+    margin-top: 0.25rem;
+    padding: 0.25rem;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    max-height: 200px;
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
+  
+  .selectItemShadcn {
+    font-family: 'Geist Mono', monospace;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0.45rem 0.5rem;
+    font-size: 0.8125rem;
+    color: #334155;
+    background: transparent;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    text-align: left;
+  }
+  
+  .selectItemShadcn:hover {
+    background-color: #f1f5f9;
+    color: #0f172a;
+  }
+  
+  .selectItemActive {
+    font-weight: 500;
+    color: #0f172a;
+  }
+  
+  .selectItemCheck {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    margin-right: 0.5rem;
+  }
+  
+  /* SHADCN RADIX SEPARATOR */
+  .separatorShadcn {
+    height: 1px;
+    background-color: #f1f5f9;
+    width: 100%;
+  }
+  
+  /* DRAG & DROP BOX */
+  .uploadBox {
+    border: 1px dashed #e2e8f0;
+    border-radius: 0.375rem;
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: background-color 0.15s ease;
+  }
+  
+  .uploadBox:hover {
+    background-color: #fafafa;
+  }
+  
+  .uploadBox span {
+    font-size: 0.75rem;
+    color: #64748b;
+  }
+  
+  /* RADIX INDEPENDENT SWITCH TOGGLE PRIMITIVES */
+  .toggleRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  
+  .switchLabelContainer {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .switchTitle {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #0f172a;
+  }
+  
+  .switchSubtitle {
+    font-size: 0.8125rem;
+    color: #64748b;
+    margin-top: 0.15rem;
+  }
+  
+  .switchToggle {
+    position: relative;
+    display: inline-block;
+    width: 2.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+  }
+  
+  .switchToggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: #e2e8f0;
+    transition: .15s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 2rem;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 1rem;
+    width: 1rem;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: .15s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 50%;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  
+  .switchToggle input:checked + .slider {
+    background-color: #0f172a;
+  }
+  
+  .switchToggle input:checked + .slider:before {
+    transform: translateX(1rem);
+  }
+  
+  /* SIDEBAR LAYOUT ITEMS */
+  .badgeInfoRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fafafa;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    margin-bottom: 1rem;
+  }
+  
+  .badgeLabel {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #475569;
+  }
+  
+  /* SHADCN BADGE ASSET */
+  .badgeShadcn {
+    font-size: 0.6875rem;
+    background-color: #f1f5f9;
+    color: #0f172a;
+    padding: 0.15rem 0.5rem;
+    border-radius: 9999px;
+    border: 1px solid #e2e8f0;
+    font-weight: 500;
+  }
+  
+  .backupActionsGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .btnActionUtility {
+    font-family: 'Geist Mono', monospace;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    padding: 0.45rem 0.75rem;
+    font-size: 0.8125rem;
+    font-weight: 500; /* Button Labels: 500 */
+    color: #0f172a;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    transition: background-color 0.15s ease;
+  }
+  
+  .btnActionUtility:hover {
+    background-color: #f1f5f9;
+  }
+  
+  .btnActionFull {
+    width: 100%;
+  }
+  
+  /* STICKY FOOTER ACTION DRAWER BAR SYSTEM STYLE */
+  .stickyFooterShadcn {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid #e2e8f0;
+    padding: 1rem 2rem;
+    z-index: 40;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.03);
+  }
+  
+  .footerFlexContainer {
+    max-width: 1240px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .footerStatusMessage {
+    font-size: 0.8125rem;
+    color: #64748b;
+    font-weight: 400;
+  }
+  
+  .footerActionButtonGroup {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  /* SHADCN MODERN DIALOG MODAL LAYERS */
+  .modalOverlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 1rem;
+  }
+  
+  .modalContent {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    width: 100%;
+    max-width: 28rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+    box-sizing: border-box;
+  }
+  
+  .modalHeader {
+    margin-bottom: 1rem;
+  }
+  
+  .modalHeader h2 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+    letter-spacing: -0.01em;
+  }
+  
+  .modalHeader p {
+    font-size: 0.8125rem;
+    color: #64748b;
+    margin: 0;
+  }
+  
+  .dialogNoticeText {
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    color: #475569;
+    background-color: #fff8f8;
+    border: 1px dashed #fecaca;
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .modalFooter {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }

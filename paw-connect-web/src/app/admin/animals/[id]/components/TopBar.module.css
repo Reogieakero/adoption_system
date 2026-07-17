@@ -1,0 +1,50 @@
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  animation: fadeInDown 0.5s ease both;
+  font-family: var(--font-body), 'Geist Mono', Monaco, Consolas, monospace;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.15s ease, gap 0.15s ease;
+}
+
+.backLink:hover {
+  color: var(--text-primary);
+  gap: 0.6rem;
+}
+
+.actionsBar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.actionError {
+  font-size: 0.72rem;
+  color: var(--error);
+  max-width: 220px;
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .topBar {
+    animation: none !important;
+  }
+}

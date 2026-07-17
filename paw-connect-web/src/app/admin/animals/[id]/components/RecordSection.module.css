@@ -1,0 +1,127 @@
+.section {
+  position: relative;
+  display: flex;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  animation: fadeInUp 0.55s ease both;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.section:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.section:nth-of-type(1) { animation-delay: 0.08s; }
+.section:nth-of-type(2) { animation-delay: 0.16s; }
+.section:nth-of-type(3) { animation-delay: 0.24s; }
+
+.sectionSpine {
+  flex: 0 0 4px;
+  position: relative;
+  z-index: 1;
+  background: var(--text-primary);
+  opacity: 0.15;
+}
+
+.sectionBody {
+  flex: 1;
+  padding: 1.4rem 1.6rem;
+  position: relative;
+  z-index: 1;
+}
+
+.sectionEyebrow {
+  display: block;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0 0 0.3rem;
+}
+
+.sectionTitle {
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 1.1rem 0;
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.fieldGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem 1.5rem;
+}
+
+@media (max-width: 520px) {
+  .fieldGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.fieldLabel {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.fieldValue {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.fieldValueMono {
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.heartRateRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.heartPulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.4); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section, .heartPulse {
+    animation: none !important;
+  }
+  .section:hover {
+    transform: none;
+  }
+}

@@ -1,6 +1,0 @@
-.grid4 {
-  composes: grid4 from "../../styles/theme.module.css";
-}
-.statCard {
-  composes: statCard from "../ui/Card.module.css";
-}

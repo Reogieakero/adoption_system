@@ -1,0 +1,243 @@
+/* --- FULL-PAGE HEALTH HISTORY VIEW --- */
+.historyFullPage {
+  width: 100%;
+  animation: pageFadeIn 0.32s ease-out;
+}
+
+@keyframes pageFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.historyHero {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background-color: var(--text-primary);
+  height: 220px;
+}
+
+@media (min-width: 768px) {
+  .historyHero {
+    height: 280px;
+  }
+}
+
+.historyHeroImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.historyHeroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(9, 9, 11, 0.9) 0%,
+    rgba(9, 9, 11, 0.55) 45%,
+    rgba(9, 9, 11, 0.1) 75%,
+    rgba(9, 9, 11, 0) 100%
+  );
+}
+
+.historyHeroContent {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  padding: 20px 24px;
+}
+
+.historyHeroContent .panelTag {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.historyHeroContent .panelTitle {
+  color: var(--background);
+  font-size: 1.5rem;
+}
+
+.historyHeroBreed {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 4px 0 0 0;
+}
+
+.historyHero .closeBtn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 3;
+  background-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--background);
+  backdrop-filter: blur(6px);
+}
+
+.historyHero .closeBtn:hover {
+  background-color: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.historyBody {
+  max-width: 720px;
+  margin: 24px auto 0 auto;
+  padding-bottom: 40px;
+}
+
+.panelTag {
+  display: block;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.panelTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.closeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background-color: var(--background);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.closeBtn:hover {
+  background-color: var(--ocean-14);
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+}
+
+.panelVitalsSummary {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.vitalIndicator {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background-color: var(--ocean-14);
+  color: var(--text-primary);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.vitalIndicator svg {
+  flex-shrink: 0;
+  color: var(--text-primary);
+}
+
+.timelineTitle {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0 0 16px 0;
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.timelineItem {
+  display: flex;
+  gap: 14px;
+  position: relative;
+  padding-bottom: 24px;
+}
+
+.timelineItem:last-child {
+  padding-bottom: 0;
+}
+
+.timelineItem:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 13px;
+  top: 28px;
+  bottom: 0;
+  width: 1px;
+  background-color: var(--border);
+}
+
+.timelineMarker {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--text-primary);
+  color: var(--background);
+  z-index: 1;
+}
+
+.timelineContent {
+  flex: 1;
+  min-width: 0;
+  padding-top: 3px;
+}
+
+.timelineDate {
+  display: block;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.timelineEventTitle {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 4px 0;
+}
+
+.timelineNotes {
+  font-size: 0.8rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.emptyTimeline {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  background-color: rgba(0, 0, 0, 0.02);
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  text-align: center;
+}
+

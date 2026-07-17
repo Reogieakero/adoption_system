@@ -1,0 +1,62 @@
+.cardWorkspaceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.recordItemCard {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  background: var(--background);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.recordCardTopRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.85rem;
+}
+
+.recordCardBody {
+  font-size: 0.78rem;
+  margin-bottom: 1rem;
+}
+
+.cardDataField {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.2rem 0;
+  align-items: center;
+}
+
+.cardDataLabel {
+  color: var(--text-muted);
+}
+
+.recordCardFooter {
+  display: flex;
+  gap: 0.4rem;
+  border-top: 1px solid var(--hover);
+  padding-top: 0.75rem;
+}
+
+.primaryCellText { font-weight: 600; color: var(--text-primary); }
+.secondaryCellText { font-size: 0.76rem; color: var(--text-muted); }
+.animalProfileCell { display: flex; align-items: center; gap: 0.6rem; }
+.animalAvatar { width: 30px; height: 30px; border-radius: 6px; object-fit: cover;   border: 1px solid var(--border); }
+
+.fullSpan {
+  grid-column: 1 / -1;
+}
+
+.mb05 {
+  margin-bottom: 0.5rem;
+}
+
+.emptyStateContainer { text-align: center; padding: 3rem 1rem !important; }
+.emptyStateMessage { color: var(--text-muted); font-size: 0.8rem; }

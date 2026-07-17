@@ -1,9 +1,0 @@
-.grid2 {
-  composes: grid2 from "../../styles/theme.module.css";
-}
-.progressTrack {
-  composes: progressTrack from "../../styles/theme.module.css";
-}
-.progressFill {
-  composes: progressFill from "../../styles/theme.module.css";
-}

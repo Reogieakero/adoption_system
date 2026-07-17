@@ -1,0 +1,42 @@
+.grid4 {
+  composes: grid4 from "../../styles/theme.module.css";
+}
+.statCard {
+  composes: statCard from "../ui/Card.module.css";
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.iconCircle {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--primary-soft);
+  display: grid;
+  place-items: center;
+}
+
+.valueContainer {
+  margin-top: 14px;
+}
+
+.valueText {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.labelText {
+  font-size: 12.5px;
+  color: var(--muted-foreground);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.sparklineWrapper {
+  margin-top: 10px;
+}

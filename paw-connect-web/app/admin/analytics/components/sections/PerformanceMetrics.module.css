@@ -1,3 +1,0 @@
-.grid5 {
-  composes: grid5 from "../../styles/theme.module.css";
-}

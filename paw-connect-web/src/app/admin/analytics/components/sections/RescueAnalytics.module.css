@@ -1,0 +1,21 @@
+.grid3 {
+  composes: grid3 from "../../styles/theme.module.css";
+}
+
+.successRateContainer {
+  display: grid;
+  place-items: center;
+  height: 230px;
+}
+
+.successRatePercent {
+  margin-top: -128px;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.successRateLabel {
+  margin-top: 62px;
+  font-size: 12px;
+  color: var(--muted-foreground);
+}

@@ -1,0 +1,7 @@
+.grid3 {
+  composes: grid3 from "../../styles/theme.module.css";
+}
+
+.shelterGrid {
+  gap: 24px;
+}

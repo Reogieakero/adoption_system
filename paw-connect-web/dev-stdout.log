@@ -1,0 +1,10 @@
+▲ Next.js 16.2.10 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.1.241:3000
+- Environments: .env.local
+✓ Ready in 1814ms
+
+○ Compiling /_not-found/page ...
+ GET / 404 in 4.8s (next.js: 4.4s, application-code: 455ms)
+ GET / 404 in 319ms (next.js: 123ms, application-code: 196ms)
+ GET / 404 in 126ms (next.js: 13ms, application-code: 113ms)

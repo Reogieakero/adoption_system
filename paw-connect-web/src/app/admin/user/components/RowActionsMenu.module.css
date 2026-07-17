@@ -1,0 +1,45 @@
+/* Action Dropdown Menu Elements Popover */
+.dropdownMenuShadcn {
+  position: absolute;
+  right: 1rem;
+  top: 80%;
+  width: 10.5rem;
+  background-color: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-md);
+  padding: 0.25rem;
+  z-index: 30;
+  text-align: left;
+}
+
+.dropdownItem {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0.45rem 0.5rem;
+  font-size: 0.75rem;
+  font-family: inherit;
+  cursor: pointer;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.dropdownItem:hover {
+  background-color: var(--hover);
+  color: var(--text-primary);
+}
+
+.dropdownDivider {
+  height: 1px;
+  background-color: var(--hover);
+  margin: 0.25rem 0;
+}
+
+.actionSuspend { color: #b91c1c !important; }
+.actionActivate { color: #166534 !important; }
+.dropdownDanger { color: #e11d48 !important; }
+.dropdownDanger:hover { background-color: #fff1f2 !important; }

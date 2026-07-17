@@ -1,0 +1,118 @@
+.wrapper {
+  position: relative;
+  min-width: 165px;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  box-sizing: border-box;
+  height: 32px;
+  padding: 0 12px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.trigger:focus {
+  border-color: var(--text-primary);
+}
+
+.triggerContent {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text-primary);
+}
+
+.icon {
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+.valueText {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.clearBtn {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.1s ease;
+}
+
+.clearBtn:hover {
+  color: var(--error);
+}
+
+.calendarPopover {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 999;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: var(--shadow-md);
+  padding: 0.5rem;
+  width: 240px;
+  box-sizing: border-box;
+}
+
+.calendarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.calendarMonthLabel {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  text-align: center;
+}
+
+.calendarWeekDay {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  padding: 2px 0;
+}
+
+.calendarDay {
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 0.75rem;
+  padding: 4px 0;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text-primary);
+  transition: background-color 0.1s ease;
+}
+
+.calendarDay:hover {
+  background: var(--hover);
+}
+
+.calendarDaySelected {
+  background: var(--text-primary) !important;
+  color: var(--background) !important;
+}

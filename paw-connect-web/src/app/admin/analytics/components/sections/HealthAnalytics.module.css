@@ -1,0 +1,84 @@
+.grid3 {
+  composes: grid3 from "../../styles/theme.module.css";
+}
+.progressTrack {
+  composes: progressTrack from "../../styles/theme.module.css";
+}
+.progressFill {
+  composes: progressFill from "../../styles/theme.module.css";
+}
+.badgeWarning {
+  composes: badgeWarning from "../../styles/theme.module.css";
+  width: fit-content;
+}
+
+.vaccinationContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 190px;
+  gap: 10px;
+}
+
+.vaccinationHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.vaccinationPercent {
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.progressTrackTall {
+  height: 10px;
+}
+
+.vaccinationDesc {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  margin: 0;
+}
+
+.treatmentContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 190px;
+  gap: 10px;
+}
+
+.treatmentHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.treatmentIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--warning-soft);
+  display: grid;
+  place-items: center;
+}
+
+.treatmentCount {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.treatmentLabel {
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+.heartRateFooter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--muted-foreground);
+}

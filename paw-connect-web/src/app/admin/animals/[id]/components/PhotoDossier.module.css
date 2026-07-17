@@ -1,0 +1,145 @@
+.photoPane {
+  position: sticky;
+  top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  animation: fadeInLeft 0.6s ease both;
+}
+
+@media (max-width: 860px) {
+  .photoPane {
+    position: static;
+  }
+}
+
+.photoCard {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--background);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.photoCard:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.photoFrame {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+
+.heroPhoto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.photoPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--hover);
+  color: var(--text-muted);
+}
+
+.idStamp {
+  position: absolute;
+  top: 14px;
+  right: -34px;
+  width: 150px;
+  padding: 0.3rem 0;
+  text-align: center;
+  transform: rotate(8deg);
+  background: var(--text-primary);
+  color: var(--background);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.nameBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0 0.15rem;
+}
+
+.heroName {
+  font-family: inherit;
+  font-size: 1.7rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.heroMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.heroId {
+  font-family: inherit;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+}
+
+.heroBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  padding: 0 0.15rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  border-radius: 9999px;
+  white-space: nowrap;
+}
+
+.bgOcean { background-color: rgba(16, 185, 129, 0.12); color: #10b981; }
+.bgRoyal { background-color: rgba(245, 158, 11, 0.12); color: #f59e0b; }
+.bgNavy { background-color: rgba(99, 102, 241, 0.12); color: #818cf8; }
+.bgDanger { background-color: #ef4444; color: #ffffff; }
+.bgSlate { background-color: var(--hover); color: var(--text-muted); }
+
+.bio {
+  font-size: 0.84rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  padding: 0 0.15rem;
+}
+
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photoPane {
+    animation: none !important;
+  }
+  .photoCard:hover {
+    transform: none;
+  }
+}

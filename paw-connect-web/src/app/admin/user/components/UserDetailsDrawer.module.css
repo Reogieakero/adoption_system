@@ -1,0 +1,180 @@
+/* Right Drawer Layout Component Primitives */
+.sheetOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: var(--overlay);
+  backdrop-filter: blur(2px);
+  z-index: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sheetOverlayOpen {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sheetContent {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 400px;
+  background-color: var(--background);
+  border-left: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  z-index: 1000;
+  transform: translateX(100%);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sheetContentOpen {
+  transform: translateX(0);
+}
+
+.drawerInner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.drawerHeader {
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--hover);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.drawerHeader h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.15rem 0;
+}
+
+.drawerHeader p {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.drawerBody {
+  padding: 1.25rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.drawerAvatarProfileBlock {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.drawerAvatarHuge {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.drawerIdentityTextGroup h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+  letter-spacing: -0.02em;
+}
+
+.separator {
+  height: 1px;
+  background-color: var(--hover);
+  margin: 1.25rem 0;
+}
+
+.drawerSectionTitleFlex {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.875rem;
+}
+
+.metaDataGridStack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.metaDataRowItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.metaItemLabel {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+}
+
+.metaItemValueValue {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  word-break: break-all;
+}
+
+/* Activity Metrics Dashboard Mini Tiles */
+.metricsBoxRowGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.activityMetricCellMini {
+  background-color: var(--surface-secondary);
+  border: 1px solid var(--hover);
+  border-radius: 0.375rem;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.metricCellLabel {
+  font-size: 0.625rem;
+  color: var(--text-secondary);
+}
+
+.metricCellNumber {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: 0.125rem;
+}
+
+.drawerFooter {
+  padding: 1rem;
+  border-top: 1px solid var(--hover);
+  background-color: var(--surface-secondary);
+}
+
+/* Utility used to shrink badges to their content width inside the drawer */
+.fitContent {
+  width: fit-content;
+}
+
+.metaSectionMargin {
+  margin-top: 1rem;
+}
+
+.btnFullWidth {
+  width: 100%;
+}
