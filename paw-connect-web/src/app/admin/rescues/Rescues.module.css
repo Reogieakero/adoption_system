@@ -1,21 +1,21 @@
 .container {
-  padding: 16px; /* Strict 16px page gutter padding */
-  background-color: #fafbfe;
+  padding: 16px;
+  background-color: var(--background);
   min-height: 100vh;
   font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  color: #0f172a;
+  color: var(--text-primary);
 }
 
 .headerSection {
   margin-bottom: 2rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border);
   padding-bottom: 1rem;
 }
 
 .pageTitle {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--text-primary);
   letter-spacing: -0.02em;
   margin: 0;
 }
@@ -31,7 +31,7 @@
 .sectionTitle {
   font-size: 1.05rem;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--text-primary);
   margin: 0;
 }
 
@@ -43,35 +43,43 @@
 }
 
 .caseCard {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 10px;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   min-height: 190px;
   overflow: hidden;
 }
 
-.caseCard:hover {
-  border-color: #cbd5e1;
-  box-shadow: 0 4px 12px 0 rgba(15, 23, 42, 0.06);
-}
-
-/* Large distinct background radial glow anchored bottom-left */
-.cardBlobBottomLeft {
+.caseCard::after {
+  content: "";
   position: absolute;
-  bottom: -45px;
-  left: -45px;
+  bottom: -40px;
+  right: -40px;
   width: 140px;
   height: 140px;
-  background: radial-gradient(circle, rgba(14, 165, 233, 0.28) 0%, rgba(219, 39, 119, 0.08) 50%, rgba(255, 255, 255, 0) 100%);
-  filter: blur(10px);
+  background: radial-gradient(circle at center, var(--text-primary) 0%, transparent 70%);
+  opacity: 0.15;
   pointer-events: none;
+  border-radius: 50%;
+  transition: opacity 0.2s ease, transform 0.2s ease;
   z-index: 1;
+}
+
+.caseCard:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-md);
+}
+
+.caseCard:hover::after {
+  opacity: 0.22;
+  transform: scale(1.15);
 }
 
 .cardAvatarHeader {
@@ -88,9 +96,9 @@
   height: 44px;
   border-radius: 50%;
   overflow: hidden;
-  border: 2px solid #ffffff;
+  border: 2px solid var(--card);
   box-shadow: 0 2px 4px rgba(15, 23, 42, 0.08);
-  background: #f1f5f9;
+  background: var(--surface-secondary);
   flex-shrink: 0;
 }
 
@@ -101,7 +109,7 @@
 }
 
 .viewDetailsTrigger {
-  background: #0f172a;
+  background: var(--text-primary);
   border: none;
   border-radius: 6px;
   width: 26px;
@@ -110,12 +118,12 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #ffffff;
+  color: var(--background);
   transition: background 0.2s ease;
 }
 
 .viewDetailsTrigger:hover {
-  background: #0284c7;
+  background: var(--info);
 }
 
 .cardContentBlock {
@@ -131,19 +139,19 @@
 .animalName {
   font-size: 0.88rem;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--text-primary);
   margin: 0 0 0.15rem 0;
 }
 
 .caseId {
   font-size: 0.72rem;
-  color: #64748b;
+  color: var(--text-muted);
   font-weight: 500;
 }
 
 .cardBody {
   font-size: 0.78rem;
-  color: #475569;
+  color: var(--text-secondary);
   line-height: 1.4;
   margin: 0.25rem 0 0.75rem 0;
 }
@@ -155,22 +163,22 @@
   width: 100vw;
   height: 100vh;
   z-index: 9999;
-  background-color: rgba(15, 23, 42, 0.4);
+  background-color: var(--overlay);
   backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px; /* Guaranteed outer boundary margin layout */
+  padding: 16px;
   box-sizing: border-box;
 }
 
 .modalContent {
   width: 100%;
   height: 100%;
-  background-color: #ffffff;
+  background-color: var(--background);
   border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -178,11 +186,11 @@
 
 .modalHeader {
   padding: 1rem 1.5rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #ffffff;
+  background-color: var(--background);
   position: relative;
   z-index: 50;
 }
@@ -202,13 +210,13 @@
 .customSelectTrigger {
   width: 100%;
   height: 36px;
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  background-color: var(--background);
+  border: 1px solid var(--border);
   border-radius: 6px;
   padding: 0 0.85rem;
   font-size: 0.8rem;
   font-weight: 500;
-  color: #0f172a;
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -219,8 +227,8 @@
 }
 
 .customSelectTrigger:hover {
-  background-color: #f8fafc;
-  border-color: #cbd5e1;
+  background-color: var(--hover);
+  border-color: var(--border-hover);
 }
 
 .customSelectMenu {
@@ -228,10 +236,10 @@
   top: calc(100% + 4px);
   left: 0;
   width: 100%;
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  background-color: var(--background);
+  border: 1px solid var(--border);
   border-radius: 6px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   z-index: 100;
   padding: 4px;
   box-sizing: border-box;
@@ -242,7 +250,7 @@
 .customSelectItem {
   padding: 0.45rem 0.75rem;
   font-size: 0.8rem;
-  color: #334155;
+  color: var(--text-secondary);
   border-radius: 4px;
   cursor: pointer;
   user-select: none;
@@ -250,13 +258,13 @@
 }
 
 .customSelectItem:hover {
-  background-color: #f1f5f9;
-  color: #0f172a;
+  background-color: var(--hover);
+  color: var(--text-primary);
 }
 
 .customSelectItemSelected {
-  background-color: #0f172a !important;
-  color: #ffffff !important;
+  background-color: var(--text-primary) !important;
+  color: var(--background) !important;
   font-weight: 500;
 }
 
@@ -280,8 +288,8 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border-right: 1px solid #e2e8f0;
-  background-color: #f8fafc;
+  border-right: 1px solid var(--border);
+  background-color: var(--surface-secondary);
 }
 
 /* Hidden Scrollbar Left Data Container view */
@@ -293,12 +301,12 @@
   overflow-y: scroll;
   flex-grow: 1;
   scroll-behavior: smooth;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .modalLeftColumn::-webkit-scrollbar {
-  display: none; /* Chrome/Safari/Webkit browser engines */
+  display: none;
 }
 
 /* Fixed Scroll Down CTA trigger anchor layout */
@@ -307,7 +315,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(to top, #f8fafc 60%, rgba(248, 250, 252, 0) 100%);
+  background: linear-gradient(to top, var(--surface-secondary) 60%, rgba(248, 250, 252, 0) 100%);
   padding: 0.75rem 1.5rem 1.25rem 1.5rem;
   display: flex;
   justify-content: center;
@@ -317,9 +325,9 @@
 
 .scrollDownActionButton {
   pointer-events: auto;
-  background-color: #ffffff;
-  color: #0f172a;
-  border: 1px solid #e2e8f0;
+  background-color: var(--card);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
   border-radius: 50%;
   width: 34px;
   height: 34px;
@@ -327,13 +335,12 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-sm);
   transition: background-color 0.15s, transform 0.15s;
 }
 
 .scrollDownActionButton:hover {
-  background-color: #f1f5f9;
-  transform: translateY(1px);
+  background-color: var(--hover);
 }
 
 .avatarContainer {
@@ -348,15 +355,15 @@
   height: 110px;
   border-radius: 50%;
   overflow: hidden;
-  border: 3px solid #ffffff;
+  border: 3px solid var(--card);
   box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
-  background: #f1f5f9;
+  background: var(--surface-secondary);
 }
 
 /* Dedicated Data Block Styling */
 .dataSegmentBlock {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 1rem;
 }
@@ -366,9 +373,9 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #64748b;
+  color: var(--text-muted);
   margin: 0 0 0.75rem 0;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--surface-secondary);
   padding-bottom: 0.25rem;
 }
 
@@ -384,14 +391,14 @@
 
 .fieldLabel {
   font-size: 0.68rem;
-  color: #94a3b8;
+  color: var(--text-muted);
   font-weight: 500;
   margin-bottom: 0.15rem;
 }
 
 .fieldValue {
   font-size: 0.8rem;
-  color: #1e293b;
+  color: var(--text-primary);
   font-weight: 500;
   line-height: 1.4;
 }
@@ -417,20 +424,20 @@
   top: 14px;
   bottom: -12px;
   width: 2px;
-  background-color: #e2e8f0;
+  background-color: var(--border);
 }
 
 .timelineMarker {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background-color: #cbd5e1;
+  background-color: var(--text-muted);
   margin-top: 3px;
   flex-shrink: 0;
 }
 
 .timelineMarkerActive {
-  background-color: #10b981;
+  background-color: var(--success);
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
 }
 
@@ -442,19 +449,19 @@
 .timelineStepTitle {
   font-size: 0.78rem;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--text-primary);
 }
 
 .timelineTimestamp {
   font-size: 0.68rem;
-  color: #94a3b8;
+  color: var(--text-muted);
 }
 
 /* Right-side Map Panel Styling */
 .modalRightColumn {
   height: 100%;
   width: 100%;
-  background-color: #f1f5f9;
+  background-color: var(--surface-secondary);
   padding: 12px;
   box-sizing: border-box;
 }
@@ -465,7 +472,7 @@
   position: relative;
   border-radius: 8px;
   overflow: hidden;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--border);
 }
 
 /* Standard Buttons */
@@ -484,22 +491,22 @@
 }
 
 .btnSecondary {
-  background-color: #ffffff;
-  color: #0f172a;
-  border: 1px solid #e2e8f0;
+  background-color: var(--background);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
 }
 
 .btnSecondary:hover {
-  background-color: #f8fafc;
-  border-color: #cbd5e1;
+  background-color: var(--hover);
+  border-color: var(--border-hover);
 }
 
 .btnActionExecute {
-  background-color: #0f172a;
-  color: #ffffff;
-  border: 1px solid #0f172a;
+  background-color: var(--text-primary);
+  color: var(--background);
+  border: 1px solid var(--text-primary);
 }
 
 .btnActionExecute:hover {
-  background-color: #1e293b;
+  background-color: var(--text-secondary);
 }

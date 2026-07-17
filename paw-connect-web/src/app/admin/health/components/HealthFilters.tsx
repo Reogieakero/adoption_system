@@ -1,6 +1,6 @@
-﻿'use client'
+'use client'
 import React from 'react'
-import { Search } from 'lucide-react'
+import SearchBar from '@/components/ui/search-bar'
 import ShadcnSelect from '@/components/ui/shadcn-select'
 import styles from './HealthFilters.module.css'
 
@@ -9,6 +9,8 @@ const HEALTH_OPTIONS = ["Health Status", "Healthy", "Treatment", "Critical"]
 const VACCINE_OPTIONS = ["Vaccination", "Vaccinated", "Due", "Not Vaccinated"]
 
 interface HealthFiltersProps {
+  searchQuery: string
+  onSearchQueryChange: (value: string) => void
   selectedSpecies: string
   selectedHealth: string
   selectedVaccine: string
@@ -18,6 +20,8 @@ interface HealthFiltersProps {
 }
 
 export default function HealthFilters({
+  searchQuery,
+  onSearchQueryChange,
   selectedSpecies,
   selectedHealth,
   selectedVaccine,
@@ -28,15 +32,29 @@ export default function HealthFilters({
   return (
     <div className={styles.controlsRow}>
       <div className={styles.searchWrapper}>
-        <Search size={14} className={styles.searchIcon} />
-        <input
-          type="text"
-          placeholder="Search animal id, name..."
-          className={styles.input}
+        <SearchBar
+          value={searchQuery}
+          onChange={onSearchQueryChange}
+          placeholder="Search by name, breed, ID..."
         />
       </div>
 
       <div className={styles.filterGroup}>
+        <div className={styles.healthLegend}>
+          <div className={styles.legendItem}>
+            <span className={`${styles.legendDot} ${styles.bgTeal}`} /> Healthy
+          </div>
+          <div className={styles.legendItem}>
+            <span className={`${styles.legendDot} ${styles.bgOrange}`} /> Recovering
+          </div>
+          <div className={styles.legendItem}>
+            <span className={`${styles.legendDot} ${styles.bgPrimary}`} /> Treatment
+          </div>
+          <div className={styles.legendItem}>
+            <span className={`${styles.legendDot} ${styles.bgWhite}`} /> Critical
+          </div>
+        </div>
+
         <ShadcnSelect
           options={SPECIES_OPTIONS}
           value={selectedSpecies}
@@ -61,4 +79,5 @@ export default function HealthFilters({
     </div>
   )
 }
+
 

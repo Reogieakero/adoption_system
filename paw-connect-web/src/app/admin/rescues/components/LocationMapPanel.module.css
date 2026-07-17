@@ -1,7 +1,7 @@
 .modalRightColumn {
   height: 100%;
   width: 100%;
-  background-color: #f1f5f9;
+  background-color: var(--muted);
   padding: 12px;
   box-sizing: border-box;
 }
@@ -12,7 +12,7 @@
   position: relative;
   border-radius: 8px;
   overflow: hidden;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--border);
 }
 
 .mapFrame {

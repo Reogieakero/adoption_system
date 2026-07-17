@@ -2,6 +2,8 @@
 .historyFullPage {
   width: 100%;
   animation: pageFadeIn 0.32s ease-out;
+  display: flex;
+  flex-direction: column;
 }
 
 @keyframes pageFadeIn {
@@ -9,113 +11,22 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-.historyHero {
-  position: relative;
-  border-radius: 14px;
-  overflow: hidden;
-  border: 1px solid var(--border);
-  background-color: var(--text-primary);
-  height: 220px;
-}
-
-@media (min-width: 768px) {
-  .historyHero {
-    height: 280px;
-  }
-}
-
-.historyHeroImage {
-  position: absolute;
-  inset: 0;
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.historyHeroOverlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(9, 9, 11, 0.9) 0%,
-    rgba(9, 9, 11, 0.55) 45%,
-    rgba(9, 9, 11, 0.1) 75%,
-    rgba(9, 9, 11, 0) 100%
-  );
-}
-
-.historyHeroContent {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 2;
-  padding: 20px 24px;
-}
-
-.historyHeroContent .panelTag {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.historyHeroContent .panelTitle {
-  color: var(--background);
-  font-size: 1.5rem;
-}
-
-.historyHeroBreed {
-  font-size: 0.75rem;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.65);
-  margin: 4px 0 0 0;
-}
-
-.historyHero .closeBtn {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  z-index: 3;
-  background-color: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.2);
-  color: var(--background);
-  backdrop-filter: blur(6px);
-}
-
-.historyHero .closeBtn:hover {
-  background-color: rgba(255, 255, 255, 0.22);
-  border-color: rgba(255, 255, 255, 0.35);
-}
-
-.historyBody {
-  max-width: 720px;
-  margin: 24px auto 0 auto;
-  padding-bottom: 40px;
-}
-
-.panelTag {
-  display: block;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  color: var(--text-muted);
-  margin-bottom: 4px;
-}
-
-.panelTitle {
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--text-primary);
-  margin: 0;
+  margin-bottom: 24px;
 }
 
 .closeBtn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   flex-shrink: 0;
-  border-radius: 6px;
+  border-radius: 8px;
   border: 1px solid var(--border);
   background-color: var(--background);
   color: var(--text-secondary);
@@ -129,37 +40,174 @@
   color: var(--text-primary);
 }
 
-.panelVitalsSummary {
+.historyLayout {
   display: flex;
-  gap: 10px;
-  margin-bottom: 28px;
+  flex-direction: column;
+  gap: 24px;
 }
 
-.vitalIndicator {
-  flex: 1;
+@media (min-width: 900px) {
+  .historyLayout {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+/* Sidebar Profile */
+.profileSidebar {
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background-color: var(--background);
+  box-shadow: var(--shadow-sm);
   display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  background-color: var(--ocean-14);
-  color: var(--text-primary);
+  flex-direction: column;
+}
+
+@media (min-width: 900px) {
+  .profileSidebar {
+    width: 320px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 24px;
+  }
+}
+
+.heroImageContainer {
+  position: relative;
+  width: 100%;
+  height: 240px;
+}
+
+.historyHeroImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profileContent {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.profileHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.panelTag {
   font-size: 0.75rem;
   font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  text-transform: uppercase;
 }
 
-.vitalIndicator svg {
-  flex-shrink: 0;
+.panelTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
+  margin: 0;
+}
+
+.historyHeroBreed {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.logVitalsAction {
+  margin-top: 8px;
+  width: 100%;
+  display: flex;
+}
+
+.logVitalsAction button {
+  flex: 1;
+}
+
+/* Main Content Area */
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Vitals Dashboard */
+.vitalsDashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.vitalCard {
+  background-color: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vitalCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.vitalHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.vitalIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background-color: var(--ocean-14);
+  color: var(--text-primary);
+}
+
+.vitalValue {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Timeline */
+.timelineSection {
+  background-color: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
 }
 
 .timelineTitle {
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin: 0 0 16px 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 24px 0;
 }
 
 .timeline {
@@ -170,9 +218,9 @@
 
 .timelineItem {
   display: flex;
-  gap: 14px;
+  gap: 20px;
   position: relative;
-  padding-bottom: 24px;
+  padding-bottom: 32px;
 }
 
 .timelineItem:last-child {
@@ -182,62 +230,71 @@
 .timelineItem:not(:last-child)::before {
   content: '';
   position: absolute;
-  left: 13px;
-  top: 28px;
+  left: 15px; /* Center of the marker (32px / 2 - 1) */
+  top: 36px;
   bottom: 0;
-  width: 1px;
+  width: 2px;
   background-color: var(--border);
+  border-radius: 1px;
 }
 
 .timelineMarker {
   flex-shrink: 0;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--text-primary);
-  color: var(--background);
+  background-color: var(--ocean-14);
+  color: var(--text-primary);
   z-index: 1;
+  border: 2px solid var(--background);
 }
 
 .timelineContent {
   flex: 1;
   min-width: 0;
-  padding-top: 3px;
+  padding-top: 4px;
 }
 
 .timelineDate {
-  display: block;
-  font-size: 10px;
-  font-weight: 500;
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
   color: var(--text-muted);
-  margin-bottom: 2px;
+  margin-bottom: 6px;
+  background-color: var(--hover);
+  padding: 2px 8px;
+  border-radius: 4px;
 }
 
 .timelineEventTitle {
-  font-size: 0.875rem;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 4px 0;
+  margin: 0 0 8px 0;
 }
 
 .timelineNotes {
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   font-weight: 400;
   line-height: 1.6;
   color: var(--text-secondary);
   margin: 0;
+  background-color: var(--hover);
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
 }
 
 .emptyTimeline {
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   color: var(--text-muted);
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: var(--hover);
   border: 1px dashed var(--border);
-  border-radius: 8px;
-  padding: 24px;
+  border-radius: 12px;
+  padding: 32px;
   text-align: center;
 }
 

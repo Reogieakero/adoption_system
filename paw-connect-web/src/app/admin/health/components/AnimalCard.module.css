@@ -1,162 +1,212 @@
-.card {
-  position: relative;
-  aspect-ratio: 3 / 4;
+.animalCard {
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 260px;
+  transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
 }
 
-.card:hover {
-  transform: translateY(-2px);
+.animalCard:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+  border-color: var(--border);
 }
 
-.card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  z-index: 3;
+.imageWrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background: var(--hover);
 }
 
-.cardImage {
-  position: absolute;
-  inset: 0;
+.cardPhoto {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scale(1);
-  transition: transform 0.35s ease;
+  transition: transform 0.4s ease;
 }
 
-.card:hover .cardImage {
-  transform: scale(1.06);
+.animalCard:hover .cardPhoto {
+  transform: scale(1.05);
 }
 
-.cardOverlay {
+.healthDot {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(9, 9, 11, 0.92) 0%,
-    rgba(9, 9, 11, 0.68) 32%,
-    rgba(9, 9, 11, 0.15) 62%,
-    rgba(9, 9, 11, 0) 80%
-  );
+  top: 12px;
+  left: 12px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  z-index: 10;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+  animation: pulseDot 2s infinite;
 }
 
-.speciesTag {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 2;
-  font-size: 10px;
-  font-weight: 500;
-  color: var(--background);
-  background-color: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 999px;
-  padding: 3px 9px;
-  backdrop-filter: blur(4px);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
+@keyframes pulseDot {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(255, 255, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
 }
 
-.cardContent {
+.cardPhotoPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--hover);
+  color: var(--text-muted);
+}
+
+.overlayInfo {
   position: absolute;
+  bottom: 0;
   left: 0;
   right: 0;
-  bottom: 0;
-  z-index: 2;
-  padding: 12px;
-}
-
-.animalName {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--background);
-  margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.animalBreed {
-  font-size: 10px;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.55);
-  margin: 2px 0 0 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.metaRow {
+  background: linear-gradient(to top, rgba(9, 9, 11, 0.95) 0%, rgba(9, 9, 11, 0.7) 75%, transparent 100%);
+  padding: 1.25rem;
+  color: #fafafa;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: flex-end;
+  box-sizing: border-box;
+  transition: padding 0.35s ease;
+}
+
+.animalCard:hover .overlayInfo {
+  padding-bottom: 1.5rem;
+}
+
+.cardHeader {
+  display: flex;
   justify-content: space-between;
-  margin-top: 6px;
+  align-items: flex-end;
+  margin-bottom: 0.25rem;
 }
 
-.animalId {
-  font-size: 10px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.45);
-  letter-spacing: 0.02em;
+.cardName {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0;
+  color: #fafafa;
 }
 
-.vitalChip {
+.cardSpecies {
+  font-size: 0.75rem;
+  opacity: 0.85;
+  letter-spacing: 0.01em;
+  color: #e2e8f0;
+}
+
+.cardId {
+  font-size: 0.65rem;
+  opacity: 0.6;
+  margin-bottom: 0.5rem;
+  color: #cbd5e1;
+}
+
+.hoverContent {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, opacity 0.4s ease, margin-top 0.4s ease;
   display: flex;
-  align-items: center;
-  gap: 3px;
-  font-size: 10px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
+  flex-direction: column;
+  gap: 0.35rem;
 }
 
-.heartIcon { color: rgba(255, 255, 255, 0.55); }
+.animalCard:hover .hoverContent {
+  max-height: 200px;
+  opacity: 1;
+  margin-top: 0.5rem;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.2rem;
+}
+
+.detailLabel {
+  opacity: 0.7;
+  color: #cbd5e1;
+}
+
+.detailValue {
+  font-weight: 600;
+  color: #fafafa;
+}
+
+.cardFooter {
+  margin-top: 0.75rem;
+  display: flex;
+  gap: 0.35rem;
+  width: 100%;
+}
+
+.cardFooter button {
+  flex: 1;
+}
+
+
+
+.bgTeal {
+  background-color: rgba(20, 184, 166, 0.9);
+  color: #ffffff;
+}
+
+.bgOrange {
+  background-color: rgba(249, 115, 22, 0.9);
+  color: #ffffff;
+}
+
+.bgPrimary {
+  background-color: rgba(99, 102, 241, 0.9);
+  color: #ffffff;
+}
+
+.bgSlate {
+  background-color: rgba(100, 116, 139, 0.9);
+  color: #ffffff;
+}
+
+.bgWhite {
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.heartIcon {
+  color: rgba(255, 255, 255, 0.55);
+}
+
 .heartCritical {
-  color: var(--text-primary);
+  color: #ef4444;
   animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: .5; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: .5;
+  }
 }
-
-.badgeGroup {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 10px;
-}
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 3px 9px;
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  line-height: 1.4;
-}
-
-.healthHealthy    { background-color: #10b981; color: var(--background); }
-.healthTreatment  { background-color: var(--text-secondary); color: var(--background); }
-.healthCritical   { background-color: var(--text-primary); color: var(--background); }
-
-.vaccineVaccinated   { background-color: #10b981; color: var(--background); }
-.vaccineDue          { background-color: #f59e0b; color: var(--background); }
-.vaccineNotVaccinated{ background-color: rgba(255, 255, 255, 0.14); color: var(--background); border: 1px solid rgba(255, 255, 255, 0.25); }
-
-.cardFooter {
-  margin-top: 10px;
-  display: flex;
-  flex-direction: row;
-  gap: 6px;
-}
-

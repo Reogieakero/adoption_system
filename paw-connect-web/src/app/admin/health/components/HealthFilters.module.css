@@ -14,9 +14,13 @@
 }
 
 .searchWrapper {
-  position: relative;
-  flex: 1;
-  max-width: 280px;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .searchWrapper {
+    max-width: 320px;
+  }
 }
 
 .searchIcon {
@@ -54,5 +58,46 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 16px;
+}
+
+.healthLegend {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding-right: 8px;
+  border-right: 1px solid var(--border);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.legendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.bgTeal {
+  background-color: rgba(20, 184, 166, 0.9);
+}
+
+.bgOrange {
+  background-color: rgba(249, 115, 22, 0.9);
+}
+
+.bgPrimary {
+  background-color: rgba(99, 102, 241, 0.9);
+}
+
+.bgWhite {
+  background-color: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.2);
 }

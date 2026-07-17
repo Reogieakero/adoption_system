@@ -1,6 +1,6 @@
 .dataSegmentBlock {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 1rem;
 }
@@ -10,9 +10,9 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #64748b;
+  color: var(--text-secondary);
   margin: 0 0 0.75rem 0;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--muted);
   padding-bottom: 0.25rem;
 }
 
@@ -28,14 +28,14 @@
 
 .fieldLabel {
   font-size: 0.68rem;
-  color: #94a3b8;
+  color: var(--text-secondary);
   font-weight: 500;
   margin-bottom: 0.15rem;
 }
 
 .fieldValue {
   font-size: 0.8rem;
-  color: #1e293b;
+  color: var(--text-primary);
   font-weight: 500;
   line-height: 1.4;
 }

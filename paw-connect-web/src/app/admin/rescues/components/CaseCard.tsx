@@ -20,16 +20,14 @@ export default function CaseCard({ item, onView }: CaseCardProps) {
   };
 
   return (
-    <div 
-      className={styles.caseCard} 
+    <div
+      className={styles.caseCard}
       onClick={() => onView(item)}
       onKeyDown={handleKeyDown}
       role="button"
       tabIndex={0}
       aria-label={`View details for ${item.animalType} case ${item.id}`}
     >
-      <div className={styles.cardBlobBottomLeft} />
-
       <div className={styles.cardAvatarHeader}>
         <div>
           <span className={styles.caseId}>{item.id}</span>

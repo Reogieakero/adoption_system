@@ -129,13 +129,12 @@ export default function RescuesPage() {
 
   return (
     <div className={styles.container}>
-      <header className={styles.headerSection}>
-        <h1 className={styles.pageTitle}>Rescue</h1>
+      <div className={styles.headerSection}>
         <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
-      </header>
+      </div>
 
       {isLoading ? (
-        <div className={styles.emptyState}>Loading rescue casesâ€¦</div>
+        <div className={styles.emptyState}>Loading rescue cases…</div>
       ) : error ? (
         <div className={styles.emptyState}>
           {error}{' '}
@@ -227,5 +226,3 @@ export default function RescuesPage() {
     </div>
   );
 }
-
-

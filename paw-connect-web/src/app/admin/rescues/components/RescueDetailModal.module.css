@@ -18,9 +18,9 @@
   height: 100%;
   max-width: calc(100vw - 32px);
   max-height: calc(100vh - 32px);
-  background-color: #ffffff;
+  background-color: var(--card);
   border-radius: 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
@@ -29,11 +29,11 @@
 
 .modalHeader {
   padding: 1rem 1.5rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #ffffff;
+  background-color: var(--card);
   position: relative;
   z-index: 50;
 }
@@ -41,13 +41,13 @@
 .modalTitle {
   font-size: 1.05rem;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--text-primary);
   margin: 0;
 }
 
 .modalSubtitle {
   font-size: 0.72rem;
-  color: #64748b;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
@@ -76,8 +76,8 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border-right: 1px solid #e2e8f0;
-  background-color: #f8fafc;
+  border-right: 1px solid var(--border);
+  background-color: var(--muted);
 }
 
 .modalLeftColumn {
@@ -101,7 +101,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(to top, #f8fafc 60%, rgba(248, 250, 252, 0) 100%);
+  background: linear-gradient(to top, var(--muted) 60%, rgba(248, 250, 252, 0) 100%);
   padding: 0.75rem 1.5rem 1.25rem 1.5rem;
   display: flex;
   justify-content: center;
@@ -111,9 +111,9 @@
 
 .scrollDownActionButton {
   pointer-events: auto;
-  background-color: #ffffff;
-  color: #0f172a;
-  border: 1px solid #e2e8f0;
+  background-color: var(--card);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
   border-radius: 50%;
   width: 34px;
   height: 34px;
@@ -126,7 +126,7 @@
 }
 
 .scrollDownActionButton:hover {
-  background-color: #f1f5f9;
+  background-color: var(--muted);
   transform: translateY(1px);
 }
 
@@ -142,9 +142,9 @@
   height: 110px;
   border-radius: 50%;
   overflow: hidden;
-  border: 3px solid #ffffff;
+  border: 3px solid var(--card);
   box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
-  background: #f1f5f9;
+  background: var(--muted);
 }
 
 .circleAvatarImage {
@@ -154,8 +154,8 @@
 }
 
 .dataSegmentBlock {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 1rem;
 }
@@ -165,14 +165,14 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #64748b;
+  color: var(--text-secondary);
   margin: 0 0 0.75rem 0;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--muted);
   padding-bottom: 0.25rem;
 }
 
 .evidenceLink {
-  color: #0284c7;
+  color: var(--primary);
   font-size: 0.75rem;
   text-decoration: underline;
 }
@@ -192,50 +192,24 @@
 }
 
 .btnSecondary {
-  background-color: #ffffff;
-  color: #0f172a;
-  border: 1px solid #e2e8f0;
+  background-color: var(--card);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
 }
 
 .btnSecondary:hover {
-  background-color: #f8fafc;
-  border-color: #cbd5e1;
+  background-color: var(--muted);
+  border-color: var(--border-hover);
 }
 
 .btnActionExecute {
-  background-color: #0f172a;
-  color: #ffffff;
-  border: 1px solid #0f172a;
+  background-color: var(--text-primary);
+  color: var(--card);
+  border: 1px solid var(--text-primary);
 }
 
 .btnActionExecute:hover {
-  background-color: #1e293b;
-}
-
-/* ... [Keep all previous styles unchanged] ... */
-
-.btnBase {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 6px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  height: 34px;
-  padding: 0 0.85rem;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  font-family: inherit;
-}
-
-.btnActionExecute {
-  background-color: #0f172a;
-  color: #ffffff;
-  border: 1px solid #0f172a;
-}
-
-.btnActionExecute:hover {
-  background-color: #1e293b;
+  background-color: var(--text-secondary);
 }
 
 .btnCloseIcon {
@@ -245,15 +219,15 @@
   border-radius: 6px;
   width: 34px;
   height: 34px;
-  background-color: #ffffff;
-  color: #64748b;
-  border: 1px solid #e2e8f0;
+  background-color: var(--card);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .btnCloseIcon:hover {
-  background-color: #f8fafc;
-  color: #0f172a;
-  border-color: #cbd5e1;
+  background-color: var(--muted);
+  color: var(--text-primary);
+  border-color: var(--border-hover);
 }

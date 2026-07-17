@@ -2,17 +2,14 @@
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  border-bottom: 1px solid #e2e8f0;
   flex-shrink: 0;
 }
 
 .tabCount {
   font-size: 0.68rem;
   font-weight: 600;
-  color: #94a3b8;
-  background-color: #f1f5f9;
+  color: var(--text-secondary);
+  background-color: var(--muted);
   border-radius: 999px;
   padding: 0.1rem 0.45rem;
 }
-
-

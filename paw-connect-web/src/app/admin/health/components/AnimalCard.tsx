@@ -1,16 +1,15 @@
-﻿'use client'
-import React, { useState } from 'react'
-import { createPortal } from 'react-dom'
+'use client'
+import React from 'react'
+import { useRouter } from 'next/navigation'
 import { Heart } from 'lucide-react'
 import { Animal } from '../types'
-import LogVitalsModal from './LogVitalsModal'
 import Button from '@/components/ui/button'
+import { resolvePhotoUrl } from '@/services/resolve-photo-url'
 import styles from './AnimalCard.module.css'
 
 interface AnimalCardProps {
   animal: Animal
   onViewHistory: (animal: Animal) => void
-  onVitalsUpdated?: (updatedAnimal: Animal) => void
 }
 
 const FALLBACK_PHOTO =
@@ -23,83 +22,106 @@ const FALLBACK_PHOTO =
     </svg>`
   )
 
-export default function AnimalCard({ animal, onViewHistory, onVitalsUpdated }: AnimalCardProps) {
-  const [isLogVitalsOpen, setIsLogVitalsOpen] = useState(false)
+function healthBadgeClass(status: string) {
+  switch (status) {
+    case 'Healthy':
+      return styles.bgTeal
+    case 'Recovering':
+      return styles.bgOrange
+    case 'Under Treatment':
+      return styles.bgPrimary
+    case 'Critical':
+      return styles.bgWhite
+    default:
+      return styles.bgSlate
+  }
+}
 
-  const healthClass =
-    animal.healthStatus === "Healthy"
-      ? styles.healthHealthy
-      : animal.healthStatus === "Under Treatment" || animal.healthStatus === "Recovering"
-      ? styles.healthTreatment
-      : styles.healthCritical
-
-  const vaccineClass =
-    animal.vaccinationStatus === "Vaccinated"
-      ? styles.vaccineVaccinated
-      : animal.vaccinationStatus === "Due" || animal.vaccinationStatus === "Not Fully Vaccinated"
-      ? styles.vaccineDue
-      : styles.vaccineNotVaccinated
+export default function AnimalCard({ animal, onViewHistory }: AnimalCardProps) {
+  const router = useRouter()
 
   const isCritical = animal.healthStatus === "Critical"
-  const photoSrc = animal.photo && animal.photo.trim() !== "" ? animal.photo : FALLBACK_PHOTO
+  const photoSrc = resolvePhotoUrl(animal.photo) || FALLBACK_PHOTO
 
   return (
-    <div className={styles.card}>
-      <img
-        src={photoSrc}
-        alt={animal.name}
-        className={styles.cardImage}
-        onError={(e) => {
-          if (e.currentTarget.src !== FALLBACK_PHOTO) {
-            e.currentTarget.src = FALLBACK_PHOTO
-          }
-        }}
-      />
-      <div className={styles.cardOverlay} />
+    <div className={styles.animalCard}>
+      <div className={styles.imageWrapper}>
+        <div 
+          className={`${styles.healthDot} ${healthBadgeClass(animal.healthStatus)}`} 
+          title={`Health Status: ${animal.healthStatus}`}
+        />
+        {photoSrc ? (
+          <img
+            src={photoSrc}
+            alt={animal.name}
+            className={styles.cardPhoto}
+            onError={(e) => {
+              if (e.currentTarget.src !== FALLBACK_PHOTO) {
+                e.currentTarget.src = FALLBACK_PHOTO
+              }
+            }}
+          />
+        ) : (
+          <div className={styles.cardPhotoPlaceholder}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </div>
+        )}
 
-      <span className={styles.speciesTag}>{animal.species}</span>
+        <div className={styles.overlayInfo}>
+          <div className={styles.cardHeader}>
+            <h3 className={styles.cardName}>{animal.name}</h3>
+            <span className={styles.cardSpecies}>{animal.species}</span>
+          </div>
+          <div className={styles.cardId}>{animal.tag || animal.id}</div>
 
-      <div className={styles.cardContent}>
-        <h3 className={styles.animalName}>{animal.name}</h3>
-        <p className={styles.animalBreed}>{animal.breed}</p>
+          <div className={styles.hoverContent}>
+            <div className={styles.detailRow}>
+              <span className={styles.detailLabel}>Breed:</span>
+              <span className={styles.detailValue}>{animal.breed}</span>
+            </div>
+            <div className={styles.detailRow}>
+              <span className={styles.detailLabel}>Heart Rate:</span>
+              <span className={styles.detailValue} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <Heart size={11} className={isCritical ? styles.heartCritical : styles.heartIcon} />
+                {animal.heartRate} bpm
+              </span>
+            </div>
+            <div className={styles.detailRow}>
+              <span className={styles.detailLabel}>Vaccine:</span>
+              <span className={styles.detailValue}>{animal.vaccinationStatus}</span>
+            </div>
+          </div>
 
-        <div className={styles.metaRow}>
-          <span className={styles.animalId}>{animal.tag}</span>
-          <div className={styles.vitalChip}>
-            <Heart size={11} className={isCritical ? styles.heartCritical : styles.heartIcon} />
-            <span>{animal.heartRate} bpm</span>
+
+
+          <div className={styles.cardFooter}>
+            <Button
+              variant="admin-secondary"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                onViewHistory(animal)
+              }}
+            >
+              History
+            </Button>
+            <Button
+              variant="admin-primary"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                router.push(`/admin/health/${animal.id}/log`)
+              }}
+            >
+              Vitals
+            </Button>
           </div>
         </div>
-
-        <div className={styles.badgeGroup}>
-          <span className={`${styles.badge} ${vaccineClass}`}>
-            {animal.vaccinationStatus}
-          </span>
-          <span className={`${styles.badge} ${healthClass}`}>
-            {animal.healthStatus}
-          </span>
-        </div>
-
-        <div className={styles.cardFooter}>
-          <Button variant="admin-secondary" onClick={() => onViewHistory(animal)}>
-            History
-          </Button>
-          <Button variant="admin-primary" onClick={() => setIsLogVitalsOpen(true)}>
-            Vitals
-          </Button>
-        </div>
       </div>
-
-      {isLogVitalsOpen && typeof window !== 'undefined' && createPortal(
-        <LogVitalsModal
-          animal={animal}
-          onClose={() => setIsLogVitalsOpen(false)}
-          onSaved={(updatedAnimal) => {
-            onVitalsUpdated?.(updatedAnimal)
-          }}
-        />,
-        document.body
-      )}
     </div>
   )
 }
+

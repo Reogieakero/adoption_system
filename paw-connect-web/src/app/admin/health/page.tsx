@@ -1,5 +1,5 @@
-﻿'use client'
-import React, { useState } from 'react'
+'use client'
+import React, { useState, useMemo } from 'react'
 import HealthHeader from './components/HealthHeader'
 import HealthFilters from './components/HealthFilters'
 import AnimalGrid from './components/AnimalGrid'
@@ -15,11 +15,12 @@ export default function HealthMonitoringPage() {
   const [selectedSpecies, setSelectedSpecies] = useState<string>("All Species")
   const [selectedHealth, setSelectedHealth] = useState<string>("Health Status")
   const [selectedVaccine, setSelectedVaccine] = useState<string>("Vaccination")
+  const [searchQuery, setSearchQuery] = useState<string>('')
 
-  // Grid data â€” fetched from the database
+  // Grid data — fetched from the database
   const { animals, isLoading, error, refetch, setAnimals } = useAnimalsHealth()
 
-  // Health History Detail State â€” only the id is tracked here; the full
+  // Health History Detail State — only the id is tracked here; the full
   // record (including history) is fetched on demand when a card is opened
   const [activeHistoryAnimalId, setActiveHistoryAnimalId] = useState<string | null>(null)
   const {
@@ -27,6 +28,42 @@ export default function HealthMonitoringPage() {
     isLoading: isHistoryLoading,
     refetch: refetchHistoryAnimal,
   } = useAnimalHealthDetail(activeHistoryAnimalId)
+
+  // Filter animals based on search query and select filter states
+  const filteredAnimals = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase()
+    return animals.filter((animal) => {
+      // 1. Search Query filter (matches name, breed, ID/tag)
+      const matchesQuery =
+        !query ||
+        animal.name.toLowerCase().includes(query) ||
+        animal.breed.toLowerCase().includes(query) ||
+        animal.id.toLowerCase().includes(query) ||
+        (animal.tag && animal.tag.toLowerCase().includes(query))
+
+      // 2. Species filter
+      const matchesSpecies =
+        selectedSpecies === "All Species" ||
+        animal.species.toLowerCase() === selectedSpecies.toLowerCase()
+
+      // 3. Health Status filter
+      const matchesHealth =
+        selectedHealth === "Health Status" ||
+        (selectedHealth === "Treatment" &&
+          (animal.healthStatus === "Under Treatment" || animal.healthStatus === "Recovering")) ||
+        animal.healthStatus.toLowerCase() === selectedHealth.toLowerCase()
+
+      // 4. Vaccination filter
+      const matchesVaccine =
+        selectedVaccine === "Vaccination" ||
+        (selectedVaccine === "Vaccinated" && animal.vaccinationStatus === "Vaccinated") ||
+        (selectedVaccine === "Due" &&
+          (animal.vaccinationStatus === "Due" || animal.vaccinationStatus === "Not Fully Vaccinated")) ||
+        (selectedVaccine === "Not Vaccinated" && animal.vaccinationStatus === "Not Vaccinated")
+
+      return matchesQuery && matchesSpecies && matchesHealth && matchesVaccine
+    })
+  }, [animals, searchQuery, selectedSpecies, selectedHealth, selectedVaccine])
 
   const toggleDropdown = (name: DropdownName) => {
     setOpenDropdown(openDropdown === name ? null : name)
@@ -55,15 +92,6 @@ export default function HealthMonitoringPage() {
     setActiveHistoryAnimalId(null)
   }
 
-  const handleVitalsUpdated = (updatedAnimal: Animal) => {
-    setAnimals((prev) =>
-      prev.map((a) => (a.id === updatedAnimal.id ? updatedAnimal : a))
-    )
-    if (activeHistoryAnimalId === updatedAnimal.id) {
-      refetchHistoryAnimal()
-    }
-  }
-
   return (
     <>
       <link
@@ -80,6 +108,8 @@ export default function HealthMonitoringPage() {
         {!activeHistoryAnimalId ? (
           <>
             <HealthFilters
+              searchQuery={searchQuery}
+              onSearchQueryChange={setSearchQuery}
               selectedSpecies={selectedSpecies}
               selectedHealth={selectedHealth}
               selectedVaccine={selectedVaccine}
@@ -88,7 +118,7 @@ export default function HealthMonitoringPage() {
               onSelectVaccine={handleSelectVaccine}
             />
 
-            {isLoading && <p>Loading animalsâ€¦</p>}
+            {isLoading && <p>Loading animals…</p>}
             {!isLoading && error && (
               <p role="alert">
                 {error}{' '}
@@ -97,23 +127,22 @@ export default function HealthMonitoringPage() {
             )}
             {!isLoading && !error && (
               <AnimalGrid
-                animals={animals}
+                animals={filteredAnimals}
                 onViewHistory={handleViewHistory}
-                onVitalsUpdated={handleVitalsUpdated}
               />
             )}
           </>
         ) : isHistoryLoading || !activeHistoryAnimal ? (
-          <p>Loading health historyâ€¦</p>
+          <p>Loading health history…</p>
         ) : (
           <HealthHistoryView
             animal={activeHistoryAnimal}
             onClose={handleCloseHistory}
-            onVitalsUpdated={handleVitalsUpdated}
           />
         )}
       </div>
     </>
   )
 }
+
 
