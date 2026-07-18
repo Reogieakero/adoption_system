@@ -1,10 +1,12 @@
 ﻿"use client";
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { API_BASE_URL } from '@/lib/config';
 import { useGoogleAuth } from '@/hooks/use-google-auth';
 
 export function useLoginForm() {
+  const router = useRouter();
   const { signInWithGoogle } = useGoogleAuth();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [rememberMe, setRememberMe] = useState(false);
@@ -48,9 +50,7 @@ export function useLoginForm() {
       }
 
       storeSession(data.token);
-      setSuccessMessage(
-        `Login successful — welcome back, ${data.user.firstName} ${data.user.lastName} (${data.user.email}).`
-      );
+      router.push('/home');
     } catch {
       setErrorMessage('Unable to reach the server. Please try again.');
     } finally {
@@ -68,9 +68,7 @@ export function useLoginForm() {
       if (!result) return;
 
       storeSession(result.token);
-      setSuccessMessage(
-        `Login successful — welcome back, ${result.user.firstName} ${result.user.lastName} (${result.user.email}) via Google.`
-      );
+      router.push('/home');
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Google sign-in failed. Please try again.';
       setErrorMessage(message);
