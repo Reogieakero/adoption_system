@@ -91,7 +91,7 @@ export function useRegisterForm() {
     try {
       const { confirmPassword, ...payload } = formData;
 
-      const res = await fetch(`${API_BASE_URL}/auth/register`, {
+      const res = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -172,7 +172,7 @@ export function useRegisterForm() {
 
     setIsVerifying(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/auth/verify-email`, {
+      const res = await fetch(`${API_BASE_URL}/api/auth/verify-email`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.email, code }),
@@ -200,7 +200,7 @@ export function useRegisterForm() {
     setResendMessage('');
     setVerifyError('');
     try {
-      const res = await fetch(`${API_BASE_URL}/auth/resend-code`, {
+      const res = await fetch(`${API_BASE_URL}/api/auth/resend-code`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.email }),

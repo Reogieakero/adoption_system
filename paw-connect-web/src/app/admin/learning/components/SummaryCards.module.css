@@ -14,14 +14,43 @@
 }
 
 .summaryCard {
+  position: relative;
+  overflow: hidden;
   border-radius: 0.5rem;
-  border: 1px solid #e2e8f0;
-  background-color: #ffffff;
+  border: 1px solid var(--border);
+  background-color: var(--background);
   padding: 1.25rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.summaryCard::after {
+  content: "";
+  position: absolute;
+  bottom: -40px;
+  right: -40px;
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle at center, var(--text-primary) 0%, transparent 70%);
+  opacity: 0.15;
+  pointer-events: none;
+  border-radius: 50%;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.summaryCard:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.summaryCard:hover::after {
+  opacity: 0.22;
+  transform: scale(1.15);
 }
 
 .summaryCardHeader {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -30,31 +59,52 @@
 .summaryCardHeader p {
   font-size: 0.8125rem;
   font-weight: 500;
-  color: #0f172a;
+  color: var(--text-primary);
   margin: 0;
 }
 
 .summaryCardValue {
+  position: relative;
+  z-index: 1;
   font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: -0.02em;
   margin: 0.25rem 0 0 0;
+  color: var(--text-primary);
 }
 
 .summaryCardDesc {
+  position: relative;
+  z-index: 1;
   font-size: 0.75rem;
-  color: #64748b;
+  color: var(--text-secondary);
   margin: 0.25rem 0 0 0;
 }
 
 .valueGreen {
-  color: #10b981;
+  color: var(--success);
 }
 
 .valueAmber {
-  color: #b45309;
+  color: var(--warning);
 }
 
 .valueBlue {
-  color: #2563eb;
+  color: var(--info);
+}
+
+.iconMuted {
+  color: var(--text-muted);
+}
+
+.iconGreen {
+  color: var(--success);
+}
+
+.iconAmber {
+  color: var(--warning);
+}
+
+.iconBlue {
+  color: var(--info);
 }

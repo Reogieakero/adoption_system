@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import Button from "@/components/ui/button";
 import styles from "./ModuleCard.module.css";
-import type { LearningModule } from "../types";
+import type { LearningModule } from "@/types";
 
 interface ModuleCardProps {
   module: LearningModule;
@@ -42,7 +42,7 @@ export default function ModuleCard({
           <img src={module.image} alt={module.title} className={styles.cardImage} />
         ) : (
           <div className={styles.cardImagePlaceholder}>
-            <ImageIcon size={28} color="#cbd5e1" />
+            <ImageIcon size={28} className={styles.placeholderIcon} />
           </div>
         )}
         <div className={styles.badgeContainer}>
@@ -89,15 +89,15 @@ export default function ModuleCard({
 
         <div className={styles.cardMetricsRow}>
           <div className={styles.metricItem}>
-            <Clock size={14} color="#94a3b8" />
+            <Clock size={14} className={styles.metricIconMuted} />
             <span>{module.duration}</span>
           </div>
           <div className={`${styles.metricItem} ${styles.metricCenter}`}>
-            <Eye size={14} color="#94a3b8" />
+            <Eye size={14} className={styles.metricIconMuted} />
             <span>{module.views} views</span>
           </div>
           <div className={`${styles.metricItem} ${styles.metricEnd}`}>
-            <TrendingUp size={14} color="#10b981" />
+            <TrendingUp size={14} className={styles.metricIconSuccess} />
             <span>{module.completionRate} CR</span>
           </div>
         </div>
@@ -113,4 +113,3 @@ export default function ModuleCard({
     </div>
   );
 }
-

@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Syringe, Activity, HeartPulse } from "lucide-react";
 import styles from "./HealthAnalytics.module.css";
@@ -6,7 +6,7 @@ import { SectionHeading } from "../ui/SectionHeading";
 import { ChartCard } from "../ui/ChartCard";
 import { DonutChart } from "../ui/DonutChart";
 import { CustomTooltip } from "../ui/CustomTooltip";
-import { healthStatus, vaccinationCoverage, heartRateSummary, commonConditions, vetVisitsPerMonth } from "../../data/mockData";
+import { healthStatus, vaccinationCoverage, heartRateSummary, commonConditions, vetVisitsPerMonth } from "@/lib/mock-data/analytics";
 
 export function HealthAnalytics() {
   return (
@@ -44,7 +44,7 @@ export function HealthAnalytics() {
               </div>
             </div>
             <span className={styles.badgeWarning}>
-              12 critical Â· 64 stable
+              12 critical · 64 stable
             </span>
           </div>
         </ChartCard>
@@ -60,7 +60,7 @@ export function HealthAnalytics() {
             </LineChart>
           </ResponsiveContainer>
           <div className={styles.heartRateFooter}>
-            <HeartPulse size={13} color="var(--chart-4)" /> Normal range 70â€“120 bpm across monitored patients
+            <HeartPulse size={13} color="var(--chart-4)" /> Normal range 70–120 bpm across monitored patients
           </div>
         </ChartCard>
 

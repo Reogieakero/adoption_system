@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Calendar, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Button from './button';
 import styles from './date-picker.module.css';
 
@@ -43,14 +43,8 @@ export default function DatePicker({ value, onChange }: DatePickerProps) {
     <div className={styles.wrapper} ref={containerRef}>
       <button type="button" className={styles.trigger} onClick={() => setIsOpen(!isOpen)}>
         <span className={styles.triggerContent}>
-          <Calendar size={14} className={styles.icon} />
           <span className={styles.valueText}>{value || 'Filter by date'}</span>
         </span>
-        {value && (
-          <span className={styles.clearBtn} onClick={(e) => { e.stopPropagation(); onChange(''); }}>
-            <X size={12} />
-          </span>
-        )}
       </button>
 
       {isOpen && (

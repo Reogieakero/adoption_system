@@ -1,8 +1,8 @@
 ﻿"use client";
 
 import React, { useMemo, useState } from 'react';
-import styles from './AnimalsPage.module.css';
-import type { Animal } from './animalsData';
+import styles from './page.module.css';
+import type { Animal } from '@/types';
 import { useAnimals } from '@/hooks/admin/use-animals';
 import StatsGrid, { StatItem } from './components/StatsGrid';
 import Toolbar from './components/Toolbar';

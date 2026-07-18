@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import type { Animal } from '@/app/admin/animals/animalsData';
+import type { Animal } from '@/types';
 import { fetchAnimalById, fetchAnimals } from '@/services/animals.api';
 
 interface UseAnimalsResult {
@@ -75,4 +75,3 @@ export function useAnimal(id: string | null): UseAnimalResult {
 
   return { animal, isLoading, error, refetch };
 }
-

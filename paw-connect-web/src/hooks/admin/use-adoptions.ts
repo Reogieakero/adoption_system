@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import type { AdoptionApplication, ApplicationDetails } from '@/app/admin/adoptions/types';
+import type { AdoptionApplication, ApplicationDetails } from '@/types';
 import { fetchAdoptionDetails, fetchAdoptions } from '@/services/adoptions.api';
 
 interface UseAdoptionsResult {
@@ -81,4 +81,3 @@ export function useAdoptionDetails(id: string | null): UseAdoptionDetailsResult 
 
   return { details, isLoading, error };
 }
-

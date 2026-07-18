@@ -4,7 +4,10 @@ import React, { useState, useMemo } from "react";
 import styles from "./page.module.css";
 import { useUsers } from "@/hooks/admin/use-users";
 import { deleteUser, updateUserStatus } from "@/services/users.api";
-import type { UserEntry, RoleFilterValue, StatusFilterValue } from "./types";
+import type { AdminUserSummary, UserRole, UserStatus } from "@/types";
+
+type RoleFilterValue = "All" | UserRole;
+type StatusFilterValue = "All" | UserStatus;
 
 import SummaryCards from "./components/SummaryCards";
 import UserTable from "./components/UserTable";
@@ -21,7 +24,7 @@ export default function UserManagementPage() {
   const [activeRowMenuId, setActiveRowMenuId] = useState<string | null>(null);
 
   // View Sheet State
-  const [selectedUser, setSelectedUser] = useState<UserEntry | null>(null);
+  const [selectedUser, setSelectedUser] = useState<AdminUserSummary | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   // Filter Pipeline Engine
@@ -71,7 +74,7 @@ export default function UserManagementPage() {
     }
   };
 
-  const handleOpenSheet = (user: UserEntry) => {
+  const handleOpenSheet = (user: AdminUserSummary) => {
     setSelectedUser(user);
     setIsSheetOpen(true);
     setActiveRowMenuId(null);
@@ -82,7 +85,7 @@ export default function UserManagementPage() {
     setTimeout(() => setSelectedUser(null), 250);
   };
 
-  const handleEditUser = (user: UserEntry) => {
+  const handleEditUser = (user: AdminUserSummary) => {
     setActiveRowMenuId(null);
     alert(`Initiating edit pipeline for user metadata context: ${user.name}`);
   };

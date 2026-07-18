@@ -1,0 +1,82 @@
+.convoCard {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  background-color: transparent;
+  transition: background-color 0.15s ease;
+  position: relative;
+  border: 1px solid transparent;
+}
+
+.convoCard:hover {
+  background-color: var(--hover);
+}
+
+.convoCardActive {
+  background-color: var(--hover);
+  border-color: var(--border);
+}
+
+.avatarSlot {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.cardContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.cardMetaRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.125rem;
+}
+
+.userName {
+  font-size: 0.813rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardTime {
+  font-family: var(--font-geist-mono), 'Geist Mono', monospace;
+  font-size: 0.688rem;
+  color: var(--text-muted);
+}
+
+.previewRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.msgPreview {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+.msgPreviewUnread {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.unreadBadge {
+  width: 6px;
+  height: 6px;
+  background-color: var(--success);
+  border-radius: 50%;
+  flex-shrink: 0;
+}

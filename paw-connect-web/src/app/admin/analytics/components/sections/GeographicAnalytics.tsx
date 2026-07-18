@@ -2,7 +2,7 @@
 import styles from "./GeographicAnalytics.module.css";
 import { SectionHeading } from "../ui/SectionHeading";
 import { Card } from "../ui/Card";
-import { mapPins } from "../../data/mockData";
+import { mapPins } from "@/lib/mock-data/analytics";
 
 export function GeographicAnalytics() {
   const [hoveredType, setHoveredType] = useState<string | null>(null);
@@ -46,12 +46,12 @@ export function GeographicAnalytics() {
               <span className={styles.mapPinPulse} style={{ background: pinColor(p.type) }} />
               <span className={styles.mapPinDot} style={{ background: pinColor(p.type) }} />
               <div className={styles.mapPopover}>
-                {p.label} â€” {p.count} cases
+                {p.label} — {p.count} cases
               </div>
             </div>
           ))}
           <div className={styles.mapInfo}>
-            Davao Region · {mapPins.length} active hotspots · hover pins for details
+            Davao Region � {mapPins.length} active hotspots � hover pins for details
           </div>
         </div>
       </Card>

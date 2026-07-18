@@ -8,3 +8,18 @@ export function signUserToken(userId: number, email: string): string {
 export function signAdminToken(email: string): string {
   return jwt.sign({ email, role: 'admin' }, env.jwtSecret, { expiresIn: '12h' });
 }
+
+export interface PendingGooglePayload {
+  email: string;
+  googleUid: string;
+  firstName: string;
+  lastName: string;
+}
+
+export function signPendingGoogleToken(payload: PendingGooglePayload): string {
+  return jwt.sign(payload, env.jwtSecret, { expiresIn: '15m' });
+}
+
+export function verifyPendingGoogleToken(token: string): PendingGooglePayload {
+  return jwt.verify(token, env.jwtSecret) as PendingGooglePayload;
+}

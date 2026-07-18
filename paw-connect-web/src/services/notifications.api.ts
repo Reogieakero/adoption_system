@@ -1,66 +1,10 @@
-﻿import { API_BASE_URL } from '@/lib/config';
-import type { AppNotification, NotificationType } from '@/app/admin/notifications/types';
+﻿import { createServiceClient } from '@/lib/api-client';
+import type { AppNotification, NotificationType, NotificationListResponse } from '@/types';
 
-const NOTIFICATIONS_BASE = `${API_BASE_URL}/api/admin/notifications`;
-
-export interface NotificationListParams {
-  page?: number;
-  limit?: number;
-  type?: NotificationType;
-  unreadOnly?: boolean;
-}
-
-export interface NotificationListResponse {
-  success: true;
-  notifications: AppNotification[];
-  total: number;
-  unreadCount: number;
-  page: number;
-  limit: number;
-}
-
-class NotificationApiError extends Error {
-  status: number;
-
-  constructor(status: number, message: string) {
-    super(message);
-    this.name = 'NotificationApiError';
-    this.status = status;
-  }
-}
-
-function getAdminToken(): string {
-  const token = sessionStorage.getItem('adminAuthToken');
-  if (!token) {
-    throw new NotificationApiError(401, 'Admin session expired. Please sign in again.');
-  }
-  return token;
-}
-
-async function adminRequest<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${NOTIFICATIONS_BASE}${path}`, {
-    ...init,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${getAdminToken()}`,
-      ...init?.headers,
-    },
-  });
-
-  const data = await res.json().catch(() => ({}));
-
-  if (!res.ok) {
-    throw new NotificationApiError(
-      res.status,
-      typeof data.message === 'string' ? data.message : 'Request failed'
-    );
-  }
-
-  return data as T;
-}
+const { request } = createServiceClient('/api/admin/notifications');
 
 export async function fetchNotifications(
-  params: NotificationListParams = {}
+  params: { page?: number; limit?: number; type?: NotificationType; unreadOnly?: boolean } = {}
 ): Promise<NotificationListResponse> {
   const query = new URLSearchParams();
   if (params.page) query.set('page', String(params.page));
@@ -69,16 +13,16 @@ export async function fetchNotifications(
   if (params.unreadOnly) query.set('unreadOnly', 'true');
 
   const qs = query.toString();
-  return adminRequest<NotificationListResponse>(qs ? `?${qs}` : '');
+  return request<NotificationListResponse>(qs ? `?${qs}` : '');
 }
 
 export async function fetchUnreadCount(): Promise<number> {
-  const data = await adminRequest<{ success: true; count: number }>('/unread-count');
+  const data = await request<{ success: true; count: number }>('/unread-count');
   return data.count;
 }
 
 export async function markNotificationRead(id: number): Promise<AppNotification> {
-  const data = await adminRequest<{ success: true; notification: AppNotification }>(
+  const data = await request<{ success: true; notification: AppNotification }>(
     `/${id}/read`,
     { method: 'PATCH' }
   );
@@ -86,12 +30,12 @@ export async function markNotificationRead(id: number): Promise<AppNotification>
 }
 
 export async function markAllNotificationsRead(): Promise<number> {
-  const data = await adminRequest<{ success: true; updated: number }>('/read-all', {
+  const data = await request<{ success: true; updated: number }>('/read-all', {
     method: 'PATCH',
   });
   return data.updated;
 }
 
 export async function deleteNotification(id: number): Promise<void> {
-  await adminRequest<{ success: true }>(`/${id}`, { method: 'DELETE' });
+  await request<{ success: true }>(`/${id}`, { method: 'DELETE' });
 }

@@ -37,19 +37,19 @@ export default function LoginPage() {
       <h1 className={styles.title}>Welcome back</h1>
       <p className={styles.subtitle}>Sign in to continue to your account</p>
 
+      {errorMessage && (
+        <div className={styles.noticeCard} role="alert">
+          <p className={styles.fieldError}>{errorMessage}</p>
+        </div>
+      )}
+
+      {successMessage && (
+        <div className={styles.successCard} role="status">
+          <p className={styles.successText}>{successMessage}</p>
+        </div>
+      )}
+
       <form className={styles.form} onSubmit={handleSubmit}>
-        {errorMessage && (
-          <div className={styles.noticeCard} role="alert">
-            <p className={styles.fieldError}>{errorMessage}</p>
-          </div>
-        )}
-
-        {successMessage && (
-          <div className={styles.successCard} role="status">
-            <p className={styles.successText}>{successMessage}</p>
-          </div>
-        )}
-
         <FormInput
           id="email"
           type="email"
@@ -67,6 +67,7 @@ export default function LoginPage() {
             value={formData.password}
             onChange={handleChange}
             minLength={8}
+            className={styles.passwordInput}
             required
           />
           <button
@@ -97,7 +98,6 @@ export default function LoginPage() {
         <Button
           type="submit"
           variant="solid"
-          className={styles.submitButton}
           disabled={isSubmitting}
         >
           {isSubmitting ? 'Signing in...' : 'Sign In'}
@@ -117,4 +117,3 @@ export default function LoginPage() {
     </AuthLayout>
   );
 }
-

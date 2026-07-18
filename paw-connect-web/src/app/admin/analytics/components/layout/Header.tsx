@@ -1,10 +1,10 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { Calendar, MapPin, RefreshCw } from "lucide-react";
 import styles from "./Header.module.css";
 import { Select } from "../ui/Select";
 import { ExportMenu } from "../ui/ExportMenu";
 import { IconButton } from "../ui/IconButton";
-import { activeBarangays } from "../../data/mockData";
+import { activeBarangays } from "@/lib/mock-data/analytics";
 
 export function Header({ onRefresh, refreshing }: { onRefresh: () => void; refreshing: boolean }) {
   const [dateRange, setDateRange] = useState("Last 30 days");

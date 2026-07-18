@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 import Button from '@/components/ui/button';
 import styles from './CaseTable.module.css';
-import { RescueCase } from '../types';
+import type { RescueCase } from '@/types';
 
 interface CaseTableProps {
   items: RescueCase[];

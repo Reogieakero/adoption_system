@@ -4,7 +4,7 @@ import React from "react";
 import { Search } from "lucide-react";
 import styles from "./FilterBar.module.css";
 import ShadcnSelect from '@/components/ui/shadcn-select';
-import type { SelectOption } from "../types";
+import type { SelectOption } from "@/types";
 
 interface FilterBarProps {
   search: string;

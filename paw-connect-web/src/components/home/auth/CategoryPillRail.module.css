@@ -1,0 +1,24 @@
+.rail {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 0 0 4px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.rail::-webkit-scrollbar {
+  display: none;
+}
+
+.pill {
+  flex-shrink: 0 !important;
+  border-radius: 100px !important;
+  height: auto !important;
+  padding: 8px 20px !important;
+  font-size: var(--text-sm) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  letter-spacing: 0.01em !important;
+  white-space: nowrap;
+}

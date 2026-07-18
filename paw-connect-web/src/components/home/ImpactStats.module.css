@@ -1,0 +1,39 @@
+.section {
+  padding: 72px 24px;
+  background: var(--text-primary);
+}
+
+.grid {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.card {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.value {
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--background);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.label {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.4;
+}

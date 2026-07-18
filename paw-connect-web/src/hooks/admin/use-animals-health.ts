@@ -1,19 +1,19 @@
 ﻿'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import type { Animal } from '@/app/admin/health/types';
+import type { HealthAnimal } from '@/types';
 import { fetchAnimalHealthDetail, fetchAnimalsHealth } from '@/services/health.api';
 
 interface UseAnimalsHealthResult {
-  animals: Animal[];
+  animals: HealthAnimal[];
   isLoading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
-  setAnimals: React.Dispatch<React.SetStateAction<Animal[]>>;
+  setAnimals: React.Dispatch<React.SetStateAction<HealthAnimal[]>>;
 }
 
 export function useAnimalsHealth(): UseAnimalsHealthResult {
-  const [animals, setAnimals] = useState<Animal[]>([]);
+  const [animals, setAnimals] = useState<HealthAnimal[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,18 +39,14 @@ export function useAnimalsHealth(): UseAnimalsHealthResult {
 }
 
 interface UseAnimalHealthDetailResult {
-  animal: Animal | null;
+  animal: HealthAnimal | null;
   isLoading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
 }
 
-/**
- * Fetches the full health record (including history) for a single animal.
- * Pass null to skip fetching (e.g. when no detail view is open).
- */
 export function useAnimalHealthDetail(id: string | null): UseAnimalHealthDetailResult {
-  const [animal, setAnimal] = useState<Animal | null>(null);
+  const [animal, setAnimal] = useState<HealthAnimal | null>(null);
   const [isLoading, setIsLoading] = useState(Boolean(id));
   const [error, setError] = useState<string | null>(null);
 
@@ -80,4 +76,3 @@ export function useAnimalHealthDetail(id: string | null): UseAnimalHealthDetailR
 
   return { animal, isLoading, error, refetch };
 }
-

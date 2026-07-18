@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import type { AdminUserSummary } from '@/services/users.api';
+import type { AdminUserSummary } from '@/types';
 import { fetchUsers } from '@/services/users.api';
 
 interface UseUsersResult {
@@ -37,4 +37,3 @@ export function useUsers(): UseUsersResult {
 
   return { users, isLoading, error, refetch, setUsers };
 }
-

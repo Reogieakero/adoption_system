@@ -5,7 +5,7 @@ import { Image as ImageIcon } from "lucide-react";
 import Button from "@/components/ui/button";
 import styles from "./ModuleFormModal.module.css";
 import ShadcnSelect from '@/components/ui/shadcn-select';
-import type { LearningModuleFormState, ModuleDifficulty, SelectOption } from "../types";
+import type { LearningModuleFormState, ModuleDifficulty, SelectOption } from "@/types";
 
 interface ModuleFormModalProps {
   isEditing: boolean;
@@ -111,7 +111,7 @@ export default function ModuleFormModal({
                   <img src={imagePreview} alt="Cover preview" className={styles.uploadPreview} />
                 ) : (
                   <>
-                    <ImageIcon size={20} color="#94a3b8" />
+                    <ImageIcon size={20} className={styles.uploadIcon} />
                     <span className={styles.uploadHint}>Click to upload an image file (PNG, JPG up to 5MB)</span>
                   </>
                 )}

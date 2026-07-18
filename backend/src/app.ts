@@ -16,7 +16,7 @@ import path from 'path';
 
 const app = express();
 
-app.use(cors({ origin: env.clientOrigin }));
+app.use(cors({ origin: env.clientOrigin, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

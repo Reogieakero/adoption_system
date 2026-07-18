@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 import { Clock, Search, Check, Heart, X } from 'lucide-react';
-import type { StatusType } from '../types';
+import type { AdoptionStatus as StatusType } from '@/types';
 import styles from './SummaryCards.module.css';
 
 interface SummaryCardsProps {

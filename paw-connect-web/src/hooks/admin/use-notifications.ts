@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import type { AppNotification, NotificationType } from '@/app/admin/notifications/types';
+import type { AppNotification, NotificationType } from '@/types';
 import {
   deleteNotification,
   fetchNotifications,
@@ -85,4 +85,3 @@ export function useNotifications(options: UseNotificationsOptions = {}): UseNoti
     remove,
   };
 }
-

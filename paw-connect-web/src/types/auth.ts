@@ -24,3 +24,15 @@ export interface RegisterResponse {
   errors?: FieldError[];
   user?: RegisterUser;
 }
+
+export interface GoogleSignInPending {
+  requiresSignupCompletion: true;
+  pendingToken: string;
+  email: string;
+}
+
+export interface CompleteGoogleSignupFormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+}

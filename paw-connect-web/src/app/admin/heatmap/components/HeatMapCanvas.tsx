@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useRef } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import type { AdoptionHeatPoint, RescueHeatPoint } from '@/services/heatmap.api'
+import type { AdoptionHeatPoint, RescueHeatPoint } from '@/types'
 import styles from './HeatMapCanvas.module.css'
 
 if (typeof window !== 'undefined') {

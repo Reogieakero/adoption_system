@@ -2,50 +2,15 @@
 
 import { useState } from 'react';
 import {
-  PawPrint,
-  AlertTriangle,
-  MessageSquare,
-  HeartPulse,
-  UserPlus,
-  Settings,
   Check,
   Trash2,
 } from 'lucide-react';
 import Button from '@/components/ui/button';
-import styles from './Notifications.module.css';
+import styles from './page.module.css';
 import { useNotifications } from '@/hooks/admin/use-notifications';
-import type { NotificationType } from './types';
-
-const TYPE_LABELS: Record<NotificationType, string> = {
-  adoption_application: 'Adoption',
-  rescue_case: 'Rescue',
-  message: 'Message',
-  health_alert: 'Health',
-  user_registration: 'New User',
-  system: 'System',
-};
-
-const TYPE_ICONS: Record<NotificationType, React.ComponentType<{ size?: number; className?: string }>> = {
-  adoption_application: PawPrint,
-  rescue_case: AlertTriangle,
-  message: MessageSquare,
-  health_alert: HeartPulse,
-  user_registration: UserPlus,
-  system: Settings,
-};
-
-function formatRelativeTime(dateStr: string): string {
-  const date = new Date(dateStr);
-  const diffMs = Date.now() - date.getTime();
-  const diffMin = Math.floor(diffMs / 60000);
-  if (diffMin < 1) return 'just now';
-  if (diffMin < 60) return `${diffMin}m ago`;
-  const diffHr = Math.floor(diffMin / 60);
-  if (diffHr < 24) return `${diffHr}h ago`;
-  const diffDay = Math.floor(diffHr / 24);
-  if (diffDay < 7) return `${diffDay}d ago`;
-  return date.toLocaleDateString();
-}
+import { TYPE_LABELS, TYPE_ICONS, NOTIFICATION_TABS } from '@/lib/notifications/constants';
+import { formatRelativeTime } from '@/lib/utils/format-time';
+import type { NotificationType } from '@/types';
 
 type FilterTab = 'all' | 'unread' | NotificationType;
 
@@ -115,7 +80,7 @@ export default function NotificationsPage() {
       {error && <div className={styles.errorBanner}>{error}</div>}
 
       {isLoading ? (
-        <div className={styles.stateMessage}>Loading notificationsâ€¦</div>
+        <div className={styles.stateMessage}>Loading notifications…</div>
       ) : notifications.length === 0 ? (
         <div className={styles.stateMessage}>No notifications here.</div>
       ) : (
@@ -183,4 +148,3 @@ export default function NotificationsPage() {
     </div>
   );
 }
-

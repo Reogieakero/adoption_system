@@ -1,15 +1,13 @@
 ﻿'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import type { LearningModule } from '@/app/admin/learning/types';
+import type { LearningModule, CreateLearningModulePayload, UpdateLearningModulePayload } from '@/types';
 import {
   createLearningModule,
-  CreateLearningModulePayload,
   deleteLearningModule,
   duplicateLearningModule,
   fetchLearningModules,
   updateLearningModule,
-  UpdateLearningModulePayload,
 } from '@/services/learning-modules.api';
 
 interface UseLearningModulesResult {
@@ -81,4 +79,3 @@ export function useLearningModules(): UseLearningModulesResult {
 
   return { modules, isLoading, error, refetch, addModule, editModule, removeModule, duplicateModule };
 }
-

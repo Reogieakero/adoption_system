@@ -20,6 +20,8 @@ export interface UserRow extends RowDataPacket {
   phone: string | null;
   address: string | null;
   completed_modules: number;
+  agreed_terms: boolean | 0 | 1;
+  agreed_terms_at: Date | null;
   created_at: Date;
   last_login_at: Date | null;
 }

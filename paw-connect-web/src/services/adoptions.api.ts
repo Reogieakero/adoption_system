@@ -1,55 +1,15 @@
-﻿import { API_BASE_URL } from '@/lib/config';
-import type { AdoptionApplication, ApplicationDetails, StatusType } from '@/app/admin/adoptions/types';
+﻿import { createServiceClient } from '@/lib/api-client';
+import type { AdoptionApplication, ApplicationDetails, AdoptionStatus } from '@/types';
 
-const ADOPTIONS_BASE = `${API_BASE_URL}/api/admin/adoptions`;
-
-class AdoptionsApiError extends Error {
-  status: number;
-
-  constructor(status: number, message: string) {
-    super(message);
-    this.name = 'AdoptionsApiError';
-    this.status = status;
-  }
-}
-
-function getAdminToken(): string {
-  const token = sessionStorage.getItem('adminAuthToken');
-  if (!token) {
-    throw new AdoptionsApiError(401, 'Admin session expired. Please sign in again.');
-  }
-  return token;
-}
-
-async function adminRequest<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${ADOPTIONS_BASE}${path}`, {
-    ...init,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${getAdminToken()}`,
-      ...init?.headers,
-    },
-  });
-
-  const data = await res.json().catch(() => ({}));
-
-  if (!res.ok) {
-    throw new AdoptionsApiError(
-      res.status,
-      typeof data.message === 'string' ? data.message : 'Request failed'
-    );
-  }
-
-  return data as T;
-}
+const { request } = createServiceClient('/api/admin/adoptions');
 
 export async function fetchAdoptions(): Promise<AdoptionApplication[]> {
-  const data = await adminRequest<{ success: true; applications: AdoptionApplication[] }>('');
+  const data = await request<{ success: true; applications: AdoptionApplication[] }>('');
   return data.applications;
 }
 
 export async function fetchAdoptionDetails(id: string): Promise<ApplicationDetails> {
-  const data = await adminRequest<{ success: true; details: ApplicationDetails }>(
+  const data = await request<{ success: true; details: ApplicationDetails }>(
     `/${encodeURIComponent(id)}/details`
   );
   return data.details;
@@ -57,9 +17,9 @@ export async function fetchAdoptionDetails(id: string): Promise<ApplicationDetai
 
 export async function updateAdoptionStatus(
   id: string,
-  status: StatusType
+  status: AdoptionStatus
 ): Promise<AdoptionApplication> {
-  const data = await adminRequest<{ success: true; application: AdoptionApplication }>(
+  const data = await request<{ success: true; application: AdoptionApplication }>(
     `/${encodeURIComponent(id)}/status`,
     {
       method: 'PATCH',

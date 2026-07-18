@@ -1,10 +1,10 @@
 ﻿"use client";
 
 import React, { useState } from 'react';
-import { Conversation, Message } from './types';
-import { MOCK_CONVERSATIONS } from './mockData';
-import Sidebar from './components/Sidebar/Sidebar';
-import ChatWindow from './components/ChatWindow/ChatWindow';
+import { Conversation, Message } from '@/types';
+import { MOCK_CONVERSATIONS } from '@/lib/mock-data/messages';
+import Sidebar from './components/Sidebar';
+import ChatWindow from './components/ChatWindow';
 import styles from './page.module.css';
 
 export default function SaaSMessageWorkspace() {

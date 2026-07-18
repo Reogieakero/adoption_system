@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import Button from '@/components/ui/button';
 import styles from './page.module.css';
-import { RescueCase, RescueStage, WorkflowAction } from './types';
-import { WORKFLOW_ACTIONS } from './mockData';
+import { RescueCase, RescueStage, WorkflowAction } from '@/types';
+import { WORKFLOW_ACTIONS } from '@/lib/mock-data/rescues';
 import { useRescues } from '@/hooks/admin/use-rescues';
 import {
   assignRescuer,
@@ -29,18 +29,15 @@ export default function RescuesPage() {
   const [activeTableStage, setActiveTableStage] = useState<RescueStage>(STAGES[0]);
   const [selectedCaseDetails, setSelectedCaseDetails] = useState<RescueCase | null>(null);
   const [activeStageModal, setActiveStageModal] = useState<RescueStage | null>(null);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [activeAction, setActiveAction] = useState<WorkflowAction>(WORKFLOW_ACTIONS[0]);
 
   const handleView = (item: RescueCase) => {
     setSelectedCaseDetails(item);
-    setIsDropdownOpen(false);
     setActiveAction(WORKFLOW_ACTIONS[0]);
   };
 
   const handleSelectAction = (action: WorkflowAction) => {
     setActiveAction(action);
-    setIsDropdownOpen(false);
   };
 
   const handleExecuteAction = async () => {
@@ -161,10 +158,6 @@ export default function RescuesPage() {
                     onClick={() => setActiveStageModal(stage)}
                   >
                     See all reports
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <line x1="5" y1="12" x2="19" y2="12" />
-                      <polyline points="12 5 19 12 19" />
-                    </svg>
                   </Button>
                 </div>
 
@@ -216,8 +209,6 @@ export default function RescuesPage() {
           caseDetails={selectedCaseDetails}
           actions={WORKFLOW_ACTIONS}
           activeAction={activeAction}
-          isDropdownOpen={isDropdownOpen}
-          onToggleDropdown={() => setIsDropdownOpen(!isDropdownOpen)}
           onSelectAction={handleSelectAction}
           onExecuteAction={handleExecuteAction}
           onClose={() => setSelectedCaseDetails(null)}

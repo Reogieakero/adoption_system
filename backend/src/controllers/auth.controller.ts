@@ -100,4 +100,23 @@ export const authController = {
       handleServiceError(err, res, next);
     }
   },
+
+  async googleSignUpComplete(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const { pendingToken, agreedTerms } = req.body as {
+      pendingToken?: string;
+      agreedTerms?: boolean;
+    };
+
+    if (!pendingToken) {
+      res.status(400).json({ success: false, message: 'pendingToken is required' });
+      return;
+    }
+
+    try {
+      const result = await authService.completeGoogleSignUp(pendingToken, agreedTerms ?? false);
+      res.json({ success: true, ...result });
+    } catch (err) {
+      handleServiceError(err, res, next);
+    }
+  },
 };

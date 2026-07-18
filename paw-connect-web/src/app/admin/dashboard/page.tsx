@@ -2,7 +2,7 @@
 import ELearningCarousel from './components/ELearningCarousel';
 import AnalyticsPanel from './components/AnalyticsPanel';
 import ReportSideCards from './components/ReportSideCards';
-import styles from './dashboard.module.css';
+import styles from './page.module.css';
 
 export default function AdminDashboardPage() {
   return (

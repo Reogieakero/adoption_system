@@ -1,12 +1,12 @@
 ﻿import React from 'react';
-import type { AdoptionApplication, StatusType } from '../types';
+import type { AdoptionApplication, AdoptionStatus } from '@/types';
 import { StatusBadge } from './StatusBadge';
 import { ApplicationActions } from './ApplicationActions';
 import styles from './ApplicationsCardGrid.module.css';
 
 interface ApplicationsCardGridProps {
   applications: AdoptionApplication[];
-  onUpdateStatus: (id: string, newStatus: StatusType) => void;
+  onUpdateStatus: (id: string, newStatus: AdoptionStatus) => void;
   onViewDetails: (application: AdoptionApplication) => void;
 }
 

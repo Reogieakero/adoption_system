@@ -5,7 +5,7 @@ import HealthFilters from './components/HealthFilters'
 import AnimalGrid from './components/AnimalGrid'
 import HealthHistoryView from './components/HealthHistoryView'
 import { useAnimalsHealth, useAnimalHealthDetail } from '@/hooks/admin/use-animals-health'
-import { Animal, DropdownName } from './types'
+import { HealthAnimal, DropdownName } from '@/types'
 import Button from '@/components/ui/button'
 import styles from './page.module.css'
 
@@ -84,7 +84,7 @@ export default function HealthMonitoringPage() {
     setOpenDropdown(null)
   }
 
-  const handleViewHistory = (animal: Animal) => {
+  const handleViewHistory = (animal: HealthAnimal) => {
     setActiveHistoryAnimalId(animal.id)
   }
 

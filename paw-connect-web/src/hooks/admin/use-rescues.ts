@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import type { RescueCase } from '@/app/admin/rescues/types';
+import type { RescueCase } from '@/types';
 import { fetchRescueDetails, fetchRescues } from '@/services/rescues.api';
 
 interface UseRescuesResult {
@@ -81,4 +81,3 @@ export function useRescueDetails(id: string | null): UseRescueDetailsResult {
 
   return { details, isLoading, error };
 }
-

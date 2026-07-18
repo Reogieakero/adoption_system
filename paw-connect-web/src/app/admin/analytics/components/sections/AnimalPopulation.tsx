@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import styles from "./AnimalPopulation.module.css";
 import { SectionHeading } from "../ui/SectionHeading";
@@ -6,7 +6,7 @@ import { ChartCard } from "../ui/ChartCard";
 import { DonutChart } from "../ui/DonutChart";
 import { CustomTooltip } from "../ui/CustomTooltip";
 import { ProgressRow } from "../ui/ProgressRow";
-import { dogsVsCats, sexDistribution, availableVsAdopted, breedDistribution, ageDistribution, shelterCapacity } from "../../data/mockData";
+import { dogsVsCats, sexDistribution, availableVsAdopted, breedDistribution, ageDistribution, shelterCapacity } from "@/lib/mock-data/analytics";
 
 export function AnimalPopulation() {
   return (

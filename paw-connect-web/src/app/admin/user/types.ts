@@ -1,4 +1,4 @@
-﻿import type { AdminUserSummary } from "@/services/users.api";
+﻿import type { AdminUserSummary } from "@/types";
 
 // UserEntry now comes from the backend via AdminUserSummary
 export type UserEntry = AdminUserSummary;

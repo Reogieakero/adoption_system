@@ -1,7 +1,7 @@
 .windowDots {
   display: flex;
   gap: 6px;
-  margin-bottom: clamp(18px, 3.5vh, 32px);
+  margin-bottom: clamp(16px, 3vh, 28px);
 }
 
 .dot {
@@ -11,11 +11,11 @@
 }
 .dotRed { background-color: #FF5F56; }
 .dotYellow { background-color: #FFBD2E; }
-.dotGreen { background-color: #27C93F; }
+.dotGreen { background-color: var(--success); }
 
 .title {
   font-family: var(--font-body), sans-serif;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 600;
   color: var(--text-primary);
   line-height: 1.3;
@@ -25,7 +25,7 @@
 
 .subtitle {
   font-family: var(--font-body), sans-serif;
-  font-size: 13.5px;
+  font-size: 13px;
   color: var(--text-secondary);
   margin: 0 0 20px 0;
   line-height: 1.5;
@@ -49,51 +49,25 @@
   text-decoration: underline;
   text-underline-offset: 2px;
   font-weight: 600;
-  font-size: 12.5px;
 }
 
 .link:hover {
   color: var(--text-primary);
 }
 
-.footer .link {
-  font-size: 13.5px;
-}
-
-.submitButton {
-  width: 100% !important;
-  height: 36px !important;
-  padding: 0 16px !important;
-  font-size: 13.5px !important;
-  font-weight: 500 !important;
-  border-radius: 6px !important;
-  background-color: var(--text-primary) !important;
-  color: var(--background) !important;
-  box-shadow: none !important;
-  transform: none !important;
-  transition: background-color 0.15s ease, opacity 0.15s ease !important;
-}
-
-.submitButton:hover:not([disabled]) {
-  opacity: 0.9;
-}
-
-.submitButton[disabled] {
-  background-color: var(--text-muted) !important;
-  color: var(--border) !important;
-  cursor: not-allowed !important;
-  opacity: 0.6;
-  box-shadow: none !important;
-}
-
 .passwordField {
   position: relative;
+}
+
+.passwordInput {
+  padding-right: 36px;
 }
 
 .togglePasswordBtn {
   position: absolute;
   right: 10px;
-  bottom: 9px;
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -103,6 +77,7 @@
   cursor: pointer;
   color: var(--text-secondary);
   line-height: 0;
+  z-index: 1;
 }
 
 .togglePasswordBtn:hover {
@@ -112,8 +87,9 @@
 .noticeCard {
   background-color: var(--error-bg);
   border: 1px solid var(--error);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   padding: 12px 14px;
+  margin-bottom: 8px;
 }
 
 .fieldError {
@@ -125,8 +101,9 @@
 .successCard {
   background-color: var(--success-bg);
   border: 1px solid var(--success);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   padding: 12px 14px;
+  margin-bottom: 8px;
 }
 
 .successText {
@@ -136,7 +113,7 @@
 }
 
 .footer {
-  margin-top: 16px;
+  margin-top: 18px;
   font-size: 13.5px;
   color: var(--text-secondary);
   text-align: center;

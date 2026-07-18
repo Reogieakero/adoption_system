@@ -166,7 +166,7 @@ export const MOCK_ANIMALS: Animal[] = [
     dateAdded: "Dec 13, 2025",
     lastUpdated: "Jun 30, 2026",
     bio: "Athletic and inquisitive. Needs an active household with climbing space.",
-    photo: "https://images.unsplash.com/photo-1513360309081-36f5e878f210?q=80&w=800&auto=format&fit=crop"
+    photo: "https://images.unsplash.com/photo-1495360010541-f48722b34f7d?q=80&w=800&auto=format&fit=crop"
   },
   {
     id: "ANM-2026-008",
@@ -187,7 +187,7 @@ export const MOCK_ANIMALS: Animal[] = [
     dateAdded: "Feb 2, 2026",
     lastUpdated: "Jul 9, 2026",
     bio: "Adoption paperwork in review. Sociable, obedient, and great on a leash.",
-    photo: "https://images.unsplash.com/photo-1537151625747-7ae87041895a?q=80&w=800&auto=format&fit=crop"
+    photo: "https://images.unsplash.com/photo-1591769225440-811ad7d6eab3?q=80&w=800&auto=format&fit=crop"
   },
   {
     id: "ANM-2026-009",
@@ -208,7 +208,7 @@ export const MOCK_ANIMALS: Animal[] = [
     dateAdded: "May 7, 2026",
     lastUpdated: "Jul 9, 2026",
     bio: "Receiving ongoing dental treatment. Affectionate lap cat once comfortable.",
-    photo: "https://images.unsplash.com/photo-1614273147774-411b1ef56306?q=80&w=800&auto=format&fit=crop"
+    photo: "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?q=80&w=800&auto=format&fit=crop"
   },
   {
     id: "ANM-2026-010",
@@ -250,7 +250,7 @@ export const MOCK_ANIMALS: Animal[] = [
     dateAdded: "Apr 23, 2026",
     lastUpdated: "Jul 4, 2026",
     bio: "Docile and affectionate, goes limp when picked up. Loves being held.",
-    photo: "https://images.unsplash.com/photo-1574158622643-69d34d72650a?q=80&w=800&auto=format&fit=crop"
+    photo: "https://images.unsplash.com/photo-1519052537078-e6302a4968d4?q=80&w=800&auto=format&fit=crop"
   },
   {
     id: "ANM-2026-012",
@@ -271,7 +271,7 @@ export const MOCK_ANIMALS: Animal[] = [
     dateAdded: "Mar 16, 2026",
     lastUpdated: "Jul 2, 2026",
     bio: "Spirited and stubborn in the best way. Loves burrowing into blankets.",
-    photo: "https://images.unsplash.com/photo-1529429617329-8468a9776562?q=80&w=800&auto=format&fit=crop"
+    photo: "https://images.unsplash.com/photo-1568572933382-74d440642117?q=80&w=800&auto=format&fit=crop"
   },
   {
     id: "ANM-2026-013",

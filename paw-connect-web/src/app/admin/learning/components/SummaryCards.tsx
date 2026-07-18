@@ -22,7 +22,7 @@ export default function SummaryCards({
       <div className={styles.summaryCard}>
         <div className={styles.summaryCardHeader}>
           <p>Total Modules</p>
-          <BookOpen size={16} color="#94a3b8" />
+          <BookOpen size={16} className={styles.iconMuted} />
         </div>
         <div className={styles.summaryCardValue}>{totalModules}</div>
         <p className={styles.summaryCardDesc}>Active items in storage</p>
@@ -30,7 +30,7 @@ export default function SummaryCards({
       <div className={styles.summaryCard}>
         <div className={styles.summaryCardHeader}>
           <p>Published</p>
-          <CheckCircle2 size={16} color="#10b981" />
+          <CheckCircle2 size={16} className={styles.iconGreen} />
         </div>
         <div className={`${styles.summaryCardValue} ${styles.valueGreen}`}>{publishedCount}</div>
         <p className={styles.summaryCardDesc}>Live & visible to community</p>
@@ -38,7 +38,7 @@ export default function SummaryCards({
       <div className={styles.summaryCard}>
         <div className={styles.summaryCardHeader}>
           <p>Draft Modules</p>
-          <FileEdit size={16} color="#f59e0b" />
+          <FileEdit size={16} className={styles.iconAmber} />
         </div>
         <div className={`${styles.summaryCardValue} ${styles.valueAmber}`}>{draftCount}</div>
         <p className={styles.summaryCardDesc}>Work in progress files</p>
@@ -46,7 +46,7 @@ export default function SummaryCards({
       <div className={styles.summaryCard}>
         <div className={styles.summaryCardHeader}>
           <p>Total Views</p>
-          <Users size={16} color="#3b82f6" />
+          <Users size={16} className={styles.iconBlue} />
         </div>
         <div className={`${styles.summaryCardValue} ${styles.valueBlue}`}>{totalViews.toLocaleString()}</div>
         <p className={styles.summaryCardDesc}>Total operational reach</p>
@@ -54,4 +54,3 @@ export default function SummaryCards({
     </div>
   );
 }
-

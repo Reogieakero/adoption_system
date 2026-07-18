@@ -4,7 +4,7 @@ import React from 'react';
 import { useAnimals } from '@/hooks/admin/use-animals';
 import { createAnimal } from '@/services/animals.api';
 import AnimalForm, { type AnimalFormData } from '../components/animal-form';
-import type { Animal } from '../animalsData';
+import type { Animal } from '@/types';
 
 function generateNextAnimalId(existingAnimals: Animal[]): string {
   const year = new Date().getFullYear();
@@ -24,6 +24,8 @@ export default function NewAnimalPage() {
   const handleSave = async (data: AnimalFormData, photoFile: File | null) => {
     const animal: Animal = {
       ...data,
+      model3dUrl: null,
+      model3dStatus: 'none',
       species: data.species as Animal['species'],
       sex: data.sex as Animal['sex'],
       size: data.size as Animal['size'],

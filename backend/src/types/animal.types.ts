@@ -10,6 +10,8 @@ export type VaccinationStatus =
   | 'Due'
   | 'Not Vaccinated';
 
+export type Model3dStatus = 'none' | 'pending' | 'ready' | 'failed';
+
 export interface Animal {
   id: string;
   name: string;
@@ -30,6 +32,8 @@ export interface Animal {
   lastUpdated: string;
   bio: string;
   photo: string;
+  model3dUrl: string | null;
+  model3dStatus: Model3dStatus;
 }
 
 export interface CreateAnimalInput {

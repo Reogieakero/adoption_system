@@ -137,6 +137,13 @@ export const animalRepository = {
     return result.affectedRows > 0;
   },
 
+  async updateModel3dStatus(id: string, status: string, url: string | null): Promise<void> {
+    await pool.query(
+      'UPDATE animals SET model_3d_status = ?, model_3d_url = ? WHERE id = ?',
+      [status, url, id]
+    );
+  },
+
   async delete(id: string): Promise<boolean> {
     const [result] = await pool.query<ResultSetHeader>('DELETE FROM animals WHERE id = ?', [id]);
     return result.affectedRows > 0;

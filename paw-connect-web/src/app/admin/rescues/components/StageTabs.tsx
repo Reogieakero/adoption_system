@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 import Button from '@/components/ui/button';
 import styles from './StageTabs.module.css';
-import { RescueStage } from '../types';
+import type { RescueStage } from '@/types';
 
 interface StageTabsProps {
   stages: RescueStage[];

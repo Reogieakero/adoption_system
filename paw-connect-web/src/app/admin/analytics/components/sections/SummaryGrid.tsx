@@ -1,9 +1,9 @@
-﻿import React from "react";
+import React from "react";
 import styles from "./SummaryGrid.module.css";
 import { Card } from "../ui/Card";
 import { ChangeBadge } from "../ui/ChangeBadge";
 import { Sparkline } from "../ui/Sparkline";
-import { summaryCards } from "../../data/mockData";
+import { summaryCards } from "@/lib/mock-data/analytics";
 
 export function SummaryGrid() {
   return (

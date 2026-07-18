@@ -6,7 +6,7 @@ import { SectionHeading } from "../ui/SectionHeading";
 import { ChartCard } from "../ui/ChartCard";
 import { DonutChart } from "../ui/DonutChart";
 import { CustomTooltip } from "../ui/CustomTooltip";
-import { reportsByMonth, reportsByStatus, reportsByCategory, activeBarangays } from "../../data/mockData";
+import { reportsByMonth, reportsByStatus, reportsByCategory, activeBarangays } from "@/lib/mock-data/analytics";
 
 export function CommunityReports() {
   return (
@@ -49,7 +49,7 @@ export function CommunityReports() {
                   <span className={styles.barangayName}>
                     <Building2 size={13} color="var(--muted-foreground)" /> {b.name}
                   </span>
-                  <span className={styles.barangayStats}>{b.reports} reports · {b.resolved}% resolved</span>
+                  <span className={styles.barangayStats}>{b.reports} reports � {b.resolved}% resolved</span>
                 </div>
                 <div className={styles.progressTrack}>
                   <div className={styles.progressFill} style={{ width: `${b.resolved}%` }} />

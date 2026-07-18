@@ -31,6 +31,8 @@ export interface AnimalRow extends RowDataPacket {
   last_updated: Date;
   bio: string;
   photo_url: string;
+  model_3d_url: string | null;
+  model_3d_status: string;
 }
 
 export function toDisplayDate(value: Date | string | null | undefined): string {
@@ -77,5 +79,7 @@ export function rowToAnimal(row: AnimalRow): Animal {
     lastUpdated: toDisplayDate(row.last_updated),
     bio: row.bio,
     photo: row.photo_url,
+    model3dUrl: row.model_3d_url ?? null,
+    model3dStatus: (row.model_3d_status as Animal['model3dStatus']) || 'none',
   };
 }

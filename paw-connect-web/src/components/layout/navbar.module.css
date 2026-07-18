@@ -58,6 +58,9 @@
 @media (min-width: 960px) {
   .navLinks {
     display: flex;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
 
@@ -80,34 +83,6 @@
   gap: 12px;
 }
 
-/* Utility Icon Buttons — visibility only; look now owned by Button's "icon" variant */
-.iconBtn {
-  display: none;
-}
 
-@media (min-width: 640px) {
-  .iconBtn {
-    display: flex;
-  }
-}
 
-.signIn {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-primary);
-  text-decoration: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  transition: background 0.2s ease;
-  display: none;
-}
 
-@media (min-width: 640px) {
-  .signIn {
-    display: inline-block;
-  }
-}
-
-.signIn:hover {
-  background: var(--hover);
-}

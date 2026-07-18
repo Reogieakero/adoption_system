@@ -3,7 +3,7 @@
 import React from "react";
 import styles from "./ModulesGrid.module.css";
 import ModuleCard from "./ModuleCard";
-import type { LearningModule } from "../types";
+import type { LearningModule } from "@/types";
 
 interface ModulesGridProps {
   modules: LearningModule[];

@@ -1,11 +1,11 @@
-﻿import React from "react";
+import React from "react";
 import { RotateCcw, Printer, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import Button from "@/components/ui/button";
 import styles from "./RecentAnalyticsTable.module.css";
 import { SectionHeading } from "../ui/SectionHeading";
 import { Card } from "../ui/Card";
 import { ChangeBadge } from "../ui/ChangeBadge";
-import { recentAnalytics } from "../../data/mockData";
+import { recentAnalytics } from "@/lib/mock-data/analytics";
 
 export function RecentAnalyticsTable() {
   return (

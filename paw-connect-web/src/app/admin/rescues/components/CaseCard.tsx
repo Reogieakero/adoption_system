@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 import styles from './CaseCard.module.css';
-import { RescueCase } from '../types';
+import type { RescueCase } from '@/types';
 
 interface CaseCardProps {
   item: RescueCase;

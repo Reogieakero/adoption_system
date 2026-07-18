@@ -1,7 +1,7 @@
 ﻿import React, { useRef } from 'react';
 import Button from '@/components/ui/button';
 import styles from './RescueDetailModal.module.css';
-import { RescueCase, WorkflowAction } from '../types';
+import type { RescueCase, WorkflowAction } from '@/types';
 import DataSegment from './DataSegment';
 import ActivityTimeline from './ActivityTimeline';
 import LocationMapPanel from './LocationMapPanel';
@@ -11,8 +11,6 @@ interface RescueDetailModalProps {
   caseDetails: RescueCase;
   actions: WorkflowAction[];
   activeAction: WorkflowAction;
-  isDropdownOpen: boolean;
-  onToggleDropdown: () => void;
   onSelectAction: (action: WorkflowAction) => void;
   onExecuteAction: () => void;
   onClose: () => void;
@@ -22,8 +20,6 @@ export default function RescueDetailModal({
   caseDetails,
   actions,
   activeAction,
-  isDropdownOpen,
-  onToggleDropdown,
   onSelectAction,
   onExecuteAction,
   onClose
@@ -49,8 +45,6 @@ export default function RescueDetailModal({
             <WorkflowActionSelect
               actions={actions}
               activeAction={activeAction}
-              isOpen={isDropdownOpen}
-              onToggle={onToggleDropdown}
               onSelect={onSelectAction}
             />
 

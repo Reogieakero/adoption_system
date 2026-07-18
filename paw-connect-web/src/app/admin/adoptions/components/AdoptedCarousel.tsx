@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import type { AdoptionApplication } from '../types';
+import type { AdoptionApplication } from '@/types';
 import styles from './AdoptedCarousel.module.css';
 
 interface AdoptedCarouselProps {

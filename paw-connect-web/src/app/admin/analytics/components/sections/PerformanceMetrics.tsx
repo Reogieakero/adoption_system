@@ -1,9 +1,9 @@
-﻿import React from "react";
+import React from "react";
 import styles from "./PerformanceMetrics.module.css";
 import { SectionHeading } from "../ui/SectionHeading";
 import { Card } from "../ui/Card";
 import { ChangeBadge } from "../ui/ChangeBadge";
-import { performanceMetrics } from "../../data/mockData";
+import { performanceMetrics } from "@/lib/mock-data/analytics";
 
 export function PerformanceMetrics() {
   return (

@@ -1,17 +1,17 @@
 ﻿import React from 'react';
-import type { StatusType } from '../types';
+import type { AdoptionStatus } from '@/types';
 import Button from '@/components/ui/button';
 import styles from './StatusTabs.module.css';
 
 interface StatusTabsProps {
-  counts: Record<StatusType, number>;
-  activeTab: StatusType;
-  onChange: (tab: StatusType) => void;
+  counts: Record<AdoptionStatus, number>;
+  activeTab: AdoptionStatus;
+  onChange: (tab: AdoptionStatus) => void;
 }
 
-const TAB_ORDER: StatusType[] = ['Pending', 'Under Review', 'Approved', 'Rejected', 'Adopted'];
+const TAB_ORDER: AdoptionStatus[] = ['Pending', 'Under Review', 'Approved', 'Rejected', 'Adopted'];
 
-const TAB_LABELS: Record<StatusType, string> = {
+const TAB_LABELS: Record<AdoptionStatus, string> = {
   Pending: 'Pending',
   'Under Review': 'Under review',
   Approved: 'Approved',

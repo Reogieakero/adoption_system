@@ -1,0 +1,24 @@
+.page {
+  background: var(--background);
+  min-height: 100vh;
+  padding: 32px 0 80px;
+}
+
+.container {
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+@media (min-width: 720px) {
+  .container {
+    gap: 36px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    gap: 48px;
+  }
+}

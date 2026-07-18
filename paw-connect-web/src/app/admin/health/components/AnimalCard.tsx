@@ -2,7 +2,7 @@
 import React from 'react'
 import { useRouter } from 'next/navigation'
 import { Heart } from 'lucide-react'
-import { Animal } from '../types'
+import type { HealthAnimal as Animal } from '@/types'
 import Button from '@/components/ui/button'
 import { resolvePhotoUrl } from '@/services/resolve-photo-url'
 import styles from './AnimalCard.module.css'

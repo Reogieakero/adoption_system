@@ -1,7 +1,7 @@
 ﻿import React, { useState } from 'react';
 import Button from '@/components/ui/button';
 import styles from './AllReportsModal.module.css';
-import { RescueCase, RescueStage } from '../types';
+import type { RescueCase, RescueStage } from '@/types';
 import CaseCard from './CaseCard';
 import CaseTable from './CaseTable';
 import ViewModeToggle, { ViewMode } from './ViewModeToggle';

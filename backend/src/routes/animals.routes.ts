@@ -12,5 +12,7 @@ router.get('/:id', animalController.getById);
 router.post('/', upload.single('photo'), animalController.create);
 router.patch('/:id', upload.single('photo'), animalController.update);
 router.delete('/:id', animalController.remove);
+router.post('/:id/generate-3d', animalController.generate3D);
+router.post('/:id/generate-3d-from-description', animalController.generate3DDescription);
 
 export default router;

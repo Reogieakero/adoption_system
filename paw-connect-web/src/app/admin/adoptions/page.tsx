@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import React, { useState, useMemo } from 'react';
-import type { StatusType, ViewModeType } from './types';
+import type { AdoptionStatus, ViewMode } from '@/types';
 import { useAdoptions } from '@/hooks/admin/use-adoptions';
 import { updateAdoptionStatus } from '@/services/adoptions.api';
 import { SummaryCards } from './components/SummaryCards';
@@ -15,14 +15,14 @@ import styles from './page.module.css';
 
 export default function AdoptionManagementPage() {
   const { applications, isLoading, error, setApplications } = useAdoptions();
-  const [activeTab, setActiveTab] = useState<StatusType>('Pending');
-  const [viewMode, setViewMode] = useState<ViewModeType>('table');
+  const [activeTab, setActiveTab] = useState<AdoptionStatus>('Pending');
+  const [viewMode, setViewMode] = useState<ViewMode>('table');
   const [searchQuery, setSearchQuery] = useState('');
   const [speciesFilter, setSpeciesFilter] = useState('All species');
   const [dateFilter, setDateFilter] = useState('');
   const [selectedApplicationId, setSelectedApplicationId] = useState<string | null>(null);
 
-  const counts = useMemo((): Record<StatusType, number> => {
+  const counts = useMemo((): Record<AdoptionStatus, number> => {
     return {
       Pending: applications.filter((a) => a.status === 'Pending').length,
       'Under Review': applications.filter((a) => a.status === 'Under Review').length,
@@ -44,7 +44,7 @@ export default function AdoptionManagementPage() {
     [applications, selectedApplicationId]
   );
 
-  const updateStatus = async (id: string, newStatus: StatusType) => {
+  const updateStatus = async (id: string, newStatus: AdoptionStatus) => {
     const previous = applications;
     setApplications((prev) =>
       prev.map((app) => (app.id === id ? { ...app, status: newStatus } : app))
@@ -53,7 +53,6 @@ export default function AdoptionManagementPage() {
       await updateAdoptionStatus(id, newStatus);
     } catch (err) {
       setApplications(previous);
-      console.error('Failed to update status', err);
     }
   };
 

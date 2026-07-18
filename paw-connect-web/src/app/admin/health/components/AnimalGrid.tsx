@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import AnimalCard from './AnimalCard'
-import { Animal } from '../types'
+import type { HealthAnimal as Animal } from '@/types'
 import styles from './AnimalGrid.module.css'
 
 interface AnimalGridProps {

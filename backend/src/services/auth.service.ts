@@ -1,13 +1,15 @@
 import bcrypt from 'bcrypt';
 import { getAuth } from 'firebase-admin/auth';
+import pool from '../config/db';
 import firebaseApp from '../config/firebaseAdmin';
 import { env } from '../config/env';
 import { AppError } from '../errors/AppError';
 import { userRepository } from '../repositories/user.repository';
 import { PublicUser } from '../types/user.types';
-import { signUserToken } from '../utils/jwt';
+import { signUserToken, signPendingGoogleToken, verifyPendingGoogleToken } from '../utils/jwt';
 import { sendVerificationEmail } from '../utils/mailer';
 import { generateVerificationCode, getExpiryDate } from '../utils/verificationCode';
+import type { PendingGooglePayload } from '../utils/jwt';
 
 const SALT_ROUNDS = 10;
 
@@ -158,7 +160,9 @@ export const authService = {
     };
   },
 
-  async googleSignIn(idToken: string): Promise<LoginResult> {
+  async googleSignIn(
+    idToken: string
+  ): Promise<LoginResult | { requiresSignupCompletion: true; pendingToken: string; email: string }> {
     try {
       const decoded = await getAuth(firebaseApp).verifyIdToken(idToken);
       const { email, uid, name } = decoded;
@@ -167,33 +171,36 @@ export const authService = {
         throw new AppError(400, 'Google account must have an email');
       }
 
-      let user = await userRepository.findByEmail(email);
+      const user = await userRepository.findByEmail(email);
 
-      if (!user) {
-        const firstName = name ? name.split(' ')[0] : '';
-        const lastName = name ? name.split(' ').slice(1).join(' ') : '';
-
-        const userId = await userRepository.createGoogleUser({
-          firstName,
-          lastName,
-          email,
-          googleUid: uid,
-        });
-
-        user = await userRepository.findById(userId);
-        if (!user) {
-          throw new AppError(500, 'Failed to create Google user account');
+      // If user exists and has accepted terms → normal login
+      if (user && user.agreed_terms) {
+        if (!user.google_uid) {
+          await userRepository.linkGoogleUid(user.id, uid);
         }
-      } else if (!user.google_uid) {
-        await userRepository.linkGoogleUid(user.id, uid);
-        user.google_uid = uid;
+
+        const token = signUserToken(user.id, user.email);
+
+        return {
+          token,
+          user: toPublicUser(user),
+        };
       }
 
-      const token = signUserToken(user.id, user.email);
+      const firstName = name ? name.split(' ')[0] : '';
+      const lastName = name ? name.split(' ').slice(1).join(' ') : '';
+
+      const pendingToken = signPendingGoogleToken({
+        email,
+        googleUid: uid,
+        firstName,
+        lastName,
+      });
 
       return {
-        token,
-        user: toPublicUser(user),
+        requiresSignupCompletion: true,
+        pendingToken,
+        email,
       };
     } catch (err: unknown) {
       const firebaseErr = err as { code?: string };
@@ -202,5 +209,53 @@ export const authService = {
       }
       throw err;
     }
+  },
+
+  async completeGoogleSignUp(pendingToken: string, agreedTerms: boolean): Promise<LoginResult> {
+    if (!agreedTerms) {
+      throw new AppError(400, 'You must agree to the Terms of Service and Privacy Policy.');
+    }
+
+    let payload: PendingGooglePayload;
+    try {
+      payload = verifyPendingGoogleToken(pendingToken);
+    } catch {
+      throw new AppError(400, 'This sign-up link has expired. Please sign in with Google again.');
+    }
+
+    const { email, googleUid, firstName, lastName } = payload;
+
+    // Guard: account may have been created between token issuance and completion
+    const existing = await userRepository.findByEmail(email);
+    if (existing) {
+      if (existing.agreed_terms) {
+        // Account already fully created — just log in
+        const token = signUserToken(existing.id, existing.email);
+        return { token, user: toPublicUser(existing) };
+      }
+      // Partial account exists (e.g. old auto-created record) — upgrade it
+      await pool.query(
+        `UPDATE users SET agreed_terms = TRUE, agreed_terms_at = NOW(), google_uid = ?, provider = 'google', is_verified = TRUE, status = 'Active' WHERE id = ?`,
+        [googleUid, existing.id]
+      );
+      const updated = await userRepository.findById(existing.id);
+      const token = signUserToken(updated!.id, updated!.email);
+      return { token, user: toPublicUser(updated!) };
+    }
+
+    const userId = await userRepository.createGoogleUserWithAgreement({
+      firstName,
+      lastName,
+      email,
+      googleUid,
+    });
+
+    const user = await userRepository.findById(userId);
+    if (!user) {
+      throw new AppError(500, 'Failed to create account');
+    }
+
+    const token = signUserToken(user.id, user.email);
+    return { token, user: toPublicUser(user) };
   },
 };

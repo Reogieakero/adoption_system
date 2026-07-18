@@ -10,11 +10,16 @@ import Checkbox from '@/components/ui/checkbox';
 import Divider from '@/components/ui/divider';
 import GoogleButton from '@/components/ui/google-button';
 import AuthLayout from '@/components/layout/auth-layout';
+import { useRouter } from 'next/navigation';
 import { useRegisterForm } from '@/hooks/use-register-form';
+import { useGoogleAuth } from '@/hooks/use-google-auth';
 import { PASSWORD_RULES } from '@/lib/validation/password';
 import styles from './register.module.css';
 
 export default function RegisterPage() {
+  const router = useRouter();
+  const { signInWithGoogle } = useGoogleAuth();
+
   const {
     formData,
     isAgreed,
@@ -223,6 +228,7 @@ export default function RegisterPage() {
                     label="Password"
                     value={formData.password}
                     onChange={handleChange}
+                    className={styles.passwordInput}
                     required
                   />
                   <button
@@ -243,6 +249,7 @@ export default function RegisterPage() {
                     label="Confirm Password"
                     value={formData.confirmPassword}
                     onChange={handleChange}
+                    className={styles.passwordInput}
                     required
                   />
                   <button
@@ -269,17 +276,22 @@ export default function RegisterPage() {
                 <Button
                   type="submit"
                   variant="solid"
-                  className={styles.submitButton}
-                  disabled={!isAgreed || isSubmitting}
+                  disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Creating account...' : 'Create Account'}
+                  {isSubmitting ? 'Creating account...' : 'Sign Up'}
                 </Button>
 
                 <Divider />
 
                 <GoogleButton
                   label="Sign up with Google"
-                  onClick={() => alert('Google authentication triggered')}
+                  onClick={async () => {
+                    const result = await signInWithGoogle();
+                    if (result) {
+                      sessionStorage.setItem('authToken', result.token);
+                      router.push('/');
+                    }
+                  }}
                 />
               </form>
 

@@ -1,13 +1,6 @@
--- ============================================================
--- Paw Connect — Admin domain schema (users table already exists)
--- Run this in HeidiSQL against your paw_connect database
--- ============================================================
 
 USE paw_connect;
 
--- ----------------------------------------------------------
--- STAFF (from assignedStaff values in adoptions mock)
--- ----------------------------------------------------------
 CREATE TABLE IF NOT EXISTS staff (
   id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   full_name   VARCHAR(150) NOT NULL,
@@ -19,9 +12,6 @@ CREATE TABLE IF NOT EXISTS staff (
   UNIQUE KEY uk_staff_full_name (full_name)
 ) ENGINE=InnoDB;
 
--- ----------------------------------------------------------
--- ANIMALS (from animalsData.ts)
--- ----------------------------------------------------------
 CREATE TABLE IF NOT EXISTS animals (
   id                  VARCHAR(20)  PRIMARY KEY,
   name                VARCHAR(100) NOT NULL,
@@ -52,9 +42,6 @@ CREATE TABLE IF NOT EXISTS animals (
   INDEX idx_animals_health_status   (health_status)
 ) ENGINE=InnoDB;
 
--- ----------------------------------------------------------
--- ANIMAL HEALTH HISTORY (from health/data.ts history[])
--- ----------------------------------------------------------
 CREATE TABLE IF NOT EXISTS animal_health_history (
   id           INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   animal_id    VARCHAR(20)  NOT NULL,
@@ -71,9 +58,6 @@ CREATE TABLE IF NOT EXISTS animal_health_history (
   INDEX idx_health_history_date   (event_date)
 ) ENGINE=InnoDB;
 
--- ----------------------------------------------------------
--- ADOPTION APPLICATIONS (from adoptions/data.ts)
--- ----------------------------------------------------------
 CREATE TABLE IF NOT EXISTS adoption_applications (
   id                    VARCHAR(20)  PRIMARY KEY,
   user_id               INT UNSIGNED NULL,

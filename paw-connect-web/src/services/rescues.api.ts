@@ -1,59 +1,22 @@
-﻿import { API_BASE_URL } from '@/lib/config';
-import type { RescueCase, RescueStage } from '@/app/admin/rescues/types';
+﻿import { createServiceClient } from '@/lib/api-client';
+import type { RescueCase, RescueStage } from '@/types';
 
-const RESCUES_BASE = `${API_BASE_URL}/api/admin/rescues`;
-
-class RescuesApiError extends Error {
-  status: number;
-
-  constructor(status: number, message: string) {
-    super(message);
-    this.name = 'RescuesApiError';
-    this.status = status;
-  }
-}
-
-function getAdminToken(): string {
-  const token = sessionStorage.getItem('adminAuthToken');
-  if (!token) {
-    throw new RescuesApiError(401, 'Admin session expired. Please sign in again.');
-  }
-  return token;
-}
-
-async function adminRequest<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${RESCUES_BASE}${path}`, {
-    ...init,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${getAdminToken()}`,
-      ...init?.headers,
-    },
-  });
-
-  const data = await res.json().catch(() => ({}));
-
-  if (!res.ok) {
-    throw new RescuesApiError(res.status, typeof data.message === 'string' ? data.message : 'Request failed');
-  }
-
-  return data as T;
-}
+const { request } = createServiceClient('/api/admin/rescues');
 
 export async function fetchRescues(): Promise<RescueCase[]> {
-  const data = await adminRequest<{ success: true; cases: RescueCase[] }>('');
+  const data = await request<{ success: true; cases: RescueCase[] }>('');
   return data.cases;
 }
 
 export async function fetchRescueDetails(id: string): Promise<RescueCase> {
-  const data = await adminRequest<{ success: true; details: RescueCase }>(
+  const data = await request<{ success: true; details: RescueCase }>(
     `/${encodeURIComponent(id)}/details`
   );
   return data.details;
 }
 
 export async function updateRescueStage(id: string, stage: RescueStage): Promise<RescueCase> {
-  const data = await adminRequest<{ success: true; case: RescueCase }>(
+  const data = await request<{ success: true; case: RescueCase }>(
     `/${encodeURIComponent(id)}/stage`,
     { method: 'PATCH', body: JSON.stringify({ stage }) }
   );
@@ -61,7 +24,7 @@ export async function updateRescueStage(id: string, stage: RescueStage): Promise
 }
 
 export async function updateRescueStatus(id: string, status: string): Promise<RescueCase> {
-  const data = await adminRequest<{ success: true; case: RescueCase }>(
+  const data = await request<{ success: true; case: RescueCase }>(
     `/${encodeURIComponent(id)}/status`,
     { method: 'PATCH', body: JSON.stringify({ status }) }
   );
@@ -74,7 +37,7 @@ export async function assignRescuer(
   rescueTeam: string,
   eta?: string
 ): Promise<RescueCase> {
-  const data = await adminRequest<{ success: true; case: RescueCase }>(
+  const data = await request<{ success: true; case: RescueCase }>(
     `/${encodeURIComponent(id)}/assign`,
     { method: 'PATCH', body: JSON.stringify({ assignedRescuer, rescueTeam, eta }) }
   );
@@ -85,7 +48,7 @@ export async function updateRescuePriority(
   id: string,
   priority: RescueCase['priority']
 ): Promise<RescueCase> {
-  const data = await adminRequest<{ success: true; case: RescueCase }>(
+  const data = await request<{ success: true; case: RescueCase }>(
     `/${encodeURIComponent(id)}/priority`,
     { method: 'PATCH', body: JSON.stringify({ priority }) }
   );
@@ -93,7 +56,7 @@ export async function updateRescuePriority(
 }
 
 export async function updateRescueNotes(id: string, internalNotes: string): Promise<RescueCase> {
-  const data = await adminRequest<{ success: true; case: RescueCase }>(
+  const data = await request<{ success: true; case: RescueCase }>(
     `/${encodeURIComponent(id)}/notes`,
     { method: 'PATCH', body: JSON.stringify({ internalNotes }) }
   );

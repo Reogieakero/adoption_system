@@ -1,9 +1,9 @@
 .container {
-  font-family: 'Geist Mono', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+  font-family: var(--font-geist-mono), 'Geist Mono', monospace;
   height: calc(100vh - 56px - 3rem);
   width: 100%;
-  background-color: #ffffff;
-  color: #09090b;
+  background-color: var(--background);
+  color: var(--text-primary);
   display: flex;
   overflow: hidden;
   position: relative;

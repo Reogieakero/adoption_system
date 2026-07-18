@@ -1,8 +1,11 @@
 ﻿"use client";
 
 import { useState } from 'react';
+import { API_BASE_URL } from '@/lib/config';
+import { useGoogleAuth } from '@/hooks/use-google-auth';
 
 export function useLoginForm() {
+  const { signInWithGoogle } = useGoogleAuth();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -31,7 +34,7 @@ export function useLoginForm() {
     setIsSubmitting(true);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -46,7 +49,7 @@ export function useLoginForm() {
 
       storeSession(data.token);
       setSuccessMessage(
-        `Login successful ΓÇö welcome back, ${data.user.firstName} ${data.user.lastName} (${data.user.email}).`
+        `Login successful — welcome back, ${data.user.firstName} ${data.user.lastName} (${data.user.email}).`
       );
     } catch {
       setErrorMessage('Unable to reach the server. Please try again.');
@@ -61,31 +64,16 @@ export function useLoginForm() {
     setIsSubmitting(true);
 
     try {
-      const { signInWithPopup } = await import('firebase/auth');
-      const { auth, googleProvider } = await import('../lib/firebase');
+      const result = await signInWithGoogle();
+      if (!result) return;
 
-      const result = await signInWithPopup(auth, googleProvider);
-      const idToken = await result.user.getIdToken();
-
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/google`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idToken }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setErrorMessage(data.message || 'Google sign-in failed');
-        return;
-      }
-
-      storeSession(data.token);
+      storeSession(result.token);
       setSuccessMessage(
-        `Login successful ΓÇö welcome back, ${data.user.firstName} ${data.user.lastName} (${data.user.email}) via Google.`
+        `Login successful — welcome back, ${result.user.firstName} ${result.user.lastName} (${result.user.email}) via Google.`
       );
-    } catch {
-      setErrorMessage('Google sign-in failed. Please try again.');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Google sign-in failed. Please try again.';
+      setErrorMessage(message);
     } finally {
       setIsSubmitting(false);
     }

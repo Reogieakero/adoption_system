@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import {
   AreaChart,
   Area,
@@ -18,7 +18,7 @@ import { SectionHeading } from "../ui/SectionHeading";
 import { ChartCard } from "../ui/ChartCard";
 import { DonutChart } from "../ui/DonutChart";
 import { CustomTooltip } from "../ui/CustomTooltip";
-import { rescueByMonth, rescueStatus, rescueResponseTrend, rescueCategories } from "../../data/mockData";
+import { rescueByMonth, rescueStatus, rescueResponseTrend, rescueCategories } from "@/lib/mock-data/analytics";
 
 export function RescueAnalytics() {
   return (

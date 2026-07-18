@@ -1,75 +1,23 @@
-﻿import { API_BASE_URL } from '@/lib/config';
-import type { Animal, HistoryEntry } from '@/app/admin/health/types';
+﻿import { createServiceClient } from '@/lib/api-client';
+import type { HealthAnimal, HealthHistoryEntry, AddHistoryEntryPayload, UpdateVitalsPayload } from '@/types';
 
-const HEALTH_BASE = `${API_BASE_URL}/api/admin/health`;
+const { request } = createServiceClient('/api/admin/health');
 
-export interface AddHistoryEntryPayload {
-  date: string;
-  event: string;
-  notes: string;
-}
-
-export interface UpdateVitalsPayload {
-  heartRate?: number;
-  healthStatus?: Animal['healthStatus'];
-  vaccinationStatus?: Animal['vaccinationStatus'];
-}
-
-class HealthApiError extends Error {
-  status: number;
-
-  constructor(status: number, message: string) {
-    super(message);
-    this.name = 'HealthApiError';
-    this.status = status;
-  }
-}
-
-function getAdminToken(): string {
-  const token = sessionStorage.getItem('adminAuthToken');
-  if (!token) {
-    throw new HealthApiError(401, 'Admin session expired. Please sign in again.');
-  }
-  return token;
-}
-
-async function adminRequest<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${HEALTH_BASE}${path}`, {
-    ...init,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${getAdminToken()}`,
-      ...init?.headers,
-    },
-  });
-
-  const data = await res.json().catch(() => ({}));
-
-  if (!res.ok) {
-    throw new HealthApiError(
-      res.status,
-      typeof data.message === 'string' ? data.message : 'Request failed'
-    );
-  }
-
-  return data as T;
-}
-
-export async function fetchAnimalsHealth(): Promise<Animal[]> {
-  const data = await adminRequest<{ success: true; animals: Animal[] }>('');
+export async function fetchAnimalsHealth(): Promise<HealthAnimal[]> {
+  const data = await request<{ success: true; animals: HealthAnimal[] }>('');
   return data.animals;
 }
 
-export async function fetchAnimalHealthDetail(id: string): Promise<Animal> {
-  const data = await adminRequest<{ success: true; animal: Animal }>(`/${encodeURIComponent(id)}`);
+export async function fetchAnimalHealthDetail(id: string): Promise<HealthAnimal> {
+  const data = await request<{ success: true; animal: HealthAnimal }>(`/${encodeURIComponent(id)}`);
   return data.animal;
 }
 
 export async function addAnimalHistoryEntry(
   id: string,
   entry: AddHistoryEntryPayload
-): Promise<Animal> {
-  const data = await adminRequest<{ success: true; animal: Animal }>(
+): Promise<HealthAnimal> {
+  const data = await request<{ success: true; animal: HealthAnimal }>(
     `/${encodeURIComponent(id)}/history`,
     {
       method: 'POST',
@@ -82,8 +30,8 @@ export async function addAnimalHistoryEntry(
 export async function updateAnimalVitals(
   id: string,
   vitals: UpdateVitalsPayload
-): Promise<Animal> {
-  const data = await adminRequest<{ success: true; animal: Animal }>(
+): Promise<HealthAnimal> {
+  const data = await request<{ success: true; animal: HealthAnimal }>(
     `/${encodeURIComponent(id)}/vitals`,
     {
       method: 'PATCH',
@@ -93,4 +41,4 @@ export async function updateAnimalVitals(
   return data.animal;
 }
 
-export type { HistoryEntry };
+export type { HealthHistoryEntry };

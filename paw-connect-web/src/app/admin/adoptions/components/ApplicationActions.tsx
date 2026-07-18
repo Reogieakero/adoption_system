@@ -1,11 +1,11 @@
 ﻿import React, { useState } from 'react';
-import type { StatusType } from '../types';
+import type { AdoptionStatus } from '@/types';
 import Button from '@/components/ui/button';
 import styles from './ApplicationActions.module.css';
 
 interface ApplicationActionsProps {
-  status: StatusType;
-  onUpdateStatus: (newStatus: StatusType) => void;
+  status: AdoptionStatus;
+  onUpdateStatus: (newStatus: AdoptionStatus) => void;
   onViewDetails?: () => void;
   /** 'row' for the compact table layout, 'stacked' for full-width card footer buttons */
   layout?: 'row' | 'stacked';
@@ -13,11 +13,11 @@ interface ApplicationActionsProps {
 
 export function ApplicationActions({ status, onUpdateStatus, onViewDetails, layout = 'row' }: ApplicationActionsProps) {
   // Local state to hold the state change intention before confirmation
-  const [pendingStatus, setPendingStatus] = useState<StatusType | null>(null);
+  const [pendingStatus, setPendingStatus] = useState<AdoptionStatus | null>(null);
 
   const isStacked = layout === 'stacked';
 
-  const handleActionIntent = (nextStatus: StatusType) => {
+  const handleActionIntent = (nextStatus: AdoptionStatus) => {
     setPendingStatus(nextStatus);
   };
 

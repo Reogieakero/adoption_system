@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic'
 import { useHeatmapData } from '@/hooks/admin/use-heatmap-data'
 import { HeatmapMode, HeatmapView } from './components/HeatMapCanvas'
 import Button from '@/components/ui/button'
-import styles from './Heatmap.module.css'
+import styles from './page.module.css'
 
 // Leaflet touches `window` at import time, so this must never run during SSR.
 const HeatMapCanvas = dynamic(() => import('./components/HeatMapCanvas'), {

@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import type { StatusType } from '../types';
+import type { AdoptionStatus as StatusType } from '@/types';
 import { StatusBadge as BaseStatusBadge } from '@/components/ui/status-badge';
 
 interface StatusBadgeProps {

@@ -49,6 +49,29 @@ export const animalController = {
     }
   },
 
+  async generate3D(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const animal = await animalService.generate3DModel(req.params.id);
+      res.json({ success: true, animal });
+    } catch (err) {
+      handleServiceError(err, res, next);
+    }
+  },
+
+  async generate3DDescription(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { prompt } = req.body as { prompt?: string };
+      if (!prompt || !prompt.trim()) {
+        res.status(400).json({ success: false, message: 'Description prompt is required' });
+        return;
+      }
+      const animal = await animalService.generate3DFromDescription(req.params.id, prompt.trim());
+      res.json({ success: true, animal });
+    } catch (err) {
+      handleServiceError(err, res, next);
+    }
+  },
+
   async remove(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       await animalService.deleteAnimal(req.params.id);

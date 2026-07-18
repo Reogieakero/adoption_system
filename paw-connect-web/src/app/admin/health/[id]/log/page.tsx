@@ -5,19 +5,19 @@ import { useRouter } from 'next/navigation'
 import { ArrowLeft, ChevronDown, Check } from 'lucide-react'
 import { useAnimalHealthDetail } from '@/hooks/admin/use-animals-health'
 import { addAnimalHistoryEntry, updateAnimalVitals } from '@/services/health.api'
-import { HealthStatus, VaccinationStatus } from '../../types'
+import { HealthStatusType, HealthVaccinationStatus } from '@/types'
 import Button from '@/components/ui/button'
 import DatePicker from '@/components/ui/date-picker'
 import styles from './page.module.css'
 
-const HEALTH_STATUS_OPTIONS: HealthStatus[] = [
+const HEALTH_STATUS_OPTIONS: HealthStatusType[] = [
   'Healthy',
   'Under Treatment',
   'Recovering',
   'Critical',
 ]
 
-const VACCINATION_STATUS_OPTIONS: VaccinationStatus[] = [
+const VACCINATION_STATUS_OPTIONS: HealthVaccinationStatus[] = [
   'Vaccinated',
   'Not Fully Vaccinated',
   'Due',
@@ -49,8 +49,8 @@ export default function LogVitalsPage({ params }: { params: Promise<{ id: string
 
   // We initialize these when animal is loaded
   const [heartRate, setHeartRate] = useState('')
-  const [healthStatus, setHealthStatus] = useState<HealthStatus | ''>('')
-  const [vaccinationStatus, setVaccinationStatus] = useState<VaccinationStatus | ''>('')
+  const [healthStatus, setHealthStatus] = useState<HealthStatusType | ''>('')
+  const [vaccinationStatus, setVaccinationStatus] = useState<HealthVaccinationStatus | ''>('')
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -104,8 +104,8 @@ export default function LogVitalsPage({ params }: { params: Promise<{ id: string
     try {
       await updateAnimalVitals(resolvedParams.id, {
         heartRate: parsedHeartRate,
-        healthStatus: healthStatus as HealthStatus,
-        vaccinationStatus: vaccinationStatus as VaccinationStatus,
+        healthStatus: healthStatus as HealthStatusType,
+        vaccinationStatus: vaccinationStatus as HealthVaccinationStatus,
       })
 
       await addAnimalHistoryEntry(resolvedParams.id, {

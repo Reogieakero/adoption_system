@@ -1,7 +1,8 @@
 ﻿'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { fetchHeatmapData, HeatmapData } from '@/services/heatmap.api';
+import type { HeatmapData } from '@/types';
+import { fetchHeatmapData } from '@/services/heatmap.api';
 
 interface UseHeatmapDataResult {
   data: HeatmapData;
@@ -37,4 +38,3 @@ export function useHeatmapData(): UseHeatmapDataResult {
 
   return { data, isLoading, error, refetch };
 }
-

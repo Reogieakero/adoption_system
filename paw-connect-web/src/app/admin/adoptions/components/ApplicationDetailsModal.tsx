@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useMemo, useState } from 'react';
-import type { AdoptionApplication } from '../types';
+import type { AdoptionApplication } from '@/types';
 import { useAdoptionDetails } from '@/hooks/admin/use-adoptions';
 import { StatusBadge } from './StatusBadge';
 import Button from '@/components/ui/button';

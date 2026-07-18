@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import {
   LineChart,
   Line,
@@ -16,7 +16,7 @@ import { SectionHeading } from "../ui/SectionHeading";
 import { ChartCard } from "../ui/ChartCard";
 import { DonutChart } from "../ui/DonutChart";
 import { CustomTooltip } from "../ui/CustomTooltip";
-import { adoptionTrend, adoptionStatus, dogVsCat, topBreeds } from "../../data/mockData";
+import { adoptionTrend, adoptionStatus, dogVsCat, topBreeds } from "@/lib/mock-data/analytics";
 
 export function AdoptionAnalytics() {
   return (

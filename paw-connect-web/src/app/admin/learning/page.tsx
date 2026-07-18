@@ -2,9 +2,9 @@
 
 import React, { useMemo, useState } from "react";
 import { FolderOpen, Loader2 } from "lucide-react";
-import styles from "./Learning.module.css";
+import styles from "./page.module.css";
 import { useLearningModules } from "@/hooks/admin/use-learning-modules";
-import type { LearningModule, LearningModuleFormState } from "./types";
+import type { LearningModule, LearningModuleFormState } from "@/types";
 import PageHeader from "./components/PageHeader";
 import SummaryCards from "./components/SummaryCards";
 import FilterBar from "./components/FilterBar";
@@ -228,7 +228,7 @@ export default function LearningManagementPage() {
       />
 
       {isLoading ? (
-        <EmptyState icon={<Loader2 size={36} className="animate-spin" />} title="Loading learning modulesâ€¦" />
+        <EmptyState icon={<Loader2 size={36} className="animate-spin" />} title="Loading learning modules…" />
       ) : filteredModules.length > 0 ? (
         <ModulesGrid
           modules={filteredModules}
@@ -267,5 +267,3 @@ export default function LearningManagementPage() {
     </div>
   );
 }
-
-

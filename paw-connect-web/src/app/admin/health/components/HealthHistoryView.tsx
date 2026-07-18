@@ -2,7 +2,7 @@
 import React from 'react'
 import { useRouter } from 'next/navigation'
 import { X, Calendar, Activity, ShieldAlert, ArrowLeft, Syringe, HeartPulse } from 'lucide-react'
-import { Animal } from '../types'
+import type { HealthAnimal as Animal } from '@/types'
 import Button from '@/components/ui/button'
 import styles from './HealthHistoryView.module.css'
 

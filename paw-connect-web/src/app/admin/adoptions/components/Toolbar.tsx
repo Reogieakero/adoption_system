@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import type { ViewModeType } from '../types';
+import type { ViewMode } from '@/types';
 import DatePicker from '@/components/ui/date-picker';
 import SearchBar from '@/components/ui/search-bar';
 import ShadcnSelect from '@/components/ui/shadcn-select';
@@ -13,8 +13,8 @@ interface ToolbarProps {
   onSpeciesFilterChange: (val: string) => void;
   dateFilter: string;
   onDateFilterChange: (val: string) => void;
-  viewMode: ViewModeType;
-  onViewModeChange: (mode: ViewModeType) => void;
+  viewMode: ViewMode;
+  onViewModeChange: (mode: ViewMode) => void;
 }
 
 export function Toolbar({

@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import React, { useState } from "react";
-import styles from "./styles/theme.module.css";
+import styles from "./page.module.css";
 import { Header } from "./components/layout/Header";
 import { SummaryGrid } from "./components/sections/SummaryGrid";
 import { AdoptionAnalytics } from "./components/sections/AdoptionAnalytics";
