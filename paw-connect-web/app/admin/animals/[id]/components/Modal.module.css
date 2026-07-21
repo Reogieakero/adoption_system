@@ -1,0 +1,263 @@
+/* ---------- Modal shell ---------- */
+
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap');
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 10, 10, 0.5);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 9999;
+  animation: overlayIn 0.15s ease both;
+}
+
+.dialog {
+  background: var(--white, #ffffff);
+  border: 1px solid var(--navy-12, #e2e8f0);
+  border-radius: 12px;
+  box-shadow: 0 20px 50px rgba(15, 10, 10, 0.18), 0 2px 6px rgba(15, 10, 10, 0.08);
+  width: 100%;
+  max-width: 640px;
+  max-height: 92vh;
+  overflow-y: auto;
+  outline: none;
+  font-family: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  animation: dialogIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) both;
+  /* Keep the dialog scrollable, but hide the visible scrollbar chrome */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.dialog::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/Edge */
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1.5rem 1.5rem 1.1rem;
+  border-bottom: 1px solid var(--navy-08, #f1f5f9);
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--navy, #170a0c);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.description {
+  font-size: 0.78rem;
+  color: var(--navy-60, #64748b);
+  margin: 0.25rem 0 0;
+  line-height: 1.45;
+}
+
+.closeBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--navy-60, #64748b);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.closeBtn:hover {
+  background: var(--navy-06, #f1f5f9);
+  color: var(--navy, #170a0c);
+}
+
+.body {
+  padding: 1.35rem 1.5rem;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem 1.5rem;
+  border-top: 1px solid var(--navy-08, #f1f5f9);
+  margin-top: 0.25rem;
+}
+
+.warningText {
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--navy-60, #64748b);
+  margin: 0;
+  padding: 0.7rem 0.85rem;
+  background: var(--ocean-06, rgba(200, 16, 46, 0.06));
+  border: 1px solid var(--ocean-14, rgba(200, 16, 46, 0.14));
+  border-radius: 8px;
+}
+
+/* ---------- Shared footer buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  height: 34px;
+  padding: 0 1.1rem;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  white-space: nowrap;
+  border-radius: 6px;
+  border: 1px solid var(--navy-12, #e2e8f0);
+  background: var(--white, #ffffff);
+  color: var(--navy, #170a0c);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--white, #ffffff), 0 0 0 4px var(--navy-16, #cbd5e1);
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--navy-06, #f1f5f9);
+}
+
+.btnPrimary {
+  /* Layout & Sizing (Exact match to your base .btn) */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  height: 34px;
+  padding: 0 1.1rem;
+  white-space: nowrap;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+
+  /* Typography (Exact match to your base .btn) */
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0;
+
+  /* Shadcn-style Primary Colors */
+  background: var(--navy, #170a0c);
+  color: var(--white, #ffffff);
+  border-color: var(--navy, #170a0c);
+  
+  /* Smooth Shadcn transitions */
+  transition: background-color 0.15s cubic-bezier(0.4, 0, 0.2, 1), 
+              border-color 0.15s cubic-bezier(0.4, 0, 0.2, 1), 
+              box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background: #2a1417;
+  border-color: #2a1417;
+  color: var(--white, #ffffff);
+}
+
+/* Shadcn keyboard navigation focus ring */
+.btnPrimary:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(23, 10, 12, 0.4); /* Glowing outline using your navy tint */
+}
+
+/* Shadcn standard disabled state */
+.btnPrimary:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.btnDanger {
+  /* Layout & Sizing (Exact match to your base .btn) */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  height: 34px;
+  padding: 0 1.1rem;
+  white-space: nowrap;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+
+  /* Typography (Exact match to your base .btn) */
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0;
+
+  /* Shadcn-style Danger Colors */
+  background: var(--ocean, #c8102e);
+  color: var(--white, #ffffff);
+  border-color: var(--ocean, #c8102e);
+  
+  /* Smooth Shadcn transitions */
+  transition: background-color 0.15s cubic-bezier(0.4, 0, 0.2, 1), 
+              border-color 0.15s cubic-bezier(0.4, 0, 0.2, 1), 
+              box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btnDanger:hover:not(:disabled) {
+  background: #a10d25;
+  border-color: #a10d25;
+  color: var(--white, #ffffff);
+}
+
+/* Shadcn keyboard navigation focus ring */
+.btnDanger:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.5); /* Outer glowing ring using your theme color */
+}
+
+/* Shadcn standard disabled state */
+.btnDanger:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+@keyframes overlayIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dialogIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .dialog {
+    animation: none !important;
+  }
+}
+
+
