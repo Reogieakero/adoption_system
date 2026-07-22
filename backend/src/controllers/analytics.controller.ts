@@ -8,6 +8,63 @@ function formatLabel(s: string): string {
     .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
+function calcChange(current: number, previous: number): { current: string; previous: string; change: number | null; trend: string } {
+  const curStr = String(current);
+  const prevStr = String(previous);
+  if (previous === 0 && current === 0) return { current: curStr, previous: prevStr, change: null, trend: 'up' };
+  if (previous === 0) return { current: curStr, previous: prevStr, change: 100, trend: 'up' };
+  const pct = Math.round(((current - previous) / previous) * 100);
+  return { current: curStr, previous: prevStr, change: pct, trend: pct >= 0 ? 'up' : 'down' };
+}
+
+async function buildRecentAnalytics(pool: any) {
+  const q = (sql: string) => pool.query(sql).then((r: any) => r[0][0] as Record<string, number>);
+
+  const results = await Promise.all([
+    q("SELECT COUNT(*) AS curAdoptions FROM adoption_applications WHERE status IN ('approved','pet_unavailable') AND submitted_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH)"),
+    q("SELECT COUNT(*) AS prevAdoptions FROM adoption_applications WHERE status IN ('approved','pet_unavailable') AND submitted_at >= DATE_SUB(NOW(), INTERVAL 24 MONTH) AND submitted_at < DATE_SUB(NOW(), INTERVAL 12 MONTH)"),
+    q("SELECT COUNT(*) AS curActive FROM animal_reports WHERE status IN ('submitted','in_progress','dispatched') AND submitted_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH)"),
+    q("SELECT COUNT(*) AS prevActive FROM animal_reports WHERE status IN ('submitted','in_progress','dispatched') AND submitted_at >= DATE_SUB(NOW(), INTERVAL 24 MONTH) AND submitted_at < DATE_SUB(NOW(), INTERVAL 12 MONTH)"),
+    q("SELECT COUNT(*) AS curReports FROM animal_reports WHERE submitted_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH)"),
+    q("SELECT COUNT(*) AS prevReports FROM animal_reports WHERE submitted_at >= DATE_SUB(NOW(), INTERVAL 24 MONTH) AND submitted_at < DATE_SUB(NOW(), INTERVAL 12 MONTH)"),
+    q("SELECT COUNT(*) AS curTreatment FROM pets WHERE status = 'under_treatment' AND deleted_at IS NULL"),
+    q("SELECT COUNT(*) AS prevTreatment FROM pets WHERE status = 'under_treatment' AND deleted_at IS NULL AND created_at >= DATE_SUB(NOW(), INTERVAL 24 MONTH) AND created_at < DATE_SUB(NOW(), INTERVAL 12 MONTH)"),
+    q("SELECT COUNT(*) AS curVax FROM health_records WHERE vaccination_status = 'Vaccinated'"),
+    q("SELECT COUNT(*) AS prevVax FROM health_records WHERE vaccination_status = 'Vaccinated' AND created_at >= DATE_SUB(NOW(), INTERVAL 24 MONTH) AND created_at < DATE_SUB(NOW(), INTERVAL 12 MONTH)"),
+    q("SELECT COUNT(*) AS curTotalHealth FROM health_records"),
+    q("SELECT COUNT(*) AS prevTotalHealth FROM health_records WHERE created_at >= DATE_SUB(NOW(), INTERVAL 24 MONTH) AND created_at < DATE_SUB(NOW(), INTERVAL 12 MONTH)"),
+  ]);
+
+  const curAdoptions = results[0].curAdoptions;
+  const prevAdoptions = results[1].prevAdoptions;
+  const curActive = results[2].curActive;
+  const prevActive = results[3].prevActive;
+  const curReports = results[4].curReports;
+  const prevReports = results[5].prevReports;
+  const curTreatment = results[6].curTreatment;
+  const prevTreatment = results[7].prevTreatment;
+  const curVax = results[8].curVax;
+  const prevVax = results[9].prevVax;
+  const curTotalHealth = results[10].curTotalHealth;
+  const prevTotalHealth = results[11].prevTotalHealth;
+
+  const curVaxPct = curTotalHealth > 0 ? Math.round((curVax / curTotalHealth) * 100) : 0;
+  const prevVaxPct = prevTotalHealth > 0 ? Math.round((prevVax / prevTotalHealth) * 100) : 0;
+
+  const adoptionChange = calcChange(curAdoptions, prevAdoptions);
+  const activeChange = calcChange(curActive, prevActive);
+  const reportsChange = calcChange(curReports, prevReports);
+  const treatmentChange = calcChange(curTreatment, prevTreatment);
+
+  return [
+    { metric: 'Total Adoptions', ...adoptionChange },
+    { metric: 'Active Rescue Cases', ...activeChange },
+    { metric: 'Community Reports', ...reportsChange },
+    { metric: 'Animals Under Treatment', ...treatmentChange },
+    { metric: 'Vaccination Coverage', current: `${curVaxPct}%`, previous: `${prevVaxPct}%`, change: prevVaxPct > 0 ? Math.round(((curVaxPct - prevVaxPct) / prevVaxPct) * 100) : (curVaxPct > 0 ? 100 : null), trend: curVaxPct >= prevVaxPct ? 'up' : 'down' },
+  ];
+}
+
 export const analyticsController = {
   async overview(_req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
@@ -176,13 +233,7 @@ export const analyticsController = {
           { label: 'Animals Under Treatment', value: String(underTreatment), change: null },
           { label: 'Vaccination Coverage', value: `${vaccinationCoverage}%`, change: null },
         ],
-        recentAnalytics: [
-          { metric: 'Total Adoptions', current: String(totalAdoptions), previous: '—', change: null, trend: 'up' },
-          { metric: 'Active Rescue Cases', current: String(activeRescues), previous: '—', change: null, trend: 'down' },
-          { metric: 'Community Reports', current: String(totalReports), previous: '—', change: null, trend: 'up' },
-          { metric: 'Animals Under Treatment', current: String(underTreatment), previous: '—', change: null, trend: 'down' },
-          { metric: 'Vaccination Coverage', current: `${vaccinationCoverage}%`, previous: '—', change: null, trend: 'up' },
-        ],
+        recentAnalytics: await buildRecentAnalytics(pool),
       };
 
       res.json({ success: true, overview });

@@ -32,21 +32,25 @@ export function RescueAnalytics({ byMonth, status, successRate, avgResponseMinut
       <SectionHeading title="Rescue Analytics" subtitle="Case volume, status, and response performance" />
       <div className={styles.grid3}>
         <ChartCard title="Rescue Cases by Month" span={2}>
-          <ResponsiveContainer width="100%" height={230}>
-            <AreaChart data={byMonth} margin={{ left: -20, right: 8 }}>
-              <defs>
-                <linearGradient id="rescueFill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="var(--chart-1)" stopOpacity={0.25} />
-                  <stop offset="100%" stopColor="var(--chart-1)" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid vertical={false} stroke="var(--border)" />
-              <XAxis dataKey="month" tick={{ fontSize: 11, fill: "var(--text-muted)" }} axisLine={{ stroke: "var(--border)" }} tickLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: "var(--text-muted)" }} axisLine={false} tickLine={false} />
-              <Tooltip content={<CustomTooltip />} />
-              <Area type="monotone" dataKey="cases" name="Cases" stroke="var(--chart-1)" strokeWidth={2.5} fill="url(#rescueFill)" />
-            </AreaChart>
-          </ResponsiveContainer>
+          {byMonth.length > 0 ? (
+            <ResponsiveContainer width="100%" height={230}>
+              <AreaChart data={byMonth} margin={{ left: -20, right: 8 }}>
+                <defs>
+                  <linearGradient id="rescueFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="var(--chart-1)" stopOpacity={0.25} />
+                    <stop offset="100%" stopColor="var(--chart-1)" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid vertical={false} stroke="var(--border)" />
+                <XAxis dataKey="month" tick={{ fontSize: 11, fill: "var(--text-muted)" }} axisLine={{ stroke: "var(--border)" }} tickLine={false} />
+                <YAxis tick={{ fontSize: 11, fill: "var(--text-muted)" }} axisLine={false} tickLine={false} />
+                <Tooltip content={<CustomTooltip />} />
+                <Area type="monotone" dataKey="cases" name="Cases" stroke="var(--chart-1)" strokeWidth={2.5} fill="url(#rescueFill)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className={styles.emptyChart}>Rescue cases data coming soon</div>
+          )}
         </ChartCard>
 
         <ChartCard title="Rescue Success Rate">

@@ -19,15 +19,19 @@ export function CommunityReports({ byMonth, byStatus, reportsByCategory, activeB
       <SectionHeading title="Community Reports" subtitle="Volume, resolution status, and most active barangays" />
       <div className={styles.grid2}>
         <ChartCard title="Reports by Month">
-          <ResponsiveContainer width="100%" height={230}>
-            <BarChart data={byMonth} margin={{ left: -20, right: 8 }}>
-              <CartesianGrid vertical={false} stroke="var(--border)" />
-              <XAxis dataKey="month" tick={{ fontSize: 11, fill: "var(--text-muted)" }} axisLine={{ stroke: "var(--border)" }} tickLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: "var(--text-muted)" }} axisLine={false} tickLine={false} />
-              <Tooltip content={<CustomTooltip />} cursor={{ fill: "var(--muted)" }} />
-              <Bar dataKey="reports" name="Reports" fill="var(--chart-2)" radius={[6, 6, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+          {byMonth.length > 0 ? (
+            <ResponsiveContainer width="100%" height={230}>
+              <BarChart data={byMonth} margin={{ left: -20, right: 8 }}>
+                <CartesianGrid vertical={false} stroke="var(--border)" />
+                <XAxis dataKey="month" tick={{ fontSize: 11, fill: "var(--text-muted)" }} axisLine={{ stroke: "var(--border)" }} tickLine={false} />
+                <YAxis tick={{ fontSize: 11, fill: "var(--text-muted)" }} axisLine={false} tickLine={false} />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: "var(--muted)" }} />
+                <Bar dataKey="reports" name="Reports" fill="var(--chart-2)" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className={styles.emptyChart}>Reports data coming soon</div>
+          )}
         </ChartCard>
 
         <ChartCard title="Reports by Status">

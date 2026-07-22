@@ -39,26 +39,32 @@ export function AnimalPopulation({ dogsVsCats, breedDistribution, sexDistributio
         </ChartCard>
 
         <ChartCard title="Breed Distribution" span={2}>
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={breedDistribution} margin={{ left: -20, right: 8 }}>
-              <CartesianGrid vertical={false} stroke="var(--border)" />
-              <XAxis dataKey="name" tick={{ fontSize: 11, fill: "var(--text-muted)" }} axisLine={{ stroke: "var(--border)" }} tickLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: "var(--text-muted)" }} axisLine={false} tickLine={false} />
-              <Tooltip content={<CustomTooltip />} cursor={{ fill: "var(--muted)" }} />
-              <Bar dataKey="value" name="Animals" fill="var(--chart-1)" radius={[6, 6, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+          {breedDistribution.length > 0 ? (
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={breedDistribution} margin={{ left: -20, right: 8 }}>
+                <CartesianGrid vertical={false} stroke="var(--border)" />
+                <XAxis dataKey="name" tick={{ fontSize: 11, fill: "var(--text-muted)" }} axisLine={{ stroke: "var(--border)" }} tickLine={false} />
+                <YAxis tick={{ fontSize: 11, fill: "var(--text-muted)" }} axisLine={false} tickLine={false} />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: "var(--muted)" }} />
+                <Bar dataKey="value" name="Animals" fill="var(--chart-1)" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className={styles.emptyChart}>Breed data coming soon</div>
+          )}
         </ChartCard>
 
         <ChartCard title="Age Distribution">
           {ageDistribution.length > 0 ? (
-            <div className={styles.ageList}>
-              {ageDistribution.map((a) => (
-                <div key={a.name} className={styles.ageRow}>
-                  <span className={styles.ageName}>{a.name}</span>
-                  <span className={styles.ageCount}>{a.value}</span>
-                </div>
-              ))}
+            <div className={styles.ageScroll}>
+              <div className={styles.ageList}>
+                {ageDistribution.map((a) => (
+                  <div key={a.name} className={styles.ageRow}>
+                    <span className={styles.ageName}>{a.name}</span>
+                    <span className={styles.ageCount}>{a.value}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           ) : (
             <div className={styles.emptyChart}>Age data coming soon</div>

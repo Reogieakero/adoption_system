@@ -1,0 +1,38 @@
+.tabBar {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--background);
+}
+
+.tab {
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 140ms ease, color 140ms ease;
+  white-space: nowrap;
+}
+
+.tab + .tab {
+  border-left: 1px solid var(--border);
+}
+
+.tab:hover {
+  background: var(--muted);
+  color: var(--foreground);
+}
+
+.tabActive {
+  background: var(--foreground);
+  color: var(--background);
+}
+
+.tabActive:hover {
+  background: var(--foreground);
+  color: var(--background);
+}

@@ -17,6 +17,7 @@
   --radius-lg: 16px;
 
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 :global(.dark) .root {

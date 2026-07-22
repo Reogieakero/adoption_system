@@ -1,13 +1,16 @@
 .chartCard[data-span="1"] {
   grid-column: span 1;
+  min-width: 0;
 }
 
 .chartCard[data-span="2"] {
   grid-column: span 2;
+  min-width: 0;
 }
 
 .chartCard[data-span="3"] {
   grid-column: span 3;
+  min-width: 0;
 }
 
 .header {

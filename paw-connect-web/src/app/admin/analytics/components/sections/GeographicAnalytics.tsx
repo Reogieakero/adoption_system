@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import styles from "./GeographicAnalytics.module.css";
 import { Card } from "../ui/Card";
 import { SectionHeading } from "../ui/SectionHeading";
+import { Tabs } from "../ui/Tabs";
 import { useHeatmapData } from "@/hooks/admin/use-heatmap-data";
 import type { HeatmapView, HeatmapMode } from "@/app/admin/heatmap/components/HeatMapCanvas";
 
@@ -10,6 +11,17 @@ const HeatMapCanvas = dynamic(
   () => import("@/app/admin/heatmap/components/HeatMapCanvas"),
   { ssr: false }
 );
+
+const VIEW_TABS = [
+  { value: "pins", label: "Pins" },
+  { value: "heatmap", label: "Heat" },
+];
+
+const MODE_TABS = [
+  { value: "all", label: "All" },
+  { value: "rescue", label: "Rescue" },
+  { value: "adoption", label: "Adoption" },
+];
 
 export function GeographicAnalytics() {
   const { data, isLoading } = useHeatmapData();
@@ -25,28 +37,8 @@ export function GeographicAnalytics() {
         subtitle="Rescue and adoption locations across the area"
         action={
           <div className={styles.actionGroup}>
-            <div className={styles.toggleBtns}>
-              {(["heatmap", "pins"] as const).map((v) => (
-                <button
-                  key={v}
-                  className={`${styles.toggleBtn} ${view === v ? styles.toggleBtnActive : ""}`}
-                  onClick={() => setView(v)}
-                >
-                  {v === "heatmap" ? "Heat" : "Pins"}
-                </button>
-              ))}
-            </div>
-            <div className={styles.toggleBtns}>
-              {(["all", "rescue", "adoption"] as const).map((m) => (
-                <button
-                  key={m}
-                  className={`${styles.toggleBtn} ${mode === m ? styles.toggleBtnActive : ""}`}
-                  onClick={() => setMode(m)}
-                >
-                  {m === "all" ? "All" : m === "rescue" ? "Rescue" : "Adoption"}
-                </button>
-              ))}
-            </div>
+            <Tabs tabs={VIEW_TABS} active={view} onChange={(v) => setView(v as HeatmapView)} />
+            <Tabs tabs={MODE_TABS} active={mode} onChange={(m) => setMode(m as HeatmapMode)} />
           </div>
         }
       />
