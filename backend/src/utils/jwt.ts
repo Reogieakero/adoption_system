@@ -5,8 +5,8 @@ export function signUserToken(userId: number, email: string): string {
   return jwt.sign({ id: userId, email }, env.jwtSecret, { expiresIn: '7d' });
 }
 
-export function signAdminToken(email: string): string {
-  return jwt.sign({ email, role: 'admin' }, env.jwtSecret, { expiresIn: '12h' });
+export function signAdminToken(userId: number, email: string): string {
+  return jwt.sign({ id: userId, email, role: 'admin' }, env.jwtSecret, { expiresIn: '12h' });
 }
 
 export interface PendingGooglePayload {

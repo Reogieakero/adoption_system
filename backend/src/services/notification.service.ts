@@ -5,18 +5,14 @@ import {
   Notification,
   NotificationListQuery,
   NotificationListResult,
+  NotificationType,
 } from '../types/notification.types';
 import { rowToNotification } from '../utils/notificationMapper';
 
-const VALID_TYPES = [
-  'adoption_application',
-  'rescue_case',
-  'message',
-  'health_alert',
-  'user_registration',
-  'system',
+const VALID_TYPES: NotificationType[] = [
+  'adoption_status', 'report_status', 'new_message',
+  'new_report', 'new_community_listing', 'new_application',
 ];
-const VALID_PRIORITIES = ['low', 'normal', 'high', 'urgent'];
 
 function validateListQuery(query: NotificationListQuery): void {
   if (query.type && !VALID_TYPES.includes(query.type)) {
@@ -28,11 +24,11 @@ function validateCreateInput(input: CreateNotificationInput): void {
   if (!input.type || !VALID_TYPES.includes(input.type)) {
     throw new AppError(400, `Invalid notification type "${input.type}"`);
   }
-  if (!input.title || !input.message) {
-    throw new AppError(400, 'Fields "title" and "message" are required');
+  if (!input.message_text) {
+    throw new AppError(400, 'Field "message_text" is required');
   }
-  if (input.priority && !VALID_PRIORITIES.includes(input.priority)) {
-    throw new AppError(400, `Invalid priority "${input.priority}"`);
+  if (!input.recipient_id) {
+    throw new AppError(400, 'Field "recipient_id" is required');
   }
 }
 
@@ -61,11 +57,6 @@ export const notificationService = {
     return notificationRepository.countUnread();
   },
 
-  /**
-   * Called internally by other services (adoption, rescue, message, health)
-   * whenever an event happens that admins should be notified about.
-   * See trigger_examples.md for how to wire this in.
-   */
   async create(input: CreateNotificationInput): Promise<Notification> {
     validateCreateInput(input);
     const id = await notificationRepository.create(input);

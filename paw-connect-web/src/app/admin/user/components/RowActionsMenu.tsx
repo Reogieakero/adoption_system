@@ -1,5 +1,5 @@
 ﻿import React from "react";
-import { Eye, FileEdit, ShieldAlert, Trash2 } from "lucide-react";
+import { FileEdit, ShieldAlert, Trash2 } from "lucide-react";
 import styles from "./RowActionsMenu.module.css";
 import type { UserEntry } from "../types";
 
@@ -18,12 +18,12 @@ export default function RowActionsMenu({
   onToggleStatus,
   onDelete,
 }: RowActionsMenuProps) {
-  const isSuspended = user.status === "Suspended";
+  const isSuspended = user.status === "suspended";
 
   return (
     <div className={styles.dropdownMenuShadcn}>
       <button type="button" className={styles.dropdownItem} onClick={() => onView(user)}>
-        <Eye size={13} /> View Profile
+        View Profile
       </button>
       <button type="button" className={styles.dropdownItem} onClick={() => onEdit(user)}>
         <FileEdit size={13} /> Edit Account

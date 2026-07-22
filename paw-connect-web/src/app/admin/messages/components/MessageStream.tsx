@@ -11,9 +11,8 @@ export default function MessageStream({ messages }: MessageStreamProps) {
   return (
     <div className={styles.scrollArea}>
       {messages.map((msg) => (
-        <MessageBubble key={msg.id} message={msg} />
+        <MessageBubble key={msg.message_id} message={msg} />
       ))}
     </div>
   );
 }
-

@@ -39,12 +39,7 @@ const IRONBOW_GRADIENT: Record<number, string> = {
   1.0: '#ffffff',
 }
 
-const RESCUE_PIN_COLOR: Record<RescueHeatPoint['priority'], string> = {
-  Critical: '#dc2626',
-  High: '#f2452e',
-  Medium: '#f59e0b',
-  Low: '#facc15',
-}
+const RESCUE_PIN_COLOR = '#dc2626'
 const ADOPTION_PIN_COLOR = '#0d9488'
 
 interface AnyPoint {
@@ -81,12 +76,12 @@ function formatDate(iso: string): string {
 function rescuePopupHtml(p: RescueHeatPoint): string {
   return `
     <div class="${styles.popup}">
-      <span class="${styles.popupBadge}" style="background-color:${RESCUE_PIN_COLOR[p.priority]}">${escapeHtml(p.priority)} Â· Rescue</span>
-      <strong>${escapeHtml(p.animalType)}</strong>
+      <span class="${styles.popupBadge}" style="background-color:${RESCUE_PIN_COLOR}">Rescue</span>
+      <strong>${escapeHtml(p.species)}</strong>
       <div class="${styles.popupRow}">Status: ${escapeHtml(p.status)}</div>
-      <div class="${styles.popupRow}">Barangay: ${escapeHtml(p.barangay)}</div>
+      <div class="${styles.popupRow}">Area: ${escapeHtml(p.location_area)}</div>
       <div class="${styles.popupRow}">Reported: ${escapeHtml(formatDateTime(p.reportedAt))}</div>
-      <div class="${styles.popupId}">${escapeHtml(p.id)}</div>
+      <div class="${styles.popupId}">${escapeHtml(String(p.id))}</div>
     </div>
   `
 }
@@ -96,9 +91,9 @@ function adoptionPopupHtml(p: AdoptionHeatPoint): string {
     <div class="${styles.popup}">
       <span class="${styles.popupBadge}" style="background-color:${ADOPTION_PIN_COLOR}">Adoption</span>
       <strong>${escapeHtml(p.animalName)}</strong>
-      <div class="${styles.popupRow}">Barangay: ${escapeHtml(p.barangay)}</div>
+      <div class="${styles.popupRow}">Area: ${escapeHtml(p.location_area)}</div>
       <div class="${styles.popupRow}">Adopted: ${escapeHtml(formatDate(p.applicationDate))}</div>
-      <div class="${styles.popupId}">${escapeHtml(p.applicationId)}</div>
+      <div class="${styles.popupId}">${escapeHtml(String(p.applicationId))}</div>
     </div>
   `
 }
@@ -206,7 +201,7 @@ export default function HeatMapCanvas({ rescuePoints, adoptionPoints, mode, view
           radius: 8,
           weight: 2,
           color: '#ffffff',
-          fillColor: RESCUE_PIN_COLOR[p.priority] ?? RESCUE_PIN_COLOR.Medium,
+          fillColor: RESCUE_PIN_COLOR,
           fillOpacity: 0.9,
         })
           .bindPopup(rescuePopupHtml(p))

@@ -1,33 +1,32 @@
-export type AnimalSpecies = 'Dog' | 'Cat';
-export type AnimalSex = 'Male' | 'Female';
-export type AnimalSize = 'Small' | 'Medium' | 'Large';
-export type RescueStatus = 'Reported' | 'Rescued' | 'In Shelter';
-export type AnimalAdoptionStatus = 'Available' | 'Pending' | 'Adopted' | 'Unavailable';
-export type HealthStatus = 'Healthy' | 'Under Treatment' | 'Recovering' | 'Critical';
-export type VaccinationStatus = 'Vaccinated' | 'Not Fully Vaccinated';
+export type PetSourceType = 'shelter' | 'community';
+export type PetSpecies = 'dog' | 'cat';
+export type PetBreedType = 'aspin' | 'puspin' | 'other';
+export type PetSex = 'male' | 'female' | 'unknown';
+export type PetStatus = 'pending_verification' | 'available' | 'pending' | 'adopted' | 'rejected';
 
-export type Model3dStatus = 'none' | 'pending' | 'ready' | 'failed';
-
-export interface Animal {
-  id: string;
+export interface Pet {
+  pet_id: number;
+  source_type: PetSourceType;
+  posted_by_user_id: number | null;
+  species: PetSpecies;
+  breed_type: PetBreedType;
+  breed_detail: string | null;
   name: string;
-  species: AnimalSpecies;
-  breed: string;
-  sex: AnimalSex;
-  age: string;
-  size: AnimalSize;
-  colorMarkings: string;
-  rescueStatus: RescueStatus;
-  adoptionStatus: AnimalAdoptionStatus;
-  healthStatus: HealthStatus;
-  vaccinationStatus: VaccinationStatus;
-  heartRate: string;
-  location: string;
-  dateRescued: string;
-  dateAdded: string;
-  lastUpdated: string;
-  bio: string;
-  photo: string;
-  model3dUrl: string | null;
-  model3dStatus: Model3dStatus;
+  age_estimate: string | null;
+  sex: PetSex;
+  description: string | null;
+  status: PetStatus;
+  rejection_reason: string | null;
+  location_area: string | null;
+  created_by_user_id: number;
+  updated_by_user_id: number | null;
+  deleted_by_user_id: number | null;
+  deleted_at: string | null;
+  created_at: string;
+  updated_at: string;
+  primary_photo_url?: string | null;
+  photos?: { photo_id: number; file_url: string; is_primary: boolean }[];
+  asset_3d?: { asset_id: number; asset_url: string; asset_type: string } | null;
 }
+
+export type PetFormData = Omit<Pet, 'pet_id' | 'created_at' | 'updated_at' | 'deleted_at' | 'deleted_by_user_id' | 'updated_by_user_id' | 'created_by_user_id' | 'posted_by_user_id' | 'rejection_reason' | 'primary_photo_url' | 'photos' | 'asset_3d'>;

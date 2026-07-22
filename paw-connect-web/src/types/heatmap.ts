@@ -5,19 +5,18 @@ export interface HeatPoint {
 }
 
 export interface RescueHeatPoint extends HeatPoint {
-  id: string;
-  priority: 'Critical' | 'High' | 'Medium' | 'Low';
+  id: number;
   status: string;
-  barangay: string;
-  animalType: string;
+  location_area: string;
+  species: string;
   reportedAt: string;
 }
 
 export interface AdoptionHeatPoint extends HeatPoint {
-  applicationId: string;
+  applicationId: number;
   animalName: string;
   applicationDate: string;
-  barangay: string;
+  location_area: string;
 }
 
 export interface HeatmapData {

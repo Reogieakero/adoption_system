@@ -6,7 +6,7 @@ import styles from './ApplicationsCardGrid.module.css';
 
 interface ApplicationsCardGridProps {
   applications: AdoptionApplication[];
-  onUpdateStatus: (id: string, newStatus: AdoptionStatus) => void;
+  onUpdateStatus: (id: number, newStatus: AdoptionStatus) => void;
   onViewDetails: (application: AdoptionApplication) => void;
 }
 
@@ -24,13 +24,13 @@ export function ApplicationsCardGrid({ applications, onUpdateStatus, onViewDetai
   return (
     <div className={styles.cardWorkspaceGrid}>
       {applications.map((app) => (
-        <div key={app.id} className={styles.recordItemCard}>
+        <div key={app.application_id} className={styles.recordItemCard}>
           <div className={styles.recordCardTopRow}>
             <div className={styles.animalProfileCell}>
-              <img src={app.animalPhoto} alt={app.animalName} className={styles.animalAvatar} />
+              <img src={app.pet_photo_url ?? ''} alt={app.pet_name} className={styles.animalAvatar} />
               <div>
-                <div className={styles.primaryCellText}>{app.animalName}</div>
-                <div className={styles.secondaryCellText}>{app.id} â€¢ {app.species.toLowerCase()}</div>
+                <div className={styles.primaryCellText}>{app.pet_name}</div>
+                <div className={styles.secondaryCellText}>{app.application_id} • {app.pet_species.toLowerCase()}</div>
               </div>
             </div>
             <StatusBadge status={app.status} />
@@ -39,19 +39,19 @@ export function ApplicationsCardGrid({ applications, onUpdateStatus, onViewDetai
           <div className={styles.recordCardBody}>
             <div className={styles.cardDataField}>
               <span className={styles.cardDataLabel}>Applicant:</span>
-              <span className={styles.primaryCellText}>{app.applicantName}</span>
+              <span className={styles.primaryCellText}>{app.resident_name}</span>
             </div>
             <div className={`${styles.cardDataField} ${styles.mb05}`}>
               <span className={styles.cardDataLabel}>Email:</span>
-              <span className={styles.secondaryCellText}>{app.applicantEmail}</span>
+              <span className={styles.secondaryCellText}>{app.resident_email}</span>
             </div>
             <div className={styles.cardDataField}>
               <span className={styles.cardDataLabel}>Submitted:</span>
-              <span className={styles.primaryCellText}>{app.applicationDate}</span>
+              <span className={styles.primaryCellText}>{app.submitted_at}</span>
             </div>
             <div className={styles.cardDataField}>
               <span className={styles.cardDataLabel}>Assigned:</span>
-              <span className={styles.secondaryCellText}>{app.assignedStaff || 'â€”'}</span>
+              <span className={styles.secondaryCellText}>{'—'}</span>
             </div>
           </div>
 
@@ -59,7 +59,7 @@ export function ApplicationsCardGrid({ applications, onUpdateStatus, onViewDetai
             <ApplicationActions
               status={app.status}
               layout="stacked"
-              onUpdateStatus={(newStatus) => onUpdateStatus(app.id, newStatus)}
+              onUpdateStatus={(newStatus) => onUpdateStatus(app.application_id, newStatus)}
               onViewDetails={() => onViewDetails(app)}
             />
           </div>

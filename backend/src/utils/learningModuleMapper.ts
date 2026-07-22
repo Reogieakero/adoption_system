@@ -1,60 +1,79 @@
 import { RowDataPacket } from 'mysql2/promise';
-import { LearningModule, ModuleDifficulty, ModuleStatus } from '../types/learningModule.types';
+import { ElearningModule, ElearningCategory, ModuleProgress, ModuleStatus, ProgressStatus } from '../types/learningModule.types';
 
-export interface LearningModuleRow extends RowDataPacket {
-  id: string;
+export interface ElearningModuleRow extends RowDataPacket {
+  module_id: number;
+  category_id: number;
   title: string;
-  description: string;
-  category: string;
-  difficulty: ModuleDifficulty;
-  duration: string;
-  status: ModuleStatus;
-  objectives: string | null;
-  content: string | null;
+  description: string | null;
+  content_body: string;
   video_url: string | null;
-  pdf_url: string | null;
-  views: number;
-  completion_rate: string;
-  image_url: string | null;
-  date_added: Date;
-  last_updated: Date;
+  cover_image_url: string | null;
+  order_index: number;
+  status: ModuleStatus;
+  created_by_admin_id: number;
+  created_at: Date;
+  updated_at: Date;
 }
 
-export function toDisplayDate(value: Date | string | null | undefined): string {
-  if (!value) return '';
-  const date = value instanceof Date ? value : new Date(value);
-  if (Number.isNaN(date.getTime())) return '';
-  return date.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
+export interface ElearningCategoryRow extends RowDataPacket {
+  category_id: number;
+  name: string;
+  description: string | null;
+  order_index: number;
+  created_at: Date;
 }
 
-export function parseDisplayDate(value: string): string | null {
-  if (!value.trim()) return null;
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) return null;
-  return parsed.toISOString().slice(0, 10);
+export interface ModuleProgressRow extends RowDataPacket {
+  progress_id: number;
+  module_id: number;
+  resident_id: number;
+  status: ProgressStatus;
+  started_at: Date | null;
+  completed_at: Date | null;
 }
 
-export function rowToLearningModule(row: LearningModuleRow): LearningModule {
+function toISODate(value: Date | null | undefined): string | null {
+  if (!value) return null;
+  const d = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(d.getTime())) return null;
+  return d.toISOString().slice(0, 19).replace('T', ' ');
+}
+
+export function rowToElearningModule(row: ElearningModuleRow): ElearningModule {
   return {
-    id: row.id,
+    module_id: row.module_id,
+    category_id: row.category_id,
     title: row.title,
     description: row.description,
-    category: row.category,
-    difficulty: row.difficulty,
-    duration: row.duration,
+    content_body: row.content_body,
+    video_url: row.video_url,
+    cover_image_url: row.cover_image_url,
+    order_index: row.order_index,
     status: row.status,
-    objectives: row.objectives ?? '',
-    content: row.content ?? '',
-    videoUrl: row.video_url ?? '',
-    pdfUrl: row.pdf_url ?? '',
-    views: row.views,
-    completionRate: row.completion_rate,
-    image: row.image_url ?? '',
-    dateAdded: toDisplayDate(row.date_added),
-    lastUpdated: toDisplayDate(row.last_updated),
+    created_by_admin_id: row.created_by_admin_id,
+    created_at: toISODate(row.created_at) ?? '',
+    updated_at: toISODate(row.updated_at) ?? '',
+  };
+}
+
+export function rowToCategory(row: ElearningCategoryRow): ElearningCategory {
+  return {
+    category_id: row.category_id,
+    name: row.name,
+    description: row.description,
+    order_index: row.order_index,
+    created_at: toISODate(row.created_at) ?? '',
+  };
+}
+
+export function rowToProgress(row: ModuleProgressRow): ModuleProgress {
+  return {
+    progress_id: row.progress_id,
+    module_id: row.module_id,
+    resident_id: row.resident_id,
+    status: row.status,
+    started_at: toISODate(row.started_at),
+    completed_at: toISODate(row.completed_at),
   };
 }

@@ -2,31 +2,27 @@
 
 import React, { useState, useRef, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, ChevronDown, Check } from 'lucide-react'
+import { ChevronDown, Check } from 'lucide-react'
 import { useAnimalHealthDetail } from '@/hooks/admin/use-animals-health'
-import { addAnimalHistoryEntry, updateAnimalVitals } from '@/services/health.api'
-import { HealthStatusType, HealthVaccinationStatus } from '@/types'
+import { fetchHealthRecordByPetId, updateHealthRecord, upsertHealthRecord } from '@/services/health.api'
+import { fetchPetById } from '@/services/animals.api'
+import type { UpdateHealthRecordPayload, Pet } from '@/types'
 import Button from '@/components/ui/button'
-import DatePicker from '@/components/ui/date-picker'
 import styles from './page.module.css'
 
-const HEALTH_STATUS_OPTIONS: HealthStatusType[] = [
+const HEALTH_STATUS_OPTIONS = [
   'Healthy',
   'Under Treatment',
   'Recovering',
   'Critical',
 ]
 
-const VACCINATION_STATUS_OPTIONS: HealthVaccinationStatus[] = [
+const VACCINATION_STATUS_OPTIONS = [
   'Vaccinated',
   'Not Fully Vaccinated',
   'Due',
   'Not Vaccinated',
 ]
-
-function todayIso(): string {
-  return new Date().toISOString().slice(0, 10)
-}
 
 const FALLBACK_PHOTO =
   "data:image/svg+xml;charset=UTF-8," +
@@ -41,16 +37,31 @@ const FALLBACK_PHOTO =
 export default function LogVitalsPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
   const resolvedParams = use(params)
-  const { animal, isLoading, error: fetchError } = useAnimalHealthDetail(resolvedParams.id)
+  const { animal, isLoading } = useAnimalHealthDetail(resolvedParams.id)
+  const [petInfo, setPetInfo] = useState<Pet | null>(null)
+  const [petInfoLoading, setPetInfoLoading] = useState(false)
 
-  const [date, setDate] = useState(todayIso())
+  useEffect(() => {
+    if (!isLoading && !animal) {
+      setPetInfoLoading(true)
+      fetchPetById(Number(resolvedParams.id))
+        .then(setPetInfo)
+        .catch(() => {})
+        .finally(() => setPetInfoLoading(false))
+    }
+  }, [isLoading, animal, resolvedParams.id])
+
+  const displayName = animal?.name ?? petInfo?.name ?? 'Unknown'
+  const displaySpecies = animal?.species ?? (petInfo?.species ? petInfo.species.charAt(0).toUpperCase() + petInfo.species.slice(1) : 'N/A')
+  const displayBreed = animal?.breed ?? petInfo?.breed_detail ?? petInfo?.breed_type ?? ''
+
   const [event, setEvent] = useState('')
   const [notes, setNotes] = useState('')
 
   // We initialize these when animal is loaded
   const [heartRate, setHeartRate] = useState('')
-  const [healthStatus, setHealthStatus] = useState<HealthStatusType | ''>('')
-  const [vaccinationStatus, setVaccinationStatus] = useState<HealthVaccinationStatus | ''>('')
+  const [healthStatus, setHealthStatus] = useState<string>('')
+  const [vaccinationStatus, setVaccinationStatus] = useState<string>('')
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -87,7 +98,7 @@ export default function LogVitalsPage({ params }: { params: Promise<{ id: string
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!date || !event.trim() || !notes.trim() || !healthStatus || !vaccinationStatus) {
+    if (!event.trim() || !notes.trim() || !healthStatus || !vaccinationStatus) {
       setError('All fields are required.')
       return
     }
@@ -102,17 +113,43 @@ export default function LogVitalsPage({ params }: { params: Promise<{ id: string
     setError(null)
 
     try {
-      await updateAnimalVitals(resolvedParams.id, {
-        heartRate: parsedHeartRate,
-        healthStatus: healthStatus as HealthStatusType,
-        vaccinationStatus: vaccinationStatus as HealthVaccinationStatus,
-      })
+      const now = new Date()
+      const pad = (n: number) => String(n).padStart(2, '0')
+      const datetime =
+        `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ` +
+        `${pad(now.getHours())}:${pad(now.getMinutes())}`
+      const newLine = `[${datetime}] ${parsedHeartRate} bpm - ${event.trim()}: ${notes.trim()}`
 
-      await addAnimalHistoryEntry(resolvedParams.id, {
-        date,
-        event: event.trim(),
-        notes: notes.trim(),
-      })
+      let existingHistory: string
+      try {
+        const existingRecord = await fetchHealthRecordByPetId(Number(resolvedParams.id))
+        existingHistory = existingRecord.medical_history ?? ''
+      } catch {
+        existingHistory = ''
+      }
+
+      const medical_history = existingHistory ? `${existingHistory}\n${newLine}` : newLine
+      const payload: UpdateHealthRecordPayload = {
+        heart_rate_bpm: parsedHeartRate,
+        vaccination_status: vaccinationStatus,
+        medical_history,
+        last_updated_by: 1,
+      }
+
+      try {
+        await updateHealthRecord(Number(resolvedParams.id), payload)
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : ''
+        if (msg.includes('404') || msg.toLowerCase().includes('not found')) {
+          await upsertHealthRecord(Number(resolvedParams.id), {
+            heart_rate_bpm: parsedHeartRate,
+            vaccination_status: vaccinationStatus,
+            medical_history,
+          })
+        } else {
+          throw err
+        }
+      }
 
       router.back()
     } catch (err) {
@@ -122,17 +159,20 @@ export default function LogVitalsPage({ params }: { params: Promise<{ id: string
     }
   }
 
-  if (isLoading) return <div style={{ padding: '32px' }}>Loading animal details...</div>
-  if (fetchError || !animal) return <div style={{ padding: '32px', color: 'red' }}>Failed to load animal details.</div>
+  if (isLoading || petInfoLoading) return <div style={{ padding: '32px' }}>Loading animal details...</div>
 
-  const photoSrc = animal.photo && animal.photo.trim() !== "" ? animal.photo : FALLBACK_PHOTO
+  const photoSrc = animal?.photo && animal.photo.trim() !== ""
+    ? animal.photo
+    : petInfo?.primary_photo_url
+    ? petInfo.primary_photo_url
+    : FALLBACK_PHOTO
 
   return (
     <div className={styles.container}>
       <div className={styles.topBar}>
-        <Button variant="admin-secondary" square onClick={() => router.back()} aria-label="Back">
-          <ArrowLeft size={16} />
-        </Button>
+        <button onClick={() => router.back()} className={styles.backLink}>
+          &larr; Back to Health Monitoring
+        </button>
       </div>
 
       <div className={styles.layout}>
@@ -141,7 +181,7 @@ export default function LogVitalsPage({ params }: { params: Promise<{ id: string
           <div className={styles.heroImageContainer}>
             <img
               src={photoSrc}
-              alt={animal.name}
+              alt={displayName}
               className={styles.heroImage}
               onError={(e) => {
                 if (e.currentTarget.src !== FALLBACK_PHOTO) {
@@ -152,9 +192,9 @@ export default function LogVitalsPage({ params }: { params: Promise<{ id: string
           </div>
           <div className={styles.profileContent}>
             <div className={styles.profileHeader}>
-              <span className={styles.panelTag}>{animal.tag} • {animal.species}</span>
-              <h2 className={styles.panelTitle}>{animal.name}</h2>
-              <p className={styles.heroBreed}>{animal.breed}</p>
+              <span className={styles.panelTag}>{animal?.tag ?? petInfo?.species ?? 'N/A'} • {displaySpecies}</span>
+              <h2 className={styles.panelTitle}>{displayName}</h2>
+              <p className={styles.heroBreed}>{displayBreed}</p>
             </div>
           </div>
         </aside>
@@ -163,17 +203,13 @@ export default function LogVitalsPage({ params }: { params: Promise<{ id: string
         <div className={styles.mainContent}>
           <div className={styles.formHeader}>
             <h2>Log Health Vitals</h2>
-            <p>Update {animal.name}'s current vitals and add a new medical event log.</p>
+            <p>Update {displayName}'s current vitals and add a new medical event log.</p>
           </div>
 
           <form className={styles.form} onSubmit={handleSubmit}>
             {error && <div className={styles.errorText}>{error}</div>}
 
             <div className={styles.row}>
-              <div className={styles.field}>
-                <label className={styles.label}>Date</label>
-                <DatePicker value={date} onChange={setDate} />
-              </div>
               <div className={styles.field}>
                 <label className={styles.label} htmlFor="log-vitals-heart-rate">Heart Rate (bpm)</label>
                 <input

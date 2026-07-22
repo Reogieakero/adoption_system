@@ -1,107 +1,120 @@
 import { AppError } from '../errors/AppError';
 import { learningModuleRepository } from '../repositories/learningModule.repository';
 import {
-  CreateLearningModuleInput,
-  LearningModule,
-  UpdateLearningModuleInput,
+  ElearningCategory, ElearningModule, ModuleProgress,
+  CreateElearningModuleInput, UpdateElearningModuleInput, CreateCategoryInput,
+  ProgressStatus,
 } from '../types/learningModule.types';
-import { rowToLearningModule } from '../utils/learningModuleMapper';
+import { rowToElearningModule, rowToCategory, rowToProgress } from '../utils/learningModuleMapper';
 
-const REQUIRED_CREATE_FIELDS: (keyof CreateLearningModuleInput)[] = [
-  'id',
-  'title',
-  'description',
-  'category',
-  'difficulty',
-  'duration',
-  'status',
-  'dateAdded',
-  'lastUpdated',
-];
-
-function validateCreateInput(input: CreateLearningModuleInput): void {
-  for (const field of REQUIRED_CREATE_FIELDS) {
-    const value = input[field];
-    if (value === undefined || value === null || value === '') {
-      throw new AppError(400, `Field "${field}" is required`);
-    }
-  }
-}
+const VALID_MODULE_STATUSES = ['draft', 'published'];
+const VALID_PROGRESS_STATUSES: ProgressStatus[] = ['not_started', 'in_progress', 'completed'];
 
 export const learningModuleService = {
-  async listModules(): Promise<LearningModule[]> {
-    const rows = await learningModuleRepository.findAll();
-    return rows.map(rowToLearningModule);
+  // ── Categories ──────────────────────────────────────────────────────
+  async listCategories(): Promise<ElearningCategory[]> {
+    const rows = await learningModuleRepository.findAllCategories();
+    return rows.map(rowToCategory);
   },
 
-  async getModuleById(id: string): Promise<LearningModule> {
-    const row = await learningModuleRepository.findById(id);
+  async getCategoryById(id: number): Promise<ElearningCategory> {
+    const row = await learningModuleRepository.findCategoryById(id);
+    if (!row) {
+      throw new AppError(404, 'Category not found');
+    }
+    return rowToCategory(row);
+  },
+
+  async createCategory(input: CreateCategoryInput): Promise<ElearningCategory> {
+    const id = await learningModuleRepository.createCategory(input);
+    return this.getCategoryById(id);
+  },
+
+  // ── Modules ─────────────────────────────────────────────────────────
+  async listModules(): Promise<ElearningModule[]> {
+    const rows = await learningModuleRepository.findAllModules();
+    return rows.map(rowToElearningModule);
+  },
+
+  async getModulesByCategory(categoryId: number): Promise<ElearningModule[]> {
+    const rows = await learningModuleRepository.findModulesByCategory(categoryId);
+    return rows.map(rowToElearningModule);
+  },
+
+  async getModuleById(id: number): Promise<ElearningModule> {
+    const row = await learningModuleRepository.findModuleById(id);
     if (!row) {
       throw new AppError(404, 'Learning module not found');
     }
-    return rowToLearningModule(row);
+    return rowToElearningModule(row);
   },
 
-  async createModule(input: CreateLearningModuleInput): Promise<LearningModule> {
-    validateCreateInput(input);
-
-    const existing = await learningModuleRepository.findById(input.id);
-    if (existing) {
-      throw new AppError(409, 'A learning module with this ID already exists');
+  async createModule(input: CreateElearningModuleInput): Promise<ElearningModule> {
+    if (input.status && !VALID_MODULE_STATUSES.includes(input.status)) {
+      throw new AppError(400, `Invalid status "${input.status}"`);
     }
 
-    await learningModuleRepository.create({
-      ...input,
-      views: input.views ?? 0,
-      completionRate: input.completionRate ?? '0%',
-      image: input.image ?? '',
-    });
-    return this.getModuleById(input.id);
+    const id = await learningModuleRepository.createModule(input);
+    return this.getModuleById(id);
   },
 
-  async updateModule(id: string, input: UpdateLearningModuleInput): Promise<LearningModule> {
-    const existing = await learningModuleRepository.findById(id);
+  async updateModule(id: number, input: UpdateElearningModuleInput): Promise<ElearningModule> {
+    const existing = await learningModuleRepository.findModuleById(id);
     if (!existing) {
       throw new AppError(404, 'Learning module not found');
     }
 
-    const updated = await learningModuleRepository.update(id, input);
-    if (!updated) {
-      throw new AppError(400, 'No valid fields provided for update');
+    if (input.status && !VALID_MODULE_STATUSES.includes(input.status)) {
+      throw new AppError(400, `Invalid status "${input.status}"`);
     }
 
+    await learningModuleRepository.updateModule(id, input);
     return this.getModuleById(id);
   },
 
-  async deleteModule(id: string): Promise<void> {
-    const deleted = await learningModuleRepository.delete(id);
-    if (!deleted) {
+  async deleteModule(id: number): Promise<void> {
+    const existing = await learningModuleRepository.findModuleById(id);
+    if (!existing) {
       throw new AppError(404, 'Learning module not found');
     }
+
+    await learningModuleRepository.deleteModule(id);
   },
 
-  async duplicateModule(id: string): Promise<LearningModule> {
+  async duplicateModule(id: number): Promise<ElearningModule> {
     const source = await this.getModuleById(id);
-    const now = new Date().toISOString();
-    const copy: CreateLearningModuleInput = {
-      ...source,
-      id: `mod-${Date.now()}`,
+    const input: CreateElearningModuleInput = {
+      category_id: source.category_id,
       title: `${source.title} (Copy)`,
-      status: 'Draft',
-      views: 0,
-      completionRate: '0%',
-      dateAdded: now,
-      lastUpdated: now,
+      description: source.description,
+      content_body: source.content_body,
+      video_url: source.video_url,
+      cover_image_url: source.cover_image_url,
+      order_index: source.order_index + 1,
+      status: 'draft',
+      created_by_admin_id: source.created_by_admin_id,
     };
-    await learningModuleRepository.create(copy);
-    return this.getModuleById(copy.id);
+    return this.createModule(input);
   },
 
-  async seedModules(modules: CreateLearningModuleInput[]): Promise<number> {
-    for (const module of modules) {
-      validateCreateInput(module);
-      await learningModuleRepository.upsert(module);
+  // ── Progress ────────────────────────────────────────────────────────
+  async getProgress(moduleId: number, residentId: number): Promise<ModuleProgress | null> {
+    const row = await learningModuleRepository.findProgressByModuleAndResident(moduleId, residentId);
+    return row ? rowToProgress(row) : null;
+  },
+
+  async updateProgress(moduleId: number, residentId: number, status: ProgressStatus): Promise<ModuleProgress> {
+    if (!VALID_PROGRESS_STATUSES.includes(status)) {
+      throw new AppError(400, `Invalid progress status "${status}"`);
     }
-    return modules.length;
+
+    const moduleExists = await learningModuleRepository.findModuleById(moduleId);
+    if (!moduleExists) {
+      throw new AppError(404, 'Learning module not found');
+    }
+
+    await learningModuleRepository.upsertProgress(moduleId, residentId, status);
+    const row = await learningModuleRepository.findProgressByModuleAndResident(moduleId, residentId);
+    return rowToProgress(row!);
   },
 };

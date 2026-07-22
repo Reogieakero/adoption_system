@@ -24,6 +24,19 @@
   gap: 6px;
   font-weight: 500;
 }
+.barangayCount {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
 .barangayStats {
   color: var(--muted-foreground);
 }
+
+.emptyChart {
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+

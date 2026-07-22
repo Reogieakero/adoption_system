@@ -155,6 +155,21 @@
   transform: translateY(-1px);
 }
 
+.cardFooter {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.35rem;
+  width: 100%;
+}
+
+.cardFooter button {
+  flex: 1;
+  font-size: 0.72rem;
+  padding: 0.3rem 0.5rem;
+  height: auto;
+  min-height: unset;
+}
+
 .bgTeal { background-color: rgba(20, 184, 166, 0.9); color: #ffffff; }
 .bgOrange { background-color: rgba(249, 115, 22, 0.9); color: #ffffff; }
 .bgPrimary { background-color: rgba(99, 102, 241, 0.9); color: #ffffff; }

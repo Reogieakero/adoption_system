@@ -5,8 +5,7 @@ import { getPasswordErrors } from '@/lib/validation/password';
 import type { RegisterFormData, RegisterResponse, FieldError } from '@/types/auth';
 
 const INITIAL_FORM_DATA: RegisterFormData = {
-  firstName: '',
-  lastName: '',
+  fullName: '',
   email: '',
   password: '',
   confirmPassword: '',

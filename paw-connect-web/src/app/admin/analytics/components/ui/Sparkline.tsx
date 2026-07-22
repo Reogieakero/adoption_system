@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { AreaChart, Area, ResponsiveContainer } from "recharts";
-import { sparklineData } from "@/lib/mock-data/analytics";
+import { sparklineData } from "@/lib/analytics-sample-data";
 
 export function Sparkline({ seed, color = "var(--primary)" }: { seed: number; color?: string }) {
   const data = useMemo(() => sparklineData(seed), [seed]);

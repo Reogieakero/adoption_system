@@ -1,5 +1,3 @@
-export type RescuePriority = 'Critical' | 'High' | 'Medium' | 'Low';
-
 export interface HeatPoint {
   lat: number;
   lng: number;
@@ -7,19 +5,18 @@ export interface HeatPoint {
 }
 
 export interface RescueHeatPoint extends HeatPoint {
-  id: string;
-  priority: RescuePriority;
+  id: number;
   status: string;
-  barangay: string;
-  animalType: string;
+  location_area: string;
+  species: string;
   reportedAt: string;
 }
 
 export interface AdoptionHeatPoint extends HeatPoint {
-  applicationId: string;
+  applicationId: number;
   animalName: string;
   applicationDate: string;
-  barangay: string;
+  location_area: string;
 }
 
 export interface HeatmapResponse {

@@ -1,54 +1,40 @@
 import { RowDataPacket } from 'mysql2/promise';
 
 export type AuthProvider = 'local' | 'google';
-export type UserRole = 'Administrator' | 'Rescuer' | 'Adopter' | 'Citizen';
-export type UserStatus = 'Active' | 'Pending' | 'Suspended';
+export type UserRole = 'resident' | 'admin';
+export type UserStatus = 'pending_verification' | 'active' | 'suspended';
 
 export interface UserRow extends RowDataPacket {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  password_hash: string | null;
-  is_verified: boolean | 0 | 1;
-  verification_code: string | null;
-  verification_code_expires: Date | null;
-  provider: AuthProvider | null;
-  google_uid: string | null;
+  user_id: number;
   role: UserRole;
+  full_name: string;
+  email: string;
+  phone_number: string | null;
+  password_hash: string | null;
+  auth_provider: AuthProvider;
+  google_id: string | null;
+  google_linked_at: Date | null;
+  email_verified: boolean | 0 | 1;
   status: UserStatus;
-  phone: string | null;
   address: string | null;
-  completed_modules: number;
-  agreed_terms: boolean | 0 | 1;
-  agreed_terms_at: Date | null;
+  profile_photo_url: string | null;
   created_at: Date;
-  last_login_at: Date | null;
+  updated_at: Date;
 }
 
 export interface PublicUser {
   id: number;
-  firstName: string;
-  lastName: string;
+  fullName: string;
   email: string;
-  provider?: AuthProvider | string;
+  authProvider?: AuthProvider | string;
 }
 
-/**
- * Row shape returned by the admin "list users" query, which LEFT JOINs
- * counts from adoptions/rescues/animals. Adjust the joined field names in
- * user.repository.ts if your table/column names differ.
- */
 export interface AdminUserRow extends UserRow {
   adoption_apps_count: number;
   rescue_reports_count: number;
   animals_posted_count: number;
 }
 
-/**
- * Shape sent to the frontend admin Users page — matches UserEntry in
- * app/admin/user/page.tsx.
- */
 export interface AdminUserSummary {
   id: string;
   name: string;

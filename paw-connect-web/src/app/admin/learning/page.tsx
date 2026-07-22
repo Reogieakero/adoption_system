@@ -4,13 +4,26 @@ import React, { useMemo, useState } from "react";
 import { FolderOpen, Loader2 } from "lucide-react";
 import styles from "./page.module.css";
 import { useLearningModules } from "@/hooks/admin/use-learning-modules";
-import type { LearningModule, LearningModuleFormState } from "@/types";
+import type { ElearningModule } from "@/types";
 import PageHeader from "./components/PageHeader";
 import SummaryCards from "./components/SummaryCards";
 import FilterBar from "./components/FilterBar";
 import ModulesGrid from "./components/ModulesGrid";
 import EmptyState from "./components/EmptyState";
 import ModuleFormModal from "./components/ModuleFormModal";
+
+interface LearningModuleFormState {
+  title: string;
+  category: string;
+  difficulty: string;
+  duration: string;
+  description: string;
+  objectives: string;
+  content: string;
+  videoUrl: string;
+  pdfUrl: string;
+  status: string;
+}
 
 const CATEGORIES = [
   "Responsible Pet Ownership", "Dog Behavior", "Cat Behavior",
@@ -29,7 +42,7 @@ const EMPTY_FORM: LearningModuleFormState = {
   content: "",
   videoUrl: "",
   pdfUrl: "",
-  status: "Draft",
+  status: "draft",
 };
 
 export default function LearningManagementPage() {
@@ -40,7 +53,6 @@ export default function LearningManagementPage() {
     addModule,
     editModule,
     removeModule,
-    duplicateModule,
   } = useLearningModules();
 
   const [search, setSearch] = useState("");
@@ -49,8 +61,8 @@ export default function LearningManagementPage() {
   const [selectedDifficulty, setSelectedDifficulty] = useState("All");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [activeDropdownId, setActiveDropdownId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [activeDropdownId, setActiveDropdownId] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
 
@@ -61,10 +73,10 @@ export default function LearningManagementPage() {
   const filteredModules = useMemo(() => {
     return modules.filter((mod) => {
       const matchesSearch = mod.title.toLowerCase().includes(search.toLowerCase()) ||
-                            mod.description.toLowerCase().includes(search.toLowerCase());
-      const matchesCategory = selectedCategory === "All" || mod.category === selectedCategory;
+                            (mod.description ?? '').toLowerCase().includes(search.toLowerCase());
+      const matchesCategory = selectedCategory === "All" || (mod.category_name ?? '') === selectedCategory;
       const matchesStatus = selectedStatus === "All" || mod.status === selectedStatus;
-      const matchesDifficulty = selectedDifficulty === "All" || mod.difficulty === selectedDifficulty;
+      const matchesDifficulty = selectedDifficulty === "All";
       return matchesSearch && matchesCategory && matchesStatus && matchesDifficulty;
     });
   }, [modules, search, selectedCategory, selectedStatus, selectedDifficulty]);
@@ -78,22 +90,22 @@ export default function LearningManagementPage() {
     setIsModalOpen(true);
   };
 
-  const openEditModal = (module: LearningModule) => {
-    setEditingId(module.id);
+  const openEditModal = (module: ElearningModule) => {
+    setEditingId(module.module_id);
     setForm({
       title: module.title,
-      category: module.category,
-      difficulty: module.difficulty,
-      duration: module.duration,
-      description: module.description,
-      objectives: module.objectives,
-      content: module.content,
-      videoUrl: module.videoUrl,
-      pdfUrl: module.pdfUrl,
+      category: module.category_name ?? '',
+      difficulty: 'Beginner',
+      duration: 'N/A',
+      description: module.description ?? '',
+      objectives: '',
+      content: module.content_body,
+      videoUrl: module.video_url ?? '',
+      pdfUrl: '',
       status: module.status,
     });
     setImageFile(null);
-    setImagePreview(module.image || null);
+    setImagePreview(module.cover_image_url ?? null);
     setFormError(null);
     setIsModalOpen(true);
     setActiveDropdownId(null);
@@ -126,10 +138,21 @@ export default function LearningManagementPage() {
     setIsSaving(true);
     setFormError(null);
     try {
+      const payload = {
+        title: form.title,
+        description: form.description || null,
+        content_body: form.content,
+        video_url: form.videoUrl || null,
+        cover_image_url: null,
+        order_index: 0,
+        status: form.status as 'draft' | 'published',
+        category_id: 1,
+        created_by_admin_id: 1,
+      };
       if (editingId) {
-        await editModule(editingId, { ...form }, imageFile);
+        await editModule(editingId, payload, imageFile);
       } else {
-        await addModule({ ...form, image: "" }, imageFile);
+        await addModule(payload, imageFile);
       }
       resetForm();
     } catch (err) {
@@ -139,7 +162,7 @@ export default function LearningManagementPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: number) => {
     setActiveDropdownId(null);
     try {
       await removeModule(id);
@@ -148,20 +171,11 @@ export default function LearningManagementPage() {
     }
   };
 
-  const handleDuplicate = async (id: string) => {
+  const handleToggleStatus = async (module: ElearningModule) => {
     setActiveDropdownId(null);
     try {
-      await duplicateModule(id);
-    } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to duplicate module");
-    }
-  };
-
-  const handleToggleStatus = async (module: LearningModule) => {
-    setActiveDropdownId(null);
-    try {
-      await editModule(module.id, {
-        status: module.status === "Published" ? "Draft" : "Published",
+      await editModule(module.module_id, {
+        status: module.status === "published" ? "draft" : "published",
       });
     } catch (err) {
       alert(err instanceof Error ? err.message : "Failed to update status");
@@ -182,8 +196,8 @@ export default function LearningManagementPage() {
 
   const statusOptions = [
     { label: "All Statuses", value: "All" },
-    { label: "Published", value: "Published" },
-    { label: "Draft", value: "Draft" },
+    { label: "Published", value: "published" },
+    { label: "Draft", value: "draft" },
   ];
 
   const modalCategoryOptions = useMemo(() =>
@@ -196,9 +210,9 @@ export default function LearningManagementPage() {
   ];
 
   const totalModules = modules.length;
-  const publishedCount = modules.filter((m) => m.status === "Published").length;
-  const draftCount = modules.filter((m) => m.status === "Draft").length;
-  const totalViews = modules.reduce((acc, curr) => acc + curr.views, 0);
+  const publishedCount = modules.filter((m) => m.status === "published").length;
+  const draftCount = modules.filter((m) => m.status === "draft").length;
+  const totalViews = 0;
 
   return (
     <div className={styles.adminContainer}>
@@ -235,7 +249,7 @@ export default function LearningManagementPage() {
           activeDropdownId={activeDropdownId}
           onToggleDropdown={(id) => setActiveDropdownId(activeDropdownId === id ? null : id)}
           onEdit={openEditModal}
-          onDuplicate={handleDuplicate}
+          onView={openEditModal}
           onToggleStatus={handleToggleStatus}
           onDelete={handleDelete}
         />

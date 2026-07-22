@@ -1,12 +1,12 @@
-.chart-card[data-span="1"] {
+.chartCard[data-span="1"] {
   grid-column: span 1;
 }
 
-.chart-card[data-span="2"] {
+.chartCard[data-span="2"] {
   grid-column: span 2;
 }
 
-.chart-card[data-span="3"] {
+.chartCard[data-span="3"] {
   grid-column: span 3;
 }
 

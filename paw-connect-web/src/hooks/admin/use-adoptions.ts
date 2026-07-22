@@ -1,8 +1,8 @@
 ﻿'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import type { AdoptionApplication, ApplicationDetails } from '@/types';
-import { fetchAdoptionDetails, fetchAdoptions } from '@/services/adoptions.api';
+import type { AdoptionApplication } from '@/types';
+import { fetchAdoptions, fetchAdoptionById } from '@/services/adoptions.api';
 
 interface UseAdoptionsResult {
   applications: AdoptionApplication[];
@@ -39,13 +39,13 @@ export function useAdoptions(): UseAdoptionsResult {
 }
 
 interface UseAdoptionDetailsResult {
-  details: ApplicationDetails | null;
+  details: AdoptionApplication | null;
   isLoading: boolean;
   error: string | null;
 }
 
-export function useAdoptionDetails(id: string | null): UseAdoptionDetailsResult {
-  const [details, setDetails] = useState<ApplicationDetails | null>(null);
+export function useAdoptionDetails(id: number | null): UseAdoptionDetailsResult {
+  const [details, setDetails] = useState<AdoptionApplication | null>(null);
   const [isLoading, setIsLoading] = useState(Boolean(id));
   const [error, setError] = useState<string | null>(null);
 
@@ -60,7 +60,7 @@ export function useAdoptionDetails(id: string | null): UseAdoptionDetailsResult 
     setIsLoading(true);
     setError(null);
 
-    fetchAdoptionDetails(id)
+    fetchAdoptionById(id)
       .then((data) => {
         if (!cancelled) setDetails(data);
       })

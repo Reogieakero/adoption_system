@@ -2,42 +2,42 @@
 
 import React, { useMemo, useState } from 'react';
 import styles from './page.module.css';
-import type { Animal } from '@/types';
+import type { Pet } from '@/types';
 import { useAnimals } from '@/hooks/admin/use-animals';
 import StatsGrid, { StatItem } from './components/StatsGrid';
 import Toolbar from './components/Toolbar';
 import AnimalGrid from './components/AnimalGrid';
 import Pagination from './components/Pagination';
 
-const SPECIES_OPTIONS = ['Dog', 'Cat'];
-const ADOPTION_STATUSES = ['All', 'Available', 'Pending', 'Adopted', 'Unavailable'];
+const SPECIES_OPTIONS = ['dog', 'cat'];
+const ADOPTION_STATUSES = ['All', 'available', 'pending', 'adopted', 'pending_verification', 'rejected'];
 
-function buildStats(animals: Animal[]): StatItem[] {
+function buildStats(animals: Pet[]): StatItem[] {
   return [
     { label: 'Total Animals', value: animals.length },
     {
       label: 'Available',
-      value: animals.filter((a) => a.adoptionStatus === 'Available').length,
+      value: animals.filter((a) => a.status === 'available').length,
       color: '#10b981',
     },
     {
-      label: 'Under Rescue',
-      value: animals.filter((a) => a.rescueStatus !== 'In Shelter').length,
+      label: 'Pending Verification',
+      value: animals.filter((a) => a.status === 'pending_verification').length,
       color: '#f59e0b',
     },
     {
-      label: 'Under Treatment',
-      value: animals.filter((a) => a.healthStatus === 'Under Treatment').length,
+      label: 'Pending',
+      value: animals.filter((a) => a.status === 'pending').length,
       color: '#ef4444',
     },
     {
       label: 'Adopted',
-      value: animals.filter((a) => a.adoptionStatus === 'Adopted').length,
+      value: animals.filter((a) => a.status === 'adopted').length,
       color: 'var(--text-primary)',
     },
     {
-      label: 'Unavailable',
-      value: animals.filter((a) => a.adoptionStatus === 'Unavailable').length,
+      label: 'Rejected',
+      value: animals.filter((a) => a.status === 'rejected').length,
       color: 'var(--text-muted)',
     },
   ];
@@ -55,10 +55,10 @@ export default function AnimalsPage() {
       const matchesQuery =
         !query ||
         animal.name.toLowerCase().includes(query) ||
-        animal.breed.toLowerCase().includes(query) ||
-        animal.id.toLowerCase().includes(query);
+        (animal.breed_detail ?? '').toLowerCase().includes(query) ||
+        String(animal.pet_id).includes(query);
       const matchesSpecies = speciesFilter === 'All' || animal.species === speciesFilter;
-      const matchesStatus = statusFilter === 'All' || animal.adoptionStatus === statusFilter;
+      const matchesStatus = statusFilter === 'All' || animal.status === statusFilter;
       return matchesQuery && matchesSpecies && matchesStatus;
     });
   }, [animals, searchQuery, speciesFilter, statusFilter]);
@@ -91,21 +91,21 @@ export default function AnimalsPage() {
         <Toolbar
           searchQuery={typeof searchQuery === 'string' ? searchQuery : ''}
           onSearchChange={handleSearchChange}
-          speciesFilter={typeof speciesFilter === 'string' ? speciesFilter : 'All'}
+          speciesFilter={typeof speciesFilter === 'string' ? speciesFilter : 'all'}
           onSpeciesChange={handleSpeciesChange}
           speciesOptions={SPECIES_OPTIONS}
-          statusFilter={typeof statusFilter === 'string' ? statusFilter : 'All'}
+          statusFilter={typeof statusFilter === 'string' ? statusFilter : 'all'}
           onStatusChange={handleStatusChange}
           statusOptions={ADOPTION_STATUSES}
           addLabel="Add Animal"
         />
 
         {isLoading ? (
-          <div className={styles.loadingState}>Loading animalsâ€¦</div>
+          <div className={styles.loadingState}>Loading animals…</div>
         ) : (
           <AnimalGrid
             animals={filteredAnimals}
-            getHref={(animal) => `/admin/animals/${animal.id}`}
+            getHref={(animal) => `/admin/animals/${animal.pet_id}`}
           />
         )}
 
@@ -118,5 +118,3 @@ export default function AnimalsPage() {
     </div>
   );
 }
-
-

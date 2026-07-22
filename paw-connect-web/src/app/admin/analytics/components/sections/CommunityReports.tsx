@@ -1,24 +1,29 @@
 ﻿import React from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { Building2 } from "lucide-react";
 import styles from "./CommunityReports.module.css";
 import { SectionHeading } from "../ui/SectionHeading";
 import { ChartCard } from "../ui/ChartCard";
 import { DonutChart } from "../ui/DonutChart";
 import { CustomTooltip } from "../ui/CustomTooltip";
-import { reportsByMonth, reportsByStatus, reportsByCategory, activeBarangays } from "@/lib/mock-data/analytics";
 
-export function CommunityReports() {
+interface CommunityReportsProps {
+  byMonth: { month: string; reports: number }[];
+  byStatus: { name: string; value: number }[];
+  reportsByCategory: { name: string; value: number }[];
+  activeBarangays: { name: string; value: number }[];
+}
+
+export function CommunityReports({ byMonth, byStatus, reportsByCategory, activeBarangays }: CommunityReportsProps) {
   return (
     <section>
       <SectionHeading title="Community Reports" subtitle="Volume, resolution status, and most active barangays" />
       <div className={styles.grid2}>
         <ChartCard title="Reports by Month">
           <ResponsiveContainer width="100%" height={230}>
-            <BarChart data={reportsByMonth} margin={{ left: -20, right: 8 }}>
+            <BarChart data={byMonth} margin={{ left: -20, right: 8 }}>
               <CartesianGrid vertical={false} stroke="var(--border)" />
-              <XAxis dataKey="month" tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} axisLine={{ stroke: "var(--border)" }} tickLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} axisLine={false} tickLine={false} />
+              <XAxis dataKey="month" tick={{ fontSize: 11, fill: "var(--text-muted)" }} axisLine={{ stroke: "var(--border)" }} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: "var(--text-muted)" }} axisLine={false} tickLine={false} />
               <Tooltip content={<CustomTooltip />} cursor={{ fill: "var(--muted)" }} />
               <Bar dataKey="reports" name="Reports" fill="var(--chart-2)" radius={[6, 6, 0, 0]} />
             </BarChart>
@@ -26,40 +31,32 @@ export function CommunityReports() {
         </ChartCard>
 
         <ChartCard title="Reports by Status">
-          <DonutChart data={reportsByStatus} />
+          <DonutChart data={byStatus} />
         </ChartCard>
 
         <ChartCard title="Reports by Category">
-          <ResponsiveContainer width="100%" height={230}>
-            <BarChart data={reportsByCategory} layout="vertical" margin={{ left: 10, right: 20 }}>
-              <CartesianGrid horizontal={false} stroke="var(--border)" />
-              <XAxis type="number" tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} axisLine={false} tickLine={false} />
-              <YAxis type="category" dataKey="name" width={120} tick={{ fontSize: 11.5, fill: "var(--foreground)" }} axisLine={false} tickLine={false} />
-              <Tooltip content={<CustomTooltip />} cursor={{ fill: "var(--muted)" }} />
-              <Bar dataKey="value" name="Reports" fill="var(--chart-3)" radius={[0, 6, 6, 0]} barSize={16} />
-            </BarChart>
-          </ResponsiveContainer>
+          {reportsByCategory.length > 0 ? (
+            <DonutChart data={reportsByCategory} height={190} />
+          ) : (
+            <div className={styles.emptyChart}>Category breakdown coming soon</div>
+          )}
         </ChartCard>
 
         <ChartCard title="Most Active Barangays" subtitle="By report volume and resolution rate">
-          <div className={styles.barangayList}>
-            {activeBarangays.map((b) => (
-              <div key={b.name}>
-                <div className={styles.barangayRow}>
-                  <span className={styles.barangayName}>
-                    <Building2 size={13} color="var(--muted-foreground)" /> {b.name}
-                  </span>
-                  <span className={styles.barangayStats}>{b.reports} reports � {b.resolved}% resolved</span>
+          {activeBarangays.length > 0 ? (
+            <div className={styles.barangayList}>
+              {activeBarangays.map((b) => (
+                <div key={b.name} className={styles.barangayRow}>
+                  <span className={styles.barangayName}>{b.name}</span>
+                  <span className={styles.barangayCount}>{b.value}</span>
                 </div>
-                <div className={styles.progressTrack}>
-                  <div className={styles.progressFill} style={{ width: `${b.resolved}%` }} />
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className={styles.emptyChart}>Barangay data coming soon</div>
+          )}
         </ChartCard>
       </div>
     </section>
   );
 }
-

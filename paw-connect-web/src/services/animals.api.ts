@@ -1,48 +1,47 @@
 ﻿import { createServiceClient, buildFormData } from '@/lib/api-client';
-import type { Animal } from '@/types';
+import type { Pet, PetFormData } from '@/types';
 
-export type UpdateAnimalPayload = Partial<Omit<Animal, 'id'>>;
-export type CreateAnimalPayload = Animal;
+export type UpdatePetPayload = Partial<Omit<Pet, 'pet_id'>>;
 
-const { request } = createServiceClient('/api/admin/animals');
+const { request } = createServiceClient('/api/admin/pets');
 
-export async function fetchAnimals(): Promise<Animal[]> {
-  const data = await request<{ success: true; animals: Animal[] }>('');
-  return data.animals;
+export async function fetchPets(): Promise<Pet[]> {
+  const data = await request<{ success: true; pets: Pet[] }>('');
+  return data.pets;
 }
 
-export async function fetchAnimalById(id: string): Promise<Animal> {
-  const data = await request<{ success: true; animal: Animal }>(`/${encodeURIComponent(id)}`);
-  return data.animal;
+export async function fetchPetById(id: number): Promise<Pet> {
+  const data = await request<{ success: true; pet: Pet }>(`/${encodeURIComponent(id)}`);
+  return data.pet;
 }
 
-export async function createAnimal(
-  payload: CreateAnimalPayload,
+export async function createPet(
+  payload: PetFormData,
   photoFile: File | null = null
-): Promise<Animal> {
-  const data = await request<{ success: true; animal: Animal }>('', {
+): Promise<Pet> {
+  const data = await request<{ success: true; pet: Pet }>('', {
     method: 'POST',
     body: buildFormData(payload as unknown as Record<string, unknown>, 'photo', photoFile),
   });
-  return data.animal;
+  return data.pet;
 }
 
-export async function updateAnimal(
-  id: string,
-  payload: UpdateAnimalPayload,
+export async function updatePet(
+  id: number,
+  payload: UpdatePetPayload,
   photoFile: File | null = null
-): Promise<Animal> {
-  const data = await request<{ success: true; animal: Animal }>(
+): Promise<Pet> {
+  const data = await request<{ success: true; pet: Pet }>(
     `/${encodeURIComponent(id)}`,
     {
       method: 'PATCH',
       body: buildFormData(payload as unknown as Record<string, unknown>, 'photo', photoFile),
     }
   );
-  return data.animal;
+  return data.pet;
 }
 
-export async function deleteAnimal(id: string): Promise<void> {
+export async function deletePet(id: number): Promise<void> {
   await request<{ success: true; message: string }>(`/${encodeURIComponent(id)}`, {
     method: 'DELETE',
   });

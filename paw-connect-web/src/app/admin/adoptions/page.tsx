@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import React, { useState, useMemo } from 'react';
-import type { AdoptionStatus, ViewMode } from '@/types';
+import type { AdoptionStatus, ViewMode, UpdateApplicationStatusPayload } from '@/types';
 import { useAdoptions } from '@/hooks/admin/use-adoptions';
 import { updateAdoptionStatus } from '@/services/adoptions.api';
 import { SummaryCards } from './components/SummaryCards';
@@ -15,42 +15,39 @@ import styles from './page.module.css';
 
 export default function AdoptionManagementPage() {
   const { applications, isLoading, error, setApplications } = useAdoptions();
-  const [activeTab, setActiveTab] = useState<AdoptionStatus>('Pending');
+  const [activeTab, setActiveTab] = useState<AdoptionStatus>('pending_review');
   const [viewMode, setViewMode] = useState<ViewMode>('table');
   const [searchQuery, setSearchQuery] = useState('');
   const [speciesFilter, setSpeciesFilter] = useState('All species');
   const [dateFilter, setDateFilter] = useState('');
-  const [selectedApplicationId, setSelectedApplicationId] = useState<string | null>(null);
+  const [selectedApplicationId, setSelectedApplicationId] = useState<number | null>(null);
 
   const counts = useMemo((): Record<AdoptionStatus, number> => {
     return {
-      Pending: applications.filter((a) => a.status === 'Pending').length,
-      'Under Review': applications.filter((a) => a.status === 'Under Review').length,
-      Approved: applications.filter((a) => a.status === 'Approved').length,
-      Rejected: applications.filter((a) => a.status === 'Rejected').length,
-      Adopted: applications.filter((a) => a.status === 'Adopted').length,
+      pending_review: applications.filter((a) => a.status === 'pending_review').length,
+      approved: applications.filter((a) => a.status === 'approved').length,
+      rejected: applications.filter((a) => a.status === 'rejected').length,
+      pet_unavailable: applications.filter((a) => a.status === 'pet_unavailable').length,
     };
   }, [applications]);
 
   const latestAdopted = useMemo(() => {
-    return applications
-      .filter((a) => a.status === 'Adopted')
-      .sort((a, b) => (a.applicationDate < b.applicationDate ? 1 : -1))
-      .slice(0, 5);
+    return [];
   }, [applications]);
 
   const selectedApplication = useMemo(
-    () => applications.find((a) => a.id === selectedApplicationId) ?? null,
+    () => applications.find((a) => a.application_id === selectedApplicationId) ?? null,
     [applications, selectedApplicationId]
   );
 
-  const updateStatus = async (id: string, newStatus: AdoptionStatus) => {
+  const updateStatus = async (id: number, newStatus: AdoptionStatus) => {
     const previous = applications;
     setApplications((prev) =>
-      prev.map((app) => (app.id === id ? { ...app, status: newStatus } : app))
+      prev.map((app) => (app.application_id === id ? { ...app, status: newStatus } : app))
     );
     try {
-      await updateAdoptionStatus(id, newStatus);
+      const payload: UpdateApplicationStatusPayload = { status: newStatus };
+      await updateAdoptionStatus(id, payload);
     } catch (err) {
       setApplications(previous);
     }
@@ -61,12 +58,12 @@ export default function AdoptionManagementPage() {
       if (app.status !== activeTab) return false;
 
       const matchesSearch =
-        app.applicantName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        app.animalName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        app.id.toLowerCase().includes(searchQuery.toLowerCase());
+        app.resident_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        app.pet_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        String(app.application_id).toLowerCase().includes(searchQuery.toLowerCase());
 
-      const matchesSpecies = speciesFilter === 'All species' || app.species === speciesFilter;
-      const matchesDate = !dateFilter || app.applicationDate === dateFilter;
+      const matchesSpecies = speciesFilter === 'All species' || app.pet_species === speciesFilter;
+      const matchesDate = !dateFilter || app.submitted_at === dateFilter;
 
       return matchesSearch && matchesSpecies && matchesDate;
     });
@@ -100,13 +97,13 @@ export default function AdoptionManagementPage() {
           <ApplicationsTable
             applications={filteredApplications}
             onUpdateStatus={updateStatus}
-            onViewDetails={(app) => setSelectedApplicationId(app.id)}
+            onViewDetails={(app) => setSelectedApplicationId(app.application_id)}
           />
         ) : (
           <ApplicationsCardGrid
             applications={filteredApplications}
             onUpdateStatus={updateStatus}
-            onViewDetails={(app) => setSelectedApplicationId(app.id)}
+            onViewDetails={(app) => setSelectedApplicationId(app.application_id)}
           />
         )}
       </div>

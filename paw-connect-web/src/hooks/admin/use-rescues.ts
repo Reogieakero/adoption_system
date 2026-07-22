@@ -1,19 +1,19 @@
 ﻿'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import type { RescueCase } from '@/types';
-import { fetchRescueDetails, fetchRescues } from '@/services/rescues.api';
+import type { AnimalReport } from '@/types';
+import { fetchAnimalReportById, fetchAnimalReports } from '@/services/rescues.api';
 
 interface UseRescuesResult {
-  cases: RescueCase[];
+  cases: AnimalReport[];
   isLoading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
-  setCases: React.Dispatch<React.SetStateAction<RescueCase[]>>;
+  setCases: React.Dispatch<React.SetStateAction<AnimalReport[]>>;
 }
 
 export function useRescues(): UseRescuesResult {
-  const [cases, setCases] = useState<RescueCase[]>([]);
+  const [cases, setCases] = useState<AnimalReport[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -21,7 +21,7 @@ export function useRescues(): UseRescuesResult {
     setIsLoading(true);
     setError(null);
     try {
-      const data = await fetchRescues();
+      const data = await fetchAnimalReports();
       setCases(data);
     } catch (err) {
       setCases([]);
@@ -39,13 +39,13 @@ export function useRescues(): UseRescuesResult {
 }
 
 interface UseRescueDetailsResult {
-  details: RescueCase | null;
+  details: AnimalReport | null;
   isLoading: boolean;
   error: string | null;
 }
 
-export function useRescueDetails(id: string | null): UseRescueDetailsResult {
-  const [details, setDetails] = useState<RescueCase | null>(null);
+export function useRescueDetails(id: number | null): UseRescueDetailsResult {
+  const [details, setDetails] = useState<AnimalReport | null>(null);
   const [isLoading, setIsLoading] = useState(Boolean(id));
   const [error, setError] = useState<string | null>(null);
 
@@ -60,7 +60,7 @@ export function useRescueDetails(id: string | null): UseRescueDetailsResult {
     setIsLoading(true);
     setError(null);
 
-    fetchRescueDetails(id)
+    fetchAnimalReportById(id)
       .then((data) => {
         if (!cancelled) setDetails(data);
       })

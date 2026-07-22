@@ -6,13 +6,13 @@ import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/button';
 import styles from './TopBar.module.css';
 import DeleteAnimalModal from './DeleteAnimalModal';
-import { deleteAnimal } from '@/services/animals.api';
-import type { AnimalCardData } from '../../components/AnimalCard';
+import { deletePet } from '@/services/animals.api';
+import type { Pet } from '@/types';
 
 interface TopBarProps {
   backHref: string;
   backLabel?: string;
-  animal: AnimalCardData;
+  animal: Pet;
   onArchive?: () => void;
 }
 
@@ -29,7 +29,7 @@ export default function TopBar({
   const handleDelete = async (id: string) => {
     setActionError('');
     try {
-      await deleteAnimal(id);
+      await deletePet(Number(id));
       router.push(backHref);
     } catch (err) {
       setActionError(err instanceof Error ? err.message : 'Failed to delete record');
@@ -50,7 +50,7 @@ export default function TopBar({
         )}
         <Button variant="admin-secondary" onClick={onArchive}>Archive</Button>
         <Button variant="admin-primary" onClick={() => setIsDeleteOpen(true)}>Delete</Button>
-        <Link href={`/admin/animals/${animal.id}/edit`}>
+        <Link href={`/admin/animals/${animal.pet_id}/edit`}>
           <Button variant="admin-primary">Edit Record</Button>
         </Link>
       </div>
@@ -59,7 +59,7 @@ export default function TopBar({
         open={isDeleteOpen}
         animal={animal}
         onClose={() => setIsDeleteOpen(false)}
-        onConfirm={() => handleDelete(animal.id)}
+        onConfirm={() => handleDelete(String(animal.pet_id))}
       />
     </div>
   );

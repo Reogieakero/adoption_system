@@ -4,11 +4,11 @@ import React, { useState } from 'react';
 import Modal from './Modal';
 import Button from '@/components/ui/button';
 import styles from './Modal.module.css';
-import type { AnimalCardData } from '../../components/AnimalCard';
+import type { Pet } from '@/types';
 
 interface DeleteAnimalModalProps {
   open: boolean;
-  animal: Pick<AnimalCardData, 'name' | 'id'>;
+  animal: Pick<Pet, 'name' | 'pet_id'>;
   onClose: () => void;
   onConfirm: () => void | Promise<void>;
 }
@@ -31,7 +31,7 @@ export default function DeleteAnimalModal({ open, animal, onClose, onConfirm }: 
       open={open}
       onClose={onClose}
       title={`Delete ${animal.name}?`}
-      description={`This permanently removes ${animal.name} (${animal.id}). This can't be undone.`}
+      description={`This permanently removes ${animal.name} (${animal.pet_id}). This can't be undone.`}
       footer={
         <>
           <Button variant="admin-secondary" onClick={onClose} disabled={isDeleting}>

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Eye, ChevronLeft, ChevronRight, FileText } from "lucide-react";
+import { ChevronLeft, ChevronRight, FileText } from "lucide-react";
 import Button from '@/components/ui/button';
 import type { LogEntry } from '@/types';
 import styles from "../page.module.css";
@@ -58,7 +58,7 @@ export default function LogTable({ logs, onViewDetails }: LogTableProps) {
               </td>
               <td className={styles.tdRight}>
                 <Button variant="admin-ghost" onClick={() => onViewDetails(log)}>
-                  <Eye size={12} /> View Details
+                  View Details
                 </Button>
               </td>
             </tr>

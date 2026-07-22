@@ -5,3 +5,65 @@
 .shelterGrid {
   gap: 24px;
 }
+
+.ageList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ageRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.ageRow:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.ageName {
+  color: var(--text-muted);
+}
+
+.ageCount {
+  font-weight: 600;
+}
+
+.capacityContainer {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  padding: 16px 0;
+}
+
+.capacityCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  max-width: 160px;
+}
+
+.capacityValue {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.capacityLabel {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  text-transform: capitalize;
+}
+
+.emptyChart {
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+

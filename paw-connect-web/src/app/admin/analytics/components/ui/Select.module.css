@@ -16,7 +16,7 @@
   min-width: 140px;
 }
 .selectTrigger:hover {
-  border-color: #b7bcc7;
+  border-color: var(--border-hover);
   background: var(--muted);
 }
 .selectTrigger:focus-visible,
@@ -33,7 +33,7 @@
   background: var(--background);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  box-shadow: var(--shadow-hover), 0 8px 24px rgba(16, 24, 40, 0.08);
+  box-shadow: var(--shadow-hover);
   padding: 6px;
   z-index: 60;
   transform-origin: top;

@@ -5,10 +5,17 @@ import { SectionHeading } from "../ui/SectionHeading";
 import { ChartCard } from "../ui/ChartCard";
 import { DonutChart } from "../ui/DonutChart";
 import { CustomTooltip } from "../ui/CustomTooltip";
-import { ProgressRow } from "../ui/ProgressRow";
-import { dogsVsCats, sexDistribution, availableVsAdopted, breedDistribution, ageDistribution, shelterCapacity } from "@/lib/mock-data/analytics";
 
-export function AnimalPopulation() {
+interface AnimalPopulationProps {
+  dogsVsCats: { name: string; value: number }[];
+  breedDistribution: { name: string; value: number }[];
+  sexDistribution: { name: string; value: number }[];
+  petStatusDistribution: { name: string; value: number }[];
+  ageDistribution: { name: string; value: number }[];
+  shelterCapacity: { name: string; value: number }[];
+}
+
+export function AnimalPopulation({ dogsVsCats, breedDistribution, sexDistribution, petStatusDistribution, ageDistribution, shelterCapacity }: AnimalPopulationProps) {
   return (
     <section>
       <SectionHeading title="Animal Population" subtitle="Composition, demographics, and shelter capacity" />
@@ -17,18 +24,26 @@ export function AnimalPopulation() {
           <DonutChart data={dogsVsCats} height={190} />
         </ChartCard>
         <ChartCard title="Sex Distribution">
-          <DonutChart data={sexDistribution} height={190} />
+          {sexDistribution.length > 0 ? (
+            <DonutChart data={sexDistribution} height={190} />
+          ) : (
+            <div className={styles.emptyChart}>Sex data coming soon</div>
+          )}
         </ChartCard>
         <ChartCard title="Available vs Adopted">
-          <DonutChart data={availableVsAdopted} height={190} />
+          {petStatusDistribution.length > 0 ? (
+            <DonutChart data={petStatusDistribution} height={190} />
+          ) : (
+            <div className={styles.emptyChart}>Status breakdown coming soon</div>
+          )}
         </ChartCard>
 
         <ChartCard title="Breed Distribution" span={2}>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={breedDistribution} margin={{ left: -20, right: 8 }}>
               <CartesianGrid vertical={false} stroke="var(--border)" />
-              <XAxis dataKey="name" tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} axisLine={{ stroke: "var(--border)" }} tickLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} axisLine={false} tickLine={false} />
+              <XAxis dataKey="name" tick={{ fontSize: 11, fill: "var(--text-muted)" }} axisLine={{ stroke: "var(--border)" }} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: "var(--text-muted)" }} axisLine={false} tickLine={false} />
               <Tooltip content={<CustomTooltip />} cursor={{ fill: "var(--muted)" }} />
               <Bar dataKey="value" name="Animals" fill="var(--chart-1)" radius={[6, 6, 0, 0]} />
             </BarChart>
@@ -36,26 +51,35 @@ export function AnimalPopulation() {
         </ChartCard>
 
         <ChartCard title="Age Distribution">
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={ageDistribution} margin={{ left: -20, right: 8 }}>
-              <CartesianGrid vertical={false} stroke="var(--border)" />
-              <XAxis dataKey="name" tick={{ fontSize: 10.5, fill: "var(--muted-foreground)" }} axisLine={{ stroke: "var(--border)" }} tickLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} axisLine={false} tickLine={false} />
-              <Tooltip content={<CustomTooltip />} cursor={{ fill: "var(--muted)" }} />
-              <Bar dataKey="value" name="Animals" fill="var(--chart-2)" radius={[6, 6, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+          {ageDistribution.length > 0 ? (
+            <div className={styles.ageList}>
+              {ageDistribution.map((a) => (
+                <div key={a.name} className={styles.ageRow}>
+                  <span className={styles.ageName}>{a.name}</span>
+                  <span className={styles.ageCount}>{a.value}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className={styles.emptyChart}>Age data coming soon</div>
+          )}
         </ChartCard>
 
         <ChartCard title="Shelter Capacity" span={3}>
-          <div className={`${styles.grid3} ${styles.shelterGrid}`}>
-            {shelterCapacity.map((s) => (
-              <ProgressRow key={s.name} label={s.name} used={s.used} total={s.total} />
-            ))}
-          </div>
+          {shelterCapacity.length > 0 ? (
+            <div className={styles.capacityContainer}>
+              {shelterCapacity.map((s) => (
+                <div key={s.name} className={styles.capacityCard}>
+                  <div className={styles.capacityValue}>{s.value}</div>
+                  <div className={styles.capacityLabel}>{s.name}</div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className={styles.emptyChart}>Shelter capacity data coming soon</div>
+          )}
         </ChartCard>
       </div>
     </section>
   );
 }
-

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { adoptionService } from '../services/adoption.service';
-import { UpdateApplicationStatusInput } from '../types/adoption.types';
+import { AdoptionStatus } from '../types/adoption.types';
 import { handleServiceError } from '../middleware/authenticateAdmin';
 
 export const adoptionController = {
@@ -15,7 +15,7 @@ export const adoptionController = {
 
   async getDetails(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const details = await adoptionService.getApplicationDetails(req.params.id);
+      const details = await adoptionService.getApplicationDetails(Number(req.params.id));
       res.json({ success: true, details });
     } catch (err) {
       handleServiceError(err, res, next);
@@ -24,8 +24,8 @@ export const adoptionController = {
 
   async updateStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { status } = req.body as UpdateApplicationStatusInput;
-      const application = await adoptionService.updateStatus(req.params.id, status);
+      const { status, rejection_reason } = req.body as { status: AdoptionStatus; rejection_reason?: string | null };
+      const application = await adoptionService.updateStatus(Number(req.params.id), status, rejection_reason ?? null);
       res.json({ success: true, application });
     } catch (err) {
       handleServiceError(err, res, next);

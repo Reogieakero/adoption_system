@@ -4,6 +4,7 @@ import { env } from '../config/env';
 import { AppError } from '../errors/AppError';
 
 interface AdminTokenPayload {
+  id: number;
   email: string;
   role: string;
 }

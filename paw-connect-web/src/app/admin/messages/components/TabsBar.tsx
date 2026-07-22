@@ -2,7 +2,7 @@
 import Button from '@/components/ui/button';
 import styles from './TabsBar.module.css';
 
-const TABS = ['All', 'Unread', 'Adoption', 'Rescue', 'General'];
+const TABS = ['All', 'Unread', 'Adoption', 'Report'];
 
 interface TabsBarProps {
   activeTab: string;
@@ -27,4 +27,3 @@ export default function TabsBar({ activeTab, onChange }: TabsBarProps) {
     </div>
   );
 }
-

@@ -17,14 +17,13 @@ function handleServiceError(err: unknown, res: Response, next: NextFunction): vo
 export const authController = {
   async register(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { firstName, lastName, email, password } = req.body as {
-        firstName: string;
-        lastName: string;
+      const { fullName, email, password } = req.body as {
+        fullName: string;
         email: string;
         password: string;
       };
 
-      const result = await authService.register({ firstName, lastName, email, password });
+      const result = await authService.register({ fullName, email, password });
 
       res.status(201).json({
         success: true,

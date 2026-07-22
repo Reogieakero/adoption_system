@@ -2,34 +2,33 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useAnimal } from '@/hooks/admin/use-animals';
-import { updateAnimal, type UpdateAnimalPayload } from '@/services/animals.api';
+import { updatePet, type UpdatePetPayload } from '@/services/animals.api';
 import AnimalForm, { type AnimalFormData } from '../../components/animal-form';
 import NotFound from '../components/NotFound';
 import Button from '@/components/ui/button';
 import { API_BASE_URL } from '@/lib/config';
 import { adminRequest } from '@/lib/api-client';
 import { X } from 'lucide-react';
+import type { Pet } from '@/types';
 import styles from '../components/FormControls.module.css';
 
-function toPayload(data: AnimalFormData): UpdateAnimalPayload {
+function toPayload(data: AnimalFormData): UpdatePetPayload {
+  const species = data.species.toLowerCase() as Pet['species'];
+  const sex = data.sex.toLowerCase() as Pet['sex'];
+  const status = data.adoptionStatus.toLowerCase() as Pet['status'];
+  const breedType = (data.breed === 'Aspin' || data.breed?.toLowerCase().includes('aspin')) ? 'aspin' :
+    (data.breed === 'Puspin' || data.breed?.toLowerCase().includes('puspin')) ? 'puspin' : 'other' as Pet['breed_type'];
+
   return {
     name: data.name,
-    species: data.species as UpdateAnimalPayload['species'],
-    breed: data.breed,
-    sex: data.sex as UpdateAnimalPayload['sex'],
-    age: data.age,
-    size: data.size as UpdateAnimalPayload['size'],
-    colorMarkings: data.colorMarkings,
-    rescueStatus: data.rescueStatus as UpdateAnimalPayload['rescueStatus'],
-    adoptionStatus: data.adoptionStatus as UpdateAnimalPayload['adoptionStatus'],
-    healthStatus: data.healthStatus as UpdateAnimalPayload['healthStatus'],
-    vaccinationStatus: data.vaccinationStatus as UpdateAnimalPayload['vaccinationStatus'],
-    heartRate: data.heartRate,
-    location: data.location,
-    dateRescued: data.dateRescued,
-    dateAdded: data.dateAdded,
-    bio: data.bio,
-    photo: data.photo,
+    species,
+    breed_type: breedType,
+    breed_detail: data.breed || null,
+    sex,
+    age_estimate: data.age || null,
+    description: data.bio || null,
+    status,
+    location_area: data.location || null,
   };
 }
 
@@ -57,7 +56,7 @@ export default function EditAnimalPageClient({ id }: { id: string }) {
   if (!animal) return <NotFound id={id} backHref="/admin/animals" />;
 
   const handleSave = async (data: AnimalFormData, photoFile: File | null) => {
-    await updateAnimal(animal.id, toPayload(data), photoFile);
+    await updatePet(animal.pet_id, toPayload(data), photoFile);
     await refetch();
   };
 
@@ -66,7 +65,7 @@ export default function EditAnimalPageClient({ id }: { id: string }) {
     setGenMessage('');
     try {
       const data = await adminRequest<{ success: boolean; message?: string }>(
-        API_BASE_URL, `/api/admin/animals/${animal.id}/generate-3d`,
+        API_BASE_URL, `/api/admin/animals/${animal.pet_id}/generate-3d`,
         { method: 'POST' }
       );
       if (!data.success) {
@@ -88,7 +87,7 @@ export default function EditAnimalPageClient({ id }: { id: string }) {
     setGenDescMessage('');
     try {
       const data = await adminRequest<{ success: boolean; message?: string }>(
-        API_BASE_URL, `/api/admin/animals/${animal.id}/generate-3d-from-description`,
+        API_BASE_URL, `/api/admin/animals/${animal.pet_id}/generate-3d-from-description`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -109,25 +108,25 @@ export default function EditAnimalPageClient({ id }: { id: string }) {
   };
 
   const initialData: AnimalFormData = {
-    id: animal.id,
+    id: String(animal.pet_id),
     name: animal.name,
-    species: animal.species,
-    breed: animal.breed,
-    sex: animal.sex,
-    age: animal.age,
-    size: animal.size,
-    colorMarkings: animal.colorMarkings,
-    rescueStatus: animal.rescueStatus,
-    adoptionStatus: animal.adoptionStatus,
-    healthStatus: animal.healthStatus,
-    vaccinationStatus: animal.vaccinationStatus,
-    heartRate: animal.heartRate,
-    location: animal.location,
-    dateRescued: animal.dateRescued,
-    dateAdded: animal.dateAdded,
-    lastUpdated: animal.lastUpdated,
-    bio: animal.bio,
-    photo: animal.photo,
+    species: animal.species.charAt(0).toUpperCase() + animal.species.slice(1),
+    breed: animal.breed_detail ?? animal.breed_type,
+    sex: animal.sex.charAt(0).toUpperCase() + animal.sex.slice(1),
+    age: animal.age_estimate ?? '',
+    size: 'Medium',
+    colorMarkings: '',
+    rescueStatus: 'In Shelter',
+    adoptionStatus: animal.status.charAt(0).toUpperCase() + animal.status.slice(1),
+    healthStatus: 'Healthy',
+    vaccinationStatus: 'Vaccinated',
+    heartRate: '',
+    location: animal.location_area ?? '',
+    dateRescued: '',
+    dateAdded: '',
+    lastUpdated: '',
+    bio: animal.description ?? '',
+    photo: animal.primary_photo_url ?? '',
   };
 
   return (
@@ -139,9 +138,9 @@ export default function EditAnimalPageClient({ id }: { id: string }) {
         <p style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-primary)', margin: '8px 0 0' }}>
           3D Model
         </p>
-        {animal.model3dUrl && (
+        {animal.asset_3d?.asset_url && (
           <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)', margin: 0 }}>
-            Status: {animal.model3dStatus} &middot;{' '}
+            Status: {animal.asset_3d.asset_type} &middot;{' '}
             <button onClick={() => setShowViewer(true)} style={{ color: 'var(--info)', textDecoration: 'underline', background: 'none', border: 'none', cursor: 'pointer', fontSize: 'inherit', padding: 0 }}>
               View model
             </button>
@@ -186,7 +185,7 @@ export default function EditAnimalPageClient({ id }: { id: string }) {
         </div>
       </div>
 
-      {showViewer && animal.model3dUrl && (
+      {showViewer && animal.asset_3d?.asset_url && (
         <div ref={viewerRef}
           onClick={(e) => { if (e.target === viewerRef.current) setShowViewer(false); }}
           style={{
@@ -208,7 +207,7 @@ export default function EditAnimalPageClient({ id }: { id: string }) {
               <X size={20} />
             </button>
             <model-viewer
-              src={animal.model3dUrl}
+              src={animal.asset_3d.asset_url}
               alt={animal.name}
               auto-rotate="true"
               camera-controls="true"

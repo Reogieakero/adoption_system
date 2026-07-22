@@ -10,17 +10,19 @@ interface ChatWindowProps {
   typedMessage: string;
   onTypedMessageChange: (value: string) => void;
   onSendMessage: () => void;
+  onViewProfile?: () => void;
 }
 
 export default function ChatWindow({
   conversation,
   typedMessage,
   onTypedMessageChange,
-  onSendMessage
+  onSendMessage,
+  onViewProfile,
 }: ChatWindowProps) {
   return (
     <main className={styles.chatWindow}>
-      <ChatHeader conversation={conversation} />
+      <ChatHeader conversation={conversation} onViewProfile={onViewProfile} />
       <MessageStream messages={conversation.messages} />
       <InputBar value={typedMessage} onChange={onTypedMessageChange} onSend={onSendMessage} />
     </main>

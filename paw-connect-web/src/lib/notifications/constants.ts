@@ -10,29 +10,29 @@ import {
 } from 'lucide-react';
 
 export const TYPE_LABELS: Record<NotificationType, string> = {
-  adoption_application: 'Adoption',
-  rescue_case: 'Rescue',
-  message: 'Message',
-  health_alert: 'Health',
-  user_registration: 'New User',
-  system: 'System',
+  adoption_status: 'Adoption',
+  report_status: 'Report',
+  new_message: 'Message',
+  new_report: 'Report',
+  new_community_listing: 'Listing',
+  new_application: 'Application',
 };
 
 export const TYPE_ICONS: Record<NotificationType, LucideIcon> = {
-  adoption_application: PawPrint,
-  rescue_case: AlertTriangle,
-  message: MessageSquare,
-  health_alert: HeartPulse,
-  user_registration: UserPlus,
-  system: Settings,
+  adoption_status: PawPrint,
+  report_status: AlertTriangle,
+  new_message: MessageSquare,
+  new_report: HeartPulse,
+  new_community_listing: UserPlus,
+  new_application: Settings,
 };
 
 export const NOTIFICATION_TABS = [
   { key: 'all' as const, label: 'All' },
   { key: 'unread' as const, label: 'Unread' },
-  { key: 'adoption_application' as const, label: 'Adoptions' },
-  { key: 'rescue_case' as const, label: 'Rescues' },
-  { key: 'message' as const, label: 'Messages' },
-  { key: 'health_alert' as const, label: 'Health' },
-  { key: 'system' as const, label: 'System' },
+  { key: 'adoption_status' as const, label: 'Adoptions' },
+  { key: 'new_application' as const, label: 'Applications' },
+  { key: 'new_message' as const, label: 'Messages' },
+  { key: 'new_report' as const, label: 'Reports' },
+  { key: 'new_community_listing' as const, label: 'Listings' },
 ] as const;

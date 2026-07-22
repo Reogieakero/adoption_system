@@ -1,30 +1,6 @@
 ﻿"use client";
 
 import React, { useState } from "react";
-import {
-  DEFAULT_ORG_NAME,
-  DEFAULT_CONTACT_EMAIL,
-  DEFAULT_CONTACT_NUMBER,
-  DEFAULT_OFFICE_ADDRESS,
-  DEFAULT_NOTIFY_ADOPTION,
-  DEFAULT_NOTIFY_RESCUE,
-  DEFAULT_NOTIFY_COMMUNITY,
-  DEFAULT_NOTIFY_HEALTH,
-  DEFAULT_NOTIFY_EMAIL,
-  DEFAULT_MAP_LOCATION,
-  DEFAULT_MAP_ZOOM,
-  DEFAULT_ENABLE_HEATMAP,
-  DEFAULT_MODULE_VISIBILITY,
-  DEFAULT_ALLOW_QUIZ_RETAKES,
-  DEFAULT_ENABLE_CERTIFICATES,
-  DEFAULT_ENABLE_REVIEWS,
-  DEFAULT_DATE_FORMAT,
-  DEFAULT_TIME_FORMAT,
-  DEFAULT_TIME_ZONE,
-  DEFAULT_SESSION_TIMEOUT,
-  DEFAULT_ENABLE_2FA,
-  DEFAULT_REQUIRE_STRONG_PASSWORDS,
-} from '@/lib/mock-data/settings';
 import styles from "./page.module.css";
 import SettingsTabs from './components/SettingsTabs';
 import GeneralSettingsForm from './components/GeneralSettingsForm';
@@ -38,6 +14,29 @@ import SettingsFooter from './components/SettingsFooter';
 import BackupDialog from './components/BackupDialog';
 
 type SettingsTab = "general" | "notifications" | "maps" | "elearning" | "system" | "security";
+
+const DEFAULT_ORG_NAME = "Hopeful Paws Sanctuary";
+const DEFAULT_CONTACT_EMAIL = "admin@hopefulpaws.org";
+const DEFAULT_CONTACT_NUMBER = "+1 (555) 234-5678";
+const DEFAULT_OFFICE_ADDRESS = "742 Evergreen Terrace, Sector 7G";
+const DEFAULT_NOTIFY_ADOPTION = true;
+const DEFAULT_NOTIFY_RESCUE = true;
+const DEFAULT_NOTIFY_COMMUNITY = false;
+const DEFAULT_NOTIFY_HEALTH = true;
+const DEFAULT_NOTIFY_EMAIL = true;
+const DEFAULT_MAP_LOCATION = "San Francisco, CA";
+const DEFAULT_MAP_ZOOM = "12";
+const DEFAULT_ENABLE_HEATMAP = true;
+const DEFAULT_MODULE_VISIBILITY = "public";
+const DEFAULT_ALLOW_QUIZ_RETAKES = "always";
+const DEFAULT_ENABLE_CERTIFICATES = true;
+const DEFAULT_ENABLE_REVIEWS = true;
+const DEFAULT_DATE_FORMAT = "MM/DD/YYYY";
+const DEFAULT_TIME_FORMAT = "12h";
+const DEFAULT_TIME_ZONE = "EST";
+const DEFAULT_SESSION_TIMEOUT = "30 minutes";
+const DEFAULT_ENABLE_2FA = false;
+const DEFAULT_REQUIRE_STRONG_PASSWORDS = true;
 
 export default function AdminSettingsPage() {
   const [activeTab, setActiveTab] = useState<SettingsTab>("general");

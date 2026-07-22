@@ -280,3 +280,41 @@
 .headerAvatar {
   cursor: pointer;
 }
+
+.watermark {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 5;
+  overflow: hidden;
+}
+
+.watermarkText {
+  font-size: 3.5rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.07;
+  transform: rotate(-18deg);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.watermarkApproved {
+  color: #10b981;
+}
+
+.watermarkAdopted {
+  color: #6366f1;
+}
+
+.watermarkRejected {
+  color: #ef4444;
+}
+
+.watermarkPending {
+  color: #f59e0b;
+}

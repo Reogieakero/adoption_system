@@ -18,9 +18,9 @@ export function AdoptedCarousel({ animals }: AdoptedCarouselProps) {
       <div className={styles.carouselTrack}>
         <div className={styles.carouselTrackInner}>
           {loopAnimals.map((animal, idx) => (
-            <div className={styles.carouselItem} key={`${animal.id}-${idx}`}>
-              <img src={animal.animalPhoto} alt={animal.animalName} className={styles.carouselImage} />
-              <span className={styles.carouselName}>{animal.animalName}</span>
+            <div className={styles.carouselItem} key={`${animal.application_id}-${idx}`}>
+              <img src={animal.pet_photo_url ?? ''} alt={animal.pet_name} className={styles.carouselImage} />
+              <span className={styles.carouselName}>{animal.pet_name}</span>
             </div>
           ))}
         </div>

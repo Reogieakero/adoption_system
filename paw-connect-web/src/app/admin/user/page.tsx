@@ -44,7 +44,7 @@ export default function UserManagementPage() {
     setActiveRowMenuId(null);
     const target = users.find((u) => u.id === id);
     if (!target) return;
-    const nextStatus = target.status === "Suspended" ? "Active" : "Suspended";
+    const nextStatus = target.status === "suspended" ? "active" : "suspended";
 
     // optimistic update
     setUsers(users.map((u) => (u.id === id ? { ...u, status: nextStatus } : u)));
@@ -96,9 +96,9 @@ export default function UserManagementPage() {
 
   // Metrics Count System Computation
   const totalUsers = users.length;
-  const activeCount = users.filter((u) => u.status === "Active").length;
-  const pendingCount = users.filter((u) => u.status === "Pending").length;
-  const suspendedCount = users.filter((u) => u.status === "Suspended").length;
+  const activeCount = users.filter((u) => u.status === "active").length;
+  const pendingCount = users.filter((u) => u.status === "pending_verification").length;
+  const suspendedCount = users.filter((u) => u.status === "suspended").length;
 
   if (isLoading) {
     return (

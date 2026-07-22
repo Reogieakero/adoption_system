@@ -1,14 +1,31 @@
-﻿import styles from './ELearningCarousel.module.css';
+﻿'use client';
 
-const E_LEARNING_MODULES = [
-  { id: 1, tag: 'ANIMAL CARE', title: 'Advanced Canine Dietary Protocols', length: '45 mins', image: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80&w=400' },
-  { id: 2, tag: 'LEGAL', title: 'Understanding Local Animal Welfare Laws', length: '60 mins', image: 'https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&q=80&w=400' },
-  { id: 3, tag: 'RESCUE', title: 'Safe Field Capture & Handling Tactics', length: '30 mins', image: 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?auto=format&fit=crop&q=80&w=400' },
-  { id: 4, tag: 'ADOPTION', title: 'Applicant Screening Best Practices', length: '40 mins', image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&q=80&w=400' },
-  { id: 5, tag: 'MEDICAL', title: 'Identifying Early Feline Viral Symptoms', length: '50 mins', image: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=400' },
-];
+import { useState, useEffect } from 'react';
+import { createServiceClient } from '@/lib/api-client';
+import styles from './ELearningCarousel.module.css';
+
+const { request } = createServiceClient('/api/admin/learning-modules');
+
+interface Module {
+  module_id: number;
+  title: string;
+  description: string | null;
+  cover_image_url: string | null;
+  category_name?: string;
+}
 
 export default function ELearningCarousel() {
+  const [modules, setModules] = useState<Module[]>([]);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    request<{ success: true; modules: Module[] }>('')
+      .then((data) => { setModules(data.modules ?? []); setLoaded(true); })
+      .catch(() => setLoaded(true));
+  }, []);
+
+  if (!loaded || modules.length === 0) return null;
+
   return (
     <section className={styles.carouselSection}>
       <div className={styles.sectionHeader}>
@@ -17,20 +34,18 @@ export default function ELearningCarousel() {
           <p className={styles.sectionSubtitle}>Active professional development certifications</p>
         </div>
       </div>
-
       <div className={styles.carouselWrapper}>
         <div className={styles.carouselTrack}>
-          {/* Duplicated 3x back-to-back so the looping animation has full track coverage */}
-          {[...E_LEARNING_MODULES, ...E_LEARNING_MODULES, ...E_LEARNING_MODULES].map((module, index) => (
-            <div key={`${module.id}-${index}`} className={styles.learningCard}>
+          {[...modules, ...modules, ...modules].map((mod, idx) => (
+            <div key={`${mod.module_id}-${idx}`} className={styles.learningCard}>
               <div className={styles.imageWrapper}>
-                <img src={module.image} alt={module.title} className={styles.moduleImage} />
-                <span className={styles.moduleTag}>{module.tag}</span>
+                <img src={mod.cover_image_url ?? 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80&w=400'} alt={mod.title} className={styles.moduleImage} />
+                <span className={styles.moduleTag}>{mod.category_name ?? 'MODULE'}</span>
               </div>
               <div className={styles.cardContent}>
                 <div className={styles.moduleFooter}>
-                  <span className={styles.moduleLength}>{module.length}</span>
-                  <span className={styles.moduleTitle}>{module.title}</span>
+                  <span className={styles.moduleLength}>{mod.description ?? ''}</span>
+                  <span className={styles.moduleTitle}>{mod.title}</span>
                 </div>
               </div>
             </div>

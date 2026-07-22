@@ -2,30 +2,25 @@ import { RowDataPacket } from 'mysql2/promise';
 import pool from '../config/db';
 
 export interface RescuePointRow extends RowDataPacket {
-  id: string;
+  report_id: number;
   latitude: number;
   longitude: number;
-  priority: 'Critical' | 'High' | 'Medium' | 'Low';
   status: string;
-  barangay: string;
-  animal_type: string;
-  reported_at: string | Date;
+  location_area: string;
+  species: string;
+  submitted_at: string | Date;
 }
 
 export interface AdoptionPointRow extends RowDataPacket {
-  application_id: string;
+  application_id: number;
   animal_name: string;
   application_date: string | Date;
   latitude: number;
   longitude: number;
-  barangay: string;
+  location_area: string;
 }
 
-// This system serves Mati City, Davao Oriental only. Every point plotted on
-// the heatmap/pin view is geofenced to this bounding box so stray/bad
-// coordinates (or future data from elsewhere) never show up on the map.
-// Mati City center is ~6.9500 N, 126.2167 E; the box below gives a generous
-// buffer around its ~589 sq km land area.
+// Mati City geofence bounds
 export const MATI_CITY_BOUNDS = {
   south: 6.75,
   north: 7.15,
@@ -46,32 +41,29 @@ const GEOFENCE_PARAMS = [
 ];
 
 const RESCUE_POINTS_QUERY = `
-  SELECT id, latitude, longitude, priority, status, barangay, animal_type, reported_at
-  FROM rescue_cases
-  WHERE latitude IS NOT NULL AND longitude IS NOT NULL
+  SELECT report_id, latitude, longitude, status, location_area, species, submitted_at
+  FROM animal_reports
+  WHERE is_valid_for_heatmap = 1
+    AND latitude IS NOT NULL AND longitude IS NOT NULL
     AND ${geofenceClause()}
-  ORDER BY reported_at DESC
+  ORDER BY submitted_at DESC
 `;
 
-// adoption_applications / adoption_application_profiles have no lat/lng of
-// their own (only free-text address fields). As a proxy, we use the
-// location where the *adopted* animal was originally rescued, joined via
-// rescue_cases.linked_animal_id -> animals.id -> adoption_applications.animal_id.
 const ADOPTION_POINTS_QUERY = `
   SELECT
-    aa.id AS application_id,
-    an.name AS animal_name,
-    aa.application_date,
-    rc.latitude,
-    rc.longitude,
-    rc.barangay
+    aa.application_id,
+    p.name AS animal_name,
+    aa.submitted_at AS application_date,
+    ar.latitude,
+    ar.longitude,
+    ar.location_area
   FROM adoption_applications aa
-  JOIN animals an ON an.id = aa.animal_id
-  JOIN rescue_cases rc ON rc.linked_animal_id = aa.animal_id
-  WHERE aa.status = 'Adopted'
-    AND rc.latitude IS NOT NULL AND rc.longitude IS NOT NULL
-    AND ${geofenceClause('rc')}
-  ORDER BY aa.application_date DESC
+  JOIN pets p ON p.pet_id = aa.pet_id
+  LEFT JOIN animal_reports ar ON ar.resident_id = aa.resident_id AND ar.is_valid_for_heatmap = 1
+  WHERE aa.status = 'approved'
+    AND ar.latitude IS NOT NULL AND ar.longitude IS NOT NULL
+    AND ${geofenceClause('ar')}
+  ORDER BY aa.submitted_at DESC
 `;
 
 export const heatmapRepository = {

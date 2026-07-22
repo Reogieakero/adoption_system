@@ -23,3 +23,11 @@
   margin: 4px 0 10px;
   font-weight: 500;
 }
+
+.emptyChart {
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+

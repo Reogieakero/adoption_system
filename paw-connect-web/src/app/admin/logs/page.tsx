@@ -1,11 +1,11 @@
 ﻿"use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Download } from "lucide-react";
 import Button from '@/components/ui/button';
 import DatePicker from '@/components/ui/date-picker';
 import type { LogEntry } from '@/types';
-import { MOCK_LOGS } from '@/lib/mock-data/logs';
+import { createServiceClient } from '@/lib/api-client';
 import styles from "./page.module.css";
 import LogSummaryCards from './components/LogSummaryCards';
 import LogFilters from './components/LogFilters';
@@ -13,6 +13,8 @@ import LogTable from './components/LogTable';
 import LogDetailDrawer from './components/LogDetailDrawer';
 
 export default function ActivityLogsPage() {
+  const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [moduleFilter, setModuleFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
@@ -21,7 +23,22 @@ export default function ActivityLogsPage() {
   const [selectedLog, setSelectedLog] = useState<LogEntry | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const filteredLogs = MOCK_LOGS.filter((log) => {
+  useEffect(() => {
+    async function fetchLogs() {
+      try {
+        const { request } = createServiceClient('/api/admin/logs');
+        const res = await request<{ success: boolean; logs: LogEntry[] }>('');
+        setLogs(res.logs);
+      } catch (err) {
+        console.error('Failed to fetch logs:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchLogs();
+  }, []);
+
+  const filteredLogs = logs.filter((log) => {
     const matchesSearch =
       log.user.toLowerCase().includes(search.toLowerCase()) ||
       log.activity.toLowerCase().includes(search.toLowerCase()) ||
@@ -40,6 +57,10 @@ export default function ActivityLogsPage() {
     setIsDrawerOpen(false);
     setTimeout(() => setSelectedLog(null), 300);
   };
+
+  if (loading) {
+    return <div className={styles.adminContainer}>Loading logs...</div>;
+  }
 
   return (
     <div className={styles.adminContainer}>

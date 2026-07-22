@@ -1,34 +1,30 @@
 import { RowDataPacket } from 'mysql2';
-import { Notification, NotificationPriority, NotificationType } from '../types/notification.types';
+import { Notification, NotificationType, NotificationLinkedType } from '../types/notification.types';
 
 export interface NotificationRow extends RowDataPacket {
-  id: number;
+  notification_id: number;
+  recipient_id: number;
   type: string;
-  title: string;
-  message: string;
-  entity_type: string | null;
-  entity_id: number | null;
-  priority: string;
+  linked_type: string | null;
+  linked_id: number | null;
+  message_text: string;
   is_read: number;
-  read_at: string | null;
-  created_by: number | null;
-  link: string | null;
+  is_emailed: number;
+  emailed_at: string | null;
   created_at: string;
 }
 
 export function rowToNotification(row: NotificationRow): Notification {
   return {
-    id: row.id,
+    notification_id: row.notification_id,
+    recipient_id: row.recipient_id,
     type: row.type as NotificationType,
-    title: row.title,
-    message: row.message,
-    entityType: row.entity_type,
-    entityId: row.entity_id,
-    priority: row.priority as NotificationPriority,
-    isRead: Boolean(row.is_read),
-    readAt: row.read_at,
-    createdBy: row.created_by,
-    link: row.link,
-    createdAt: row.created_at,
+    linked_type: row.linked_type as NotificationLinkedType | null,
+    linked_id: row.linked_id,
+    message_text: row.message_text,
+    is_read: Boolean(row.is_read),
+    is_emailed: Boolean(row.is_emailed),
+    emailed_at: row.emailed_at,
+    created_at: row.created_at,
   };
 }

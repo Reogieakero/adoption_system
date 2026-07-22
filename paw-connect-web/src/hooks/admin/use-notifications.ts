@@ -58,19 +58,19 @@ export function useNotifications(options: UseNotificationsOptions = {}): UseNoti
 
   const markAsRead = useCallback(async (id: number) => {
     const updated = await markNotificationRead(id);
-    setNotifications((prev) => prev.map((n) => (n.id === id ? updated : n)));
+    setNotifications((prev) => prev.map((n) => (n.notification_id === id ? updated : n)));
     setUnreadCount((prev) => Math.max(0, prev - 1));
   }, []);
 
   const markAllAsRead = useCallback(async () => {
     await markAllNotificationsRead();
-    setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+    setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
     setUnreadCount(0);
   }, []);
 
   const remove = useCallback(async (id: number) => {
     await deleteNotification(id);
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
+    setNotifications((prev) => prev.filter((n) => n.notification_id !== id));
   }, []);
 
   return {

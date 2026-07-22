@@ -1,40 +1,38 @@
-export type ModuleDifficulty = 'Beginner' | 'Intermediate' | 'Advanced';
-export type ModuleStatus = 'Draft' | 'Published';
+export type ModuleStatus = 'draft' | 'published';
+export type ProgressStatus = 'not_started' | 'in_progress' | 'completed';
 
-export interface LearningModule {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  difficulty: ModuleDifficulty;
-  duration: string;
-  status: ModuleStatus;
-  objectives: string;
-  content: string;
-  videoUrl: string;
-  pdfUrl: string;
-  views: number;
-  completionRate: string;
-  image: string;
-  dateAdded: string;
-  lastUpdated: string;
+export interface ElearningCategory {
+  category_id: number;
+  name: string;
+  description: string | null;
+  order_index: number;
+  created_at: string;
 }
 
-export interface LearningModuleFormState {
+export interface ElearningModule {
+  module_id: number;
+  category_id: number;
   title: string;
-  category: string;
-  difficulty: ModuleDifficulty;
-  duration: string;
-  description: string;
-  objectives: string;
-  content: string;
-  videoUrl: string;
-  pdfUrl: string;
+  description: string | null;
+  content_body: string;
+  video_url: string | null;
+  cover_image_url: string | null;
+  order_index: number;
   status: ModuleStatus;
+  created_by_admin_id: number;
+  created_at: string;
+  updated_at: string;
+  category_name?: string;
 }
 
-export type CreateLearningModulePayload = Omit<
-  LearningModule,
-  'id' | 'views' | 'completionRate' | 'dateAdded' | 'lastUpdated'
->;
-export type UpdateLearningModulePayload = Partial<CreateLearningModulePayload>;
+export interface ModuleProgress {
+  progress_id: number;
+  module_id: number;
+  resident_id: number;
+  status: ProgressStatus;
+  started_at: string | null;
+  completed_at: string | null;
+}
+
+export type CreateElearningModulePayload = Omit<ElearningModule, 'module_id' | 'created_at' | 'updated_at' | 'category_name'>;
+export type UpdateElearningModulePayload = Partial<CreateElearningModulePayload>;

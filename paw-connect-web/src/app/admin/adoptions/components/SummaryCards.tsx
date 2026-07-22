@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import { Clock, Search, Check, Heart, X } from 'lucide-react';
+import { Clock, Check, Heart, X } from 'lucide-react';
 import type { AdoptionStatus as StatusType } from '@/types';
 import styles from './SummaryCards.module.css';
 
@@ -9,30 +9,27 @@ interface SummaryCardsProps {
   onSelect: (status: StatusType) => void;
 }
 
-const STATUS_ORDER: StatusType[] = ['Pending', 'Under Review', 'Approved', 'Adopted', 'Rejected'];
+const STATUS_ORDER: StatusType[] = ['pending_review', 'approved', 'rejected', 'pet_unavailable'];
 
 const DISPLAY_LABELS: Record<StatusType, string> = {
-  Pending: 'Pending requests',
-  'Under Review': 'Under review',
-  Approved: 'Approved applications',
-  Adopted: 'Adopted animals',
-  Rejected: 'Rejected cases',
+  pending_review: 'Pending requests',
+  approved: 'Approved applications',
+  rejected: 'Rejected cases',
+  pet_unavailable: 'Adopted',
 };
 
 const DISPLAY_ICONS: Record<StatusType, React.ReactNode> = {
-  Pending: <Clock size={14} />,
-  'Under Review': <Search size={14} />,
-  Approved: <Check size={14} />,
-  Adopted: <Heart size={14} />,
-  Rejected: <X size={14} />,
+  pending_review: <Clock size={14} />,
+  approved: <Check size={14} />,
+  rejected: <X size={14} />,
+  pet_unavailable: <Heart size={14} />,
 };
 
 const COLOR_CLASS: Record<StatusType, string> = {
-  Pending: 'badgePending',
-  'Under Review': 'badgeReview',
-  Approved: 'badgeApproved',
-  Adopted: 'badgeAdopted',
-  Rejected: 'badgeRejected',
+  pending_review: 'badgePending',
+  approved: 'badgeApproved',
+  rejected: 'badgeRejected',
+  pet_unavailable: 'badgeAdopted',
 };
 
 export function SummaryCards({ counts, activeTab, onSelect }: SummaryCardsProps) {

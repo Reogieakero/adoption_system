@@ -1,84 +1,80 @@
 import { ResultSetHeader } from 'mysql2/promise';
 import pool from '../config/db';
-import { CreateLearningModuleInput, UpdateLearningModuleInput } from '../types/learningModule.types';
-import { LearningModuleRow, parseDisplayDate } from '../utils/learningModuleMapper';
-
-function buildInsertValues(input: CreateLearningModuleInput) {
-  return [
-    input.id,
-    input.title,
-    input.description,
-    input.category,
-    input.difficulty,
-    input.duration,
-    input.status,
-    input.objectives ?? '',
-    input.content ?? '',
-    input.videoUrl ?? '',
-    input.pdfUrl ?? '',
-    input.views ?? 0,
-    input.completionRate ?? '0%',
-    input.image ?? '',
-    parseDisplayDate(input.dateAdded),
-    parseDisplayDate(input.lastUpdated),
-  ];
-}
+import {
+  CreateElearningModuleInput, UpdateElearningModuleInput, CreateCategoryInput,
+  ModuleStatus, ProgressStatus
+} from '../types/learningModule.types';
+import { ElearningModuleRow, ElearningCategoryRow, ModuleProgressRow } from '../utils/learningModuleMapper';
 
 export const learningModuleRepository = {
-  async findAll(): Promise<LearningModuleRow[]> {
-    const [rows] = await pool.query<LearningModuleRow[]>(
-      'SELECT * FROM learning_modules ORDER BY date_added DESC, title ASC'
+  // ── Categories ──────────────────────────────────────────────────────
+  async findAllCategories(): Promise<ElearningCategoryRow[]> {
+    const [rows] = await pool.query<ElearningCategoryRow[]>(
+      'SELECT * FROM elearning_categories ORDER BY order_index ASC'
     );
     return rows;
   },
 
-  async findById(id: string): Promise<LearningModuleRow | undefined> {
-    const [rows] = await pool.query<LearningModuleRow[]>(
-      'SELECT * FROM learning_modules WHERE id = ?',
+  async findCategoryById(id: number): Promise<ElearningCategoryRow | undefined> {
+    const [rows] = await pool.query<ElearningCategoryRow[]>(
+      'SELECT * FROM elearning_categories WHERE category_id = ?',
       [id]
     );
     return rows[0];
   },
 
-  async create(input: CreateLearningModuleInput): Promise<void> {
-    await pool.query(
-      `INSERT INTO learning_modules (
-        id, title, description, category, difficulty, duration, status,
-        objectives, content, video_url, pdf_url, views, completion_rate,
-        image_url, date_added, last_updated
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      buildInsertValues(input)
+  async createCategory(input: CreateCategoryInput): Promise<number> {
+    const [result] = await pool.query<ResultSetHeader>(
+      'INSERT INTO elearning_categories (name, description, order_index) VALUES (?, ?, ?)',
+      [input.name, input.description ?? null, input.order_index]
     );
+    return result.insertId;
   },
 
-  async upsert(input: CreateLearningModuleInput): Promise<void> {
-    await pool.query(
-      `INSERT INTO learning_modules (
-        id, title, description, category, difficulty, duration, status,
-        objectives, content, video_url, pdf_url, views, completion_rate,
-        image_url, date_added, last_updated
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      ON DUPLICATE KEY UPDATE
-        title = VALUES(title),
-        description = VALUES(description),
-        category = VALUES(category),
-        difficulty = VALUES(difficulty),
-        duration = VALUES(duration),
-        status = VALUES(status),
-        objectives = VALUES(objectives),
-        content = VALUES(content),
-        video_url = VALUES(video_url),
-        pdf_url = VALUES(pdf_url),
-        views = VALUES(views),
-        completion_rate = VALUES(completion_rate),
-        image_url = VALUES(image_url),
-        date_added = VALUES(date_added),
-        last_updated = VALUES(last_updated)`,
-      buildInsertValues(input)
+  // ── Modules ─────────────────────────────────────────────────────────
+  async findAllModules(): Promise<ElearningModuleRow[]> {
+    const [rows] = await pool.query<ElearningModuleRow[]>(
+      'SELECT * FROM elearning_modules ORDER BY order_index ASC, title ASC'
     );
+    return rows;
   },
 
-  async update(id: string, input: UpdateLearningModuleInput): Promise<boolean> {
+  async findModulesByCategory(categoryId: number): Promise<ElearningModuleRow[]> {
+    const [rows] = await pool.query<ElearningModuleRow[]>(
+      'SELECT * FROM elearning_modules WHERE category_id = ? ORDER BY order_index ASC',
+      [categoryId]
+    );
+    return rows;
+  },
+
+  async findModuleById(id: number): Promise<ElearningModuleRow | undefined> {
+    const [rows] = await pool.query<ElearningModuleRow[]>(
+      'SELECT * FROM elearning_modules WHERE module_id = ?',
+      [id]
+    );
+    return rows[0];
+  },
+
+  async createModule(input: CreateElearningModuleInput): Promise<number> {
+    const [result] = await pool.query<ResultSetHeader>(
+      `INSERT INTO elearning_modules (category_id, title, description, content_body, video_url, cover_image_url, order_index, status, created_by_admin_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        input.category_id,
+        input.title,
+        input.description ?? null,
+        input.content_body,
+        input.video_url ?? null,
+        input.cover_image_url ?? null,
+        input.order_index,
+        input.status ?? 'draft',
+        input.created_by_admin_id,
+      ]
+    );
+    return result.insertId;
+  },
+
+  async updateModule(id: number, input: UpdateElearningModuleInput): Promise<boolean> {
     const fields: string[] = [];
     const values: unknown[] = [];
 
@@ -87,44 +83,58 @@ export const learningModuleRepository = {
       values.push(value);
     };
 
+    if (input.category_id !== undefined) setField('category_id', input.category_id);
     if (input.title !== undefined) setField('title', input.title);
     if (input.description !== undefined) setField('description', input.description);
-    if (input.category !== undefined) setField('category', input.category);
-    if (input.difficulty !== undefined) setField('difficulty', input.difficulty);
-    if (input.duration !== undefined) setField('duration', input.duration);
+    if (input.content_body !== undefined) setField('content_body', input.content_body);
+    if (input.video_url !== undefined) setField('video_url', input.video_url);
+    if (input.cover_image_url !== undefined) setField('cover_image_url', input.cover_image_url);
+    if (input.order_index !== undefined) setField('order_index', input.order_index);
     if (input.status !== undefined) setField('status', input.status);
-    if (input.objectives !== undefined) setField('objectives', input.objectives);
-    if (input.content !== undefined) setField('content', input.content);
-    if (input.videoUrl !== undefined) setField('video_url', input.videoUrl);
-    if (input.pdfUrl !== undefined) setField('pdf_url', input.pdfUrl);
-    if (input.views !== undefined) setField('views', input.views);
-    if (input.completionRate !== undefined) setField('completion_rate', input.completionRate);
-    if (input.image !== undefined) setField('image_url', input.image);
-    if (input.dateAdded !== undefined) {
-      setField('date_added', parseDisplayDate(input.dateAdded));
-    }
-    if (input.lastUpdated !== undefined) {
-      setField('last_updated', parseDisplayDate(input.lastUpdated));
-    }
 
     if (fields.length === 0) return true;
 
+    values.push(id);
     const [result] = await pool.query<ResultSetHeader>(
-      `UPDATE learning_modules SET ${fields.join(', ')} WHERE id = ?`,
-      [...values, id]
+      `UPDATE elearning_modules SET ${fields.join(', ')} WHERE module_id = ?`,
+      values
     );
     return result.affectedRows > 0;
   },
 
-  async delete(id: string): Promise<boolean> {
+  async deleteModule(id: number): Promise<boolean> {
     const [result] = await pool.query<ResultSetHeader>(
-      'DELETE FROM learning_modules WHERE id = ?',
+      'DELETE FROM elearning_modules WHERE module_id = ?',
       [id]
     );
     return result.affectedRows > 0;
   },
 
-  async incrementViews(id: string): Promise<void> {
-    await pool.query('UPDATE learning_modules SET views = views + 1 WHERE id = ?', [id]);
+  // ── Progress ────────────────────────────────────────────────────────
+  async findProgressByModuleAndResident(moduleId: number, residentId: number): Promise<ModuleProgressRow | undefined> {
+    const [rows] = await pool.query<ModuleProgressRow[]>(
+      'SELECT * FROM module_progress WHERE module_id = ? AND resident_id = ?',
+      [moduleId, residentId]
+    );
+    return rows[0];
+  },
+
+  async upsertProgress(moduleId: number, residentId: number, status: ProgressStatus): Promise<void> {
+    const now = new Date();
+    await pool.query(
+      `INSERT INTO module_progress (module_id, resident_id, status, started_at, completed_at)
+       VALUES (?, ?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE
+         status = VALUES(status),
+         started_at = CASE WHEN VALUES(status) = 'in_progress' AND started_at IS NULL THEN NOW() ELSE started_at END,
+         completed_at = CASE WHEN VALUES(status) = 'completed' THEN NOW() ELSE NULL END`,
+      [
+        moduleId,
+        residentId,
+        status,
+        status === 'in_progress' ? now : null,
+        status === 'completed' ? now : null,
+      ]
+    );
   },
 };

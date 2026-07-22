@@ -5,9 +5,12 @@ import styles from "./RecentAnalyticsTable.module.css";
 import { SectionHeading } from "../ui/SectionHeading";
 import { Card } from "../ui/Card";
 import { ChangeBadge } from "../ui/ChangeBadge";
-import { recentAnalytics } from "@/lib/mock-data/analytics";
 
-export function RecentAnalyticsTable() {
+interface RecentAnalyticsTableProps {
+  rows: { metric: string; current: string; previous: string; change: number | null; trend: string }[];
+}
+
+export function RecentAnalyticsTable({ rows }: RecentAnalyticsTableProps) {
   return (
     <section>
       <SectionHeading
@@ -32,13 +35,13 @@ export function RecentAnalyticsTable() {
             </tr>
           </thead>
           <tbody>
-            {recentAnalytics.map((r) => (
+            {rows.map((r) => (
               <tr key={r.metric}>
                 <td className={styles.metricName}>{r.metric}</td>
                 <td>{r.current}</td>
                 <td className={styles.prevValue}>{r.previous}</td>
                 <td>
-                  <ChangeBadge change={r.change} />
+                  {r.change != null ? <ChangeBadge change={r.change} /> : '—'}
                 </td>
                 <td>
                   {r.trend === "up" ? (
@@ -56,15 +59,9 @@ export function RecentAnalyticsTable() {
           </tbody>
         </table>
         <div className={styles.tableFooter}>
-          <span className={styles.paginationInfo}>Showing 6 of 6 metrics</span>
-          <div className={styles.paginationButtons}>
-            <Button variant="admin-secondary" className={styles.paginationBtn}>Previous</Button>
-            <Button variant="admin-primary" className={styles.paginationBtn}>1</Button>
-            <Button variant="admin-secondary" className={styles.paginationBtn}>Next</Button>
-          </div>
+          <span className={styles.paginationInfo}>Showing {rows.length} of {rows.length} metrics</span>
         </div>
       </Card>
     </section>
   );
 }
-

@@ -23,11 +23,15 @@ export const notificationRepository = {
     if (query.unreadOnly) {
       conditions.push('is_read = 0');
     }
+    if (query.recipient_id) {
+      conditions.push('recipient_id = ?');
+      params.push(query.recipient_id);
+    }
 
     const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
 
     const [rows] = await pool.query<NotificationRow[]>(
-      `SELECT id, type, title, message, entity_type, entity_id, priority, is_read, read_at, created_by, link, created_at
+      `SELECT notification_id, recipient_id, type, linked_type, linked_id, message_text, is_read, is_emailed, emailed_at, created_at
        FROM notifications
        ${whereClause}
        ORDER BY created_at DESC
@@ -45,15 +49,15 @@ export const notificationRepository = {
 
   async countUnread(): Promise<number> {
     const [rows] = await pool.query<CountRow[]>(
-      `SELECT COUNT(*) as count FROM notifications WHERE is_read = 0`
+      'SELECT COUNT(*) as count FROM notifications WHERE is_read = 0'
     );
     return Number(rows[0].count);
   },
 
   async findById(id: number): Promise<NotificationRow | undefined> {
     const [rows] = await pool.query<NotificationRow[]>(
-      `SELECT id, type, title, message, entity_type, entity_id, priority, is_read, read_at, created_by, link, created_at
-       FROM notifications WHERE id = ?`,
+      `SELECT notification_id, recipient_id, type, linked_type, linked_id, message_text, is_read, is_emailed, emailed_at, created_at
+       FROM notifications WHERE notification_id = ?`,
       [id]
     );
     return rows[0];
@@ -61,17 +65,15 @@ export const notificationRepository = {
 
   async create(input: CreateNotificationInput): Promise<number> {
     const [result] = await pool.query<ResultSetHeader>(
-      `INSERT INTO notifications (type, title, message, entity_type, entity_id, priority, created_by, link)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO notifications (recipient_id, type, linked_type, linked_id, message_text, is_emailed)
+       VALUES (?, ?, ?, ?, ?, ?)`,
       [
+        input.recipient_id,
         input.type,
-        input.title,
-        input.message,
-        input.entityType ?? null,
-        input.entityId ?? null,
-        input.priority ?? 'normal',
-        input.createdBy ?? null,
-        input.link ?? null,
+        input.linked_type ?? null,
+        input.linked_id ?? null,
+        input.message_text,
+        input.is_emailed ?? false,
       ]
     );
     return result.insertId;
@@ -79,7 +81,7 @@ export const notificationRepository = {
 
   async markAsRead(id: number): Promise<boolean> {
     const [result] = await pool.query<ResultSetHeader>(
-      `UPDATE notifications SET is_read = 1, read_at = NOW() WHERE id = ?`,
+      'UPDATE notifications SET is_read = 1 WHERE notification_id = ?',
       [id]
     );
     return result.affectedRows > 0;
@@ -87,13 +89,16 @@ export const notificationRepository = {
 
   async markAllAsRead(): Promise<number> {
     const [result] = await pool.query<ResultSetHeader>(
-      `UPDATE notifications SET is_read = 1, read_at = NOW() WHERE is_read = 0`
+      'UPDATE notifications SET is_read = 1 WHERE is_read = 0'
     );
     return result.affectedRows;
   },
 
   async delete(id: number): Promise<boolean> {
-    const [result] = await pool.query<ResultSetHeader>(`DELETE FROM notifications WHERE id = ?`, [id]);
+    const [result] = await pool.query<ResultSetHeader>(
+      'DELETE FROM notifications WHERE notification_id = ?',
+      [id]
+    );
     return result.affectedRows > 0;
   },
 };

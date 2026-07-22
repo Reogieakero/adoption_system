@@ -1,67 +1,28 @@
 import React from 'react';
 import styles from './PhotoDossier.module.css';
-// NOTE: adjust this relative path to wherever resolvePhotoUrl actually lives
-// in your tree — it should point at src/lib/api/resolvePhotoUrl.ts
 import { resolvePhotoUrl } from '@/services/resolve-photo-url';
-
-/** The subset of an animal record this component needs to render. */
-export interface PhotoDossierAnimal {
-  id: string;
-  name: string;
-  photo: string;
-  species: string;
-  breed: string;
-  adoptionStatus: string;
-  rescueStatus: string;
-  healthStatus: string;
-  bio: string;
-}
+import { formatStatus } from '@/lib/format-status';
+import type { Pet } from '@/types';
 
 interface PhotoDossierProps {
-  animal: PhotoDossierAnimal;
+  animal: Pet;
 }
 
 function adoptionBadgeClass(status: string) {
   switch (status) {
-    case 'Available':
+    case 'available':
       return styles.bgOcean;
-    case 'Pending':
+    case 'pending':
       return styles.bgRoyal;
-    case 'Adopted':
+    case 'adopted':
       return styles.bgNavy;
     default:
       return styles.bgSlate;
-  }
-}
-
-function healthBadgeClass(status: string) {
-  switch (status) {
-    case 'Healthy':
-      return styles.bgOcean;
-    case 'Recovering':
-      return styles.bgRoyal;
-    case 'Under Treatment':
-      return styles.bgNavy;
-    case 'Critical':
-      return styles.bgDanger;
-    default:
-      return styles.bgSlate;
-  }
-}
-
-function rescueBadgeClass(status: string) {
-  switch (status) {
-    case 'Rescued':
-      return styles.bgOcean;
-    case 'In Shelter':
-      return styles.bgNavy;
-    default:
-      return styles.bgRoyal;
   }
 }
 
 export default function PhotoDossier({ animal }: PhotoDossierProps) {
-  const photoSrc = resolvePhotoUrl(animal.photo);
+  const photoSrc = resolvePhotoUrl(animal.primary_photo_url ?? '');
 
   return (
     <div className={styles.photoPane}>
@@ -75,30 +36,24 @@ export default function PhotoDossier({ animal }: PhotoDossierProps) {
             </div>
           )}
         </div>
-        <div className={styles.idStamp}>{animal.id}</div>
+        <div className={styles.idStamp}>{animal.pet_id}</div>
       </div>
 
       <div className={styles.nameBlock}>
         <h1 className={styles.heroName}>{animal.name}</h1>
         <div className={styles.heroMeta}>
-          <span>{animal.species} &middot; {animal.breed}</span>
-          <span className={styles.heroId}>&middot; {animal.id}</span>
+          <span>{formatStatus(animal.species)} &middot; {animal.breed_detail ?? animal.breed_type}</span>
+          <span className={styles.heroId}>&middot; {animal.pet_id}</span>
         </div>
       </div>
 
       <div className={styles.heroBadges}>
-        <span className={`${styles.badge} ${adoptionBadgeClass(animal.adoptionStatus)}`}>
-          {animal.adoptionStatus}
-        </span>
-        <span className={`${styles.badge} ${rescueBadgeClass(animal.rescueStatus)}`}>
-          {animal.rescueStatus}
-        </span>
-        <span className={`${styles.badge} ${healthBadgeClass(animal.healthStatus)}`}>
-          {animal.healthStatus}
+        <span className={`${styles.badge} ${adoptionBadgeClass(animal.status)}`}>
+          {formatStatus(animal.status)}
         </span>
       </div>
 
-      <p className={styles.bio}>{animal.bio}</p>
+      <p className={styles.bio}>{animal.description}</p>
     </div>
   );
 }

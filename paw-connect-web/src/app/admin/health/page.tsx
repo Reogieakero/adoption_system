@@ -132,8 +132,15 @@ export default function HealthMonitoringPage() {
               />
             )}
           </>
-        ) : isHistoryLoading || !activeHistoryAnimal ? (
+        ) : isHistoryLoading ? (
           <p>Loading health history…</p>
+        ) : !activeHistoryAnimal ? (
+          <p role="alert">
+            Failed to load health history.{' '}
+            <Button variant="admin-secondary" onClick={() => refetchHistoryAnimal()}>
+              Retry
+            </Button>
+          </p>
         ) : (
           <HealthHistoryView
             animal={activeHistoryAnimal}

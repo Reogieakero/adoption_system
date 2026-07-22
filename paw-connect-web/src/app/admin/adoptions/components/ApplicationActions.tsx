@@ -1,5 +1,6 @@
 ﻿import React, { useState } from 'react';
 import type { AdoptionStatus } from '@/types';
+import { formatStatus } from '@/lib/format-status';
 import Button from '@/components/ui/button';
 import styles from './ApplicationActions.module.css';
 
@@ -37,7 +38,7 @@ export function ApplicationActions({ status, onUpdateStatus, onViewDetails, layo
     if (!isStacked) {
       return (
         <div className={styles.confirmOverlay}>
-          <span className={styles.confirmMessage}>Change to {pendingStatus}?</span>
+          <span className={styles.confirmMessage}>Change to {formatStatus(pendingStatus)}?</span>
           <Button variant="admin-primary" onClick={handleConfirm}>Yes</Button>
           <Button variant="admin-secondary" onClick={handleCancel}>No</Button>
         </div>
@@ -47,7 +48,7 @@ export function ApplicationActions({ status, onUpdateStatus, onViewDetails, layo
     return (
       <div className={styles.confirmOverlayStacked}>
         <div className={styles.confirmMessageStacked}>
-          Are you sure you want to change status to: {pendingStatus}?
+          Are you sure you want to change status to: {formatStatus(pendingStatus)}?
         </div>
         <div className={styles.buttonRow}>
           <Button variant="admin-primary" className={styles.flex1} onClick={handleConfirm}>Confirm Action</Button>
@@ -63,32 +64,26 @@ export function ApplicationActions({ status, onUpdateStatus, onViewDetails, layo
         className={!isStacked ? `${styles.actionRow} ${styles.inlineFlex}` : styles.actionContainerStacked}
       >
         <Button variant="admin-secondary" className={isStacked ? styles.fullWidth : ''} onClick={onViewDetails}>
-          View details
+          View Details
         </Button>
 
-        {status === 'Pending' && (
-          <Button variant="admin-primary" className={isStacked ? styles.fullWidth : ''} onClick={() => handleActionIntent('Under Review')}>
-            Review
-          </Button>
+        {status === 'pending_review' && (
+          !isStacked ? (
+            <>
+              <Button variant="admin-primary" onClick={() => handleActionIntent('approved')}>Approve</Button>
+              <Button variant="admin-primary" onClick={() => handleActionIntent('rejected')}>Reject</Button>
+            </>
+          ) : (
+            <div className={styles.buttonRow}>
+              <Button variant="admin-primary" className={styles.flex1} onClick={() => handleActionIntent('approved')}>Approve</Button>
+              <Button variant="admin-primary" className={styles.flex1} onClick={() => handleActionIntent('rejected')}>Reject</Button>
+            </div>
+          )
         )}
 
-      {status === 'Under Review' && (
-        !isStacked ? (
-          <>
-            <Button variant="admin-primary" onClick={() => handleActionIntent('Approved')}>Approve</Button>
-            <Button variant="admin-primary" onClick={() => handleActionIntent('Rejected')}>Reject</Button>
-          </>
-        ) : (
-          <div className={styles.buttonRow}>
-            <Button variant="admin-primary" className={styles.flex1} onClick={() => handleActionIntent('Approved')}>Approve</Button>
-            <Button variant="admin-primary" className={styles.flex1} onClick={() => handleActionIntent('Rejected')}>Reject</Button>
-          </div>
-        )
-      )}
-
-      {status === 'Approved' && (
-        <Button variant="admin-primary" className={isStacked ? styles.fullWidth : ''} onClick={() => handleActionIntent('Adopted')}>
-          Mark as adopted
+      {status === 'approved' && (
+        <Button variant="admin-primary" className={isStacked ? styles.fullWidth : ''} onClick={() => handleActionIntent('pet_unavailable')}>
+          Animal Released
         </Button>
       )}
     </div>

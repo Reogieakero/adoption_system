@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import { useRouter } from 'next/navigation'
-import { X, Calendar, Activity, ShieldAlert, ArrowLeft, Syringe, HeartPulse } from 'lucide-react'
+import { X, Calendar, Activity, ShieldAlert, Syringe, HeartPulse } from 'lucide-react'
 import type { HealthAnimal as Animal } from '@/types'
 import Button from '@/components/ui/button'
 import styles from './HealthHistoryView.module.css'
@@ -29,9 +29,7 @@ export default function HealthHistoryView({ animal, onClose }: HealthHistoryView
   return (
     <div className={styles.historyFullPage}>
       <div className={styles.topBar}>
-        <Button variant="admin-secondary" square onClick={onClose} aria-label="Back to all animals">
-          <ArrowLeft size={16} />
-        </Button>
+        <button onClick={onClose} className={styles.backLink}>&larr; Back to all animals</button>
         <button className={styles.closeBtn} onClick={onClose} aria-label="Close history">
           <X size={16} />
         </button>
@@ -115,8 +113,13 @@ export default function HealthHistoryView({ animal, onClose }: HealthHistoryView
                       <Calendar size={14} />
                     </div>
                     <div className={styles.timelineContent}>
-                      <span className={styles.timelineDate}>{h.date}</span>
-                      <h4 className={styles.timelineEventTitle}>{h.event}</h4>
+                      {h.date && <span className={styles.timelineDate}>{h.date}</span>}
+                      <div className={styles.timelineEventHeader}>
+                        <h4 className={styles.timelineEventTitle}>{h.event}</h4>
+                        {h.bpm != null && (
+                          <span className={styles.timelineBpm}>{h.bpm} bpm</span>
+                        )}
+                      </div>
                       {h.notes && <p className={styles.timelineNotes}>{h.notes}</p>}
                     </div>
                   </div>

@@ -9,14 +9,13 @@ interface StatusTabsProps {
   onChange: (tab: AdoptionStatus) => void;
 }
 
-const TAB_ORDER: AdoptionStatus[] = ['Pending', 'Under Review', 'Approved', 'Rejected', 'Adopted'];
+const TAB_ORDER: AdoptionStatus[] = ['pending_review', 'approved', 'rejected', 'pet_unavailable'];
 
 const TAB_LABELS: Record<AdoptionStatus, string> = {
-  Pending: 'Pending',
-  'Under Review': 'Under review',
-  Approved: 'Approved',
-  Rejected: 'Rejected',
-  Adopted: 'Adopted',
+  pending_review: 'Pending review',
+  approved: 'Approved',
+  rejected: 'Rejected',
+  pet_unavailable: 'Adopted',
 };
 
 export function StatusTabs({ counts, activeTab, onChange }: StatusTabsProps) {

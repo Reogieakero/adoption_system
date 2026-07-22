@@ -6,7 +6,7 @@ import styles from './ApplicationsTable.module.css';
 
 interface ApplicationsTableProps {
   applications: AdoptionApplication[];
-  onUpdateStatus: (id: string, newStatus: AdoptionStatus) => void;
+  onUpdateStatus: (id: number, newStatus: AdoptionStatus) => void;
   onViewDetails: (application: AdoptionApplication) => void;
 }
 
@@ -21,42 +21,40 @@ export function ApplicationsTable({ applications, onUpdateStatus, onViewDetails 
             <th>Species</th>
             <th>Application date</th>
             <th>Status</th>
-            <th>Assigned handler</th>
             <th className={styles.textRight}>Management actions</th>
           </tr>
         </thead>
         <tbody>
           {applications.length > 0 ? (
             applications.map((app) => (
-              <tr key={app.id}>
+              <tr key={app.application_id}>
                 <td>
-                  <div className={styles.primaryCellText}>{app.applicantName}</div>
-                  <div className={styles.secondaryCellText}>{app.applicantEmail}</div>
+                  <div className={styles.primaryCellText}>{app.resident_name}</div>
+                  <div className={styles.secondaryCellText}>{app.resident_email}</div>
                 </td>
                 <td>
                   <div className={styles.animalProfileCell}>
-                    <img src={app.animalPhoto} alt={app.animalName} className={styles.animalAvatar} />
+                    <img src={app.pet_photo_url ?? ''} alt={app.pet_name} className={styles.animalAvatar} />
                     <div>
-                      <div className={styles.primaryCellText}>{app.animalName}</div>
-                      <div className={styles.secondaryCellText}>{app.id}</div>
+                      <div className={styles.primaryCellText}>{app.pet_name}</div>
+                      <div className={styles.secondaryCellText}>{app.application_id}</div>
                     </div>
                   </div>
                 </td>
                 <td>
-                  <span className={styles.speciesTag}>{app.species.toLowerCase()}</span>
+                  <span className={styles.speciesTag}>{app.pet_species.toLowerCase()}</span>
                 </td>
-                <td className={`${styles.primaryCellText} ${styles.noWrap}`}>{app.applicationDate}</td>
+                <td className={`${styles.primaryCellText} ${styles.noWrap}`}>{app.submitted_at}</td>
                 <td>
                   <StatusBadge status={app.status} />
                 </td>
-                <td className={styles.secondaryCellText}>{app.assignedStaff || 'â€”'}</td>
                 <td>
                   {/* Fix: Centered flex container wrapper applied here */}
                   <div className={styles.actionsColumn}>
                     <ApplicationActions
                       status={app.status}
                       layout="row"
-                      onUpdateStatus={(newStatus) => onUpdateStatus(app.id, newStatus)}
+                      onUpdateStatus={(newStatus) => onUpdateStatus(app.application_id, newStatus)}
                       onViewDetails={() => onViewDetails(app)}
                     />
                   </div>
@@ -65,7 +63,7 @@ export function ApplicationsTable({ applications, onUpdateStatus, onViewDetails 
             ))
           ) : (
             <tr>
-              <td colSpan={7} className={styles.emptyStateContainer}>
+              <td colSpan={6} className={styles.emptyStateContainer}>
                 <div className={styles.emptyStateMessage}>No records available matching this criteria.</div>
               </td>
             </tr>

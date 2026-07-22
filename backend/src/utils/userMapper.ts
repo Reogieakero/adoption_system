@@ -1,8 +1,9 @@
 import { AdminUserRow, AdminUserSummary } from '../types/user.types';
 
-function toInitials(firstName: string, lastName: string): string {
-  const a = firstName?.trim()?.[0] ?? '';
-  const b = lastName?.trim()?.[0] ?? '';
+function toInitials(fullName: string): string {
+  const parts = fullName.trim().split(/\s+/);
+  const a = parts[0]?.[0] ?? '';
+  const b = parts.length > 1 ? parts[parts.length - 1][0] : '';
   return `${a}${b}`.toUpperCase() || '?';
 }
 
@@ -19,19 +20,19 @@ function formatDateTime(value: Date | null): string {
 
 export function toAdminUserSummary(row: AdminUserRow): AdminUserSummary {
   return {
-    id: String(row.id),
-    name: `${row.first_name} ${row.last_name}`.trim(),
+    id: String(row.user_id),
+    name: row.full_name,
     email: row.email,
     role: row.role,
-    phone: row.phone,
+    phone: row.phone_number,
     status: row.status,
     dateRegistered: formatDate(row.created_at),
-    lastLogin: formatDateTime(row.last_login_at),
-    initials: toInitials(row.first_name, row.last_name),
+    lastLogin: formatDateTime(row.updated_at),
+    initials: toInitials(row.full_name),
     address: row.address,
     adoptionApps: Number(row.adoption_apps_count) || 0,
     rescueReports: Number(row.rescue_reports_count) || 0,
     animalsPosted: Number(row.animals_posted_count) || 0,
-    completedModules: Number(row.completed_modules) || 0,
+    completedModules: 0,
   };
 }

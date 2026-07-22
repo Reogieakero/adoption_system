@@ -1,18 +1,18 @@
 'use client';
 
-import type { Animal } from '@/types';
+import type { Pet } from '@/types';
 import styles from './AnimalCard.module.css';
 
 interface AnimalCardProps {
-  animal: Animal;
-  onView: (animal: Animal) => void;
+  animal: Pet;
+  onView: (animal: Pet) => void;
 }
 
-function BadgeLabel(animal: Animal): string | null {
-  if (animal.adoptionStatus === 'Available' && animal.healthStatus === 'Healthy') return null;
-  if (animal.healthStatus === 'Recovering' || animal.healthStatus === 'Under Treatment') return 'Needs care';
-  if (animal.adoptionStatus === 'Pending') return 'Pending';
-  if (animal.adoptionStatus === 'Adopted') return 'Adopted';
+function BadgeLabel(animal: Pet): string | null {
+  if (animal.status === 'available') return null;
+  if (animal.status === 'pending') return 'Pending';
+  if (animal.status === 'adopted') return 'Adopted';
+  if (animal.status === 'rejected') return 'Rejected';
   return null;
 }
 
@@ -23,7 +23,7 @@ export default function AnimalCard({ animal, onView }: AnimalCardProps) {
     <button type="button" className={styles.card} onClick={() => onView(animal)}>
       <div className={styles.imageWrap}>
         <img
-          src={animal.photo}
+          src={animal.primary_photo_url ?? ''}
           alt={animal.name}
           className={styles.image}
           loading="lazy"
@@ -33,8 +33,8 @@ export default function AnimalCard({ animal, onView }: AnimalCardProps) {
 
       <div className={styles.body}>
         <h3 className={styles.name}>{animal.name}</h3>
-        <p className={styles.meta}>{animal.breed} · {animal.age}</p>
-        <p className={styles.location}>{animal.location}</p>
+        <p className={styles.meta}>{(animal.breed_detail ?? animal.breed_type)} · {animal.age_estimate}</p>
+        <p className={styles.location}>{animal.location_area}</p>
       </div>
     </button>
   );

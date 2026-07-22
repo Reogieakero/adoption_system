@@ -1,50 +1,24 @@
-export type RescueStage = 'New Reports' | 'Verified Reports' | 'Rescue Operations';
+export type ReportSpecies = 'dog' | 'cat' | 'unknown';
+export type ReportStatus = 'submitted' | 'in_progress' | 'dispatched' | 'resolved';
+export type RescueStage = 'submitted' | 'in_progress' | 'dispatched' | 'resolved';
 
-export interface RescueCase {
-  id: string;
-  animalType: string;
-  condition: string;
-  location: string;
-  reporter: string;
-  priority: string;
-  stage: RescueStage;
-  reportedDate: string;
-  imageUrl: string;
-  coords: { lat: number; lon: number };
-  status: string;
-  species: string;
-  breed: string;
-  estimatedAge: string;
-  sex: string;
-  colorMarkings: string;
-  size: string;
-  injuries: string;
-  temperament: string;
-  collarTag: string;
-  animalsInvolved: number;
-  lastSeen: string;
-  currentSituation: string;
-  barangay: string;
-  landmarks: string;
-  contactNumber: string;
-  email: string;
-  reporterType: string;
-  anonymous: string;
-  assignedRescuer: string;
-  rescueTeam: string;
-  assignedDate: string;
-  eta: string;
-  dispatchTime: string;
-  outcome: string;
-  animalName: string;
-  incidentDescription: string;
-  additionalNotes: string;
-  operationalStatus: string;
-  verificationStatus: string;
-  completionTime: string;
-  internalNotes: string;
-  evidenceFileName: string;
-  timelineSteps: { title: string; timestamp: string; active: boolean }[];
+export interface AnimalReport {
+  report_id: number;
+  resident_id: number;
+  species: ReportSpecies;
+  condition_description: string;
+  photo_url: string;
+  latitude: number;
+  longitude: number;
+  location_area: string | null;
+  contact_preference: string | null;
+  status: ReportStatus;
+  resolution_notes: string | null;
+  is_synced: boolean;
+  is_valid_for_heatmap: boolean;
+  submitted_at: string;
+  resolved_at: string | null;
+  updated_at: string;
 }
 
 export interface WorkflowAction {

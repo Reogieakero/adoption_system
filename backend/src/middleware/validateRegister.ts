@@ -2,19 +2,12 @@ import { body, validationResult } from 'express-validator';
 import { Request, Response, NextFunction } from 'express';
 
 export const validateRegister = [
-  body('firstName')
+  body('fullName')
     .trim()
     .notEmpty()
-    .withMessage('First name is required')
-    .isLength({ max: 100 })
-    .withMessage('First name must be under 100 characters'),
-
-  body('lastName')
-    .trim()
-    .notEmpty()
-    .withMessage('Last name is required')
-    .isLength({ max: 100 })
-    .withMessage('Last name must be under 100 characters'),
+    .withMessage('Full name is required')
+    .isLength({ max: 150 })
+    .withMessage('Full name must be under 150 characters'),
 
   body('email')
     .trim()

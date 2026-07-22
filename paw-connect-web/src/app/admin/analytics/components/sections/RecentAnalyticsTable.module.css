@@ -83,3 +83,11 @@
   height: 30px;
   padding: 0 10px;
 }
+
+.emptyChart {
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+

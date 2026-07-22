@@ -5,7 +5,6 @@ import {
   MoreVertical,
   Eye,
   FileEdit,
-  Copy,
   Globe,
   Trash2,
   Clock,
@@ -13,17 +12,18 @@ import {
   Image as ImageIcon,
 } from "lucide-react";
 import Button from "@/components/ui/button";
+import { formatStatus } from "@/lib/format-status";
 import styles from "./ModuleCard.module.css";
-import type { LearningModule } from "@/types";
+import type { ElearningModule } from "@/types";
 
 interface ModuleCardProps {
-  module: LearningModule;
+  module: ElearningModule;
   isDropdownOpen: boolean;
-  onToggleDropdown: (id: string) => void;
-  onEdit: (module: LearningModule) => void;
-  onDuplicate: (id: string) => void;
-  onToggleStatus: (module: LearningModule) => void;
-  onDelete: (id: string) => void;
+  onToggleDropdown: (id: number) => void;
+  onEdit: (module: ElearningModule) => void;
+  onView: (module: ElearningModule) => void;
+  onToggleStatus: (module: ElearningModule) => void;
+  onDelete: (id: number) => void;
 }
 
 export default function ModuleCard({
@@ -31,48 +31,45 @@ export default function ModuleCard({
   isDropdownOpen,
   onToggleDropdown,
   onEdit,
-  onDuplicate,
+  onView,
   onToggleStatus,
   onDelete,
 }: ModuleCardProps) {
   return (
     <div className={styles.moduleCard}>
-      <div className={styles.imageContainer}>
-        {module.image ? (
-          <img src={module.image} alt={module.title} className={styles.cardImage} />
+        <div className={styles.imageContainer}>
+        {module.cover_image_url ? (
+          <img src={module.cover_image_url} alt={module.title} className={styles.cardImage} />
         ) : (
           <div className={styles.cardImagePlaceholder}>
             <ImageIcon size={28} className={styles.placeholderIcon} />
           </div>
         )}
         <div className={styles.badgeContainer}>
-          <span className={styles.badge}>{module.difficulty}</span>
-          <span className={`${styles.badge} ${module.status === "Published" ? styles.badgePublished : styles.badgeDraft}`}>
-            {module.status}
+          <span className={styles.badge}>Beginner</span>
+          <span className={`${styles.badge} ${module.status === "published" ? styles.badgePublished : styles.badgeDraft}`}>
+            {formatStatus(module.status)}
           </span>
         </div>
 
         <div className={styles.actionsTrigger}>
-          <button onClick={() => onToggleDropdown(module.id)} className={styles.dropdownTriggerBtn}>
+          <button onClick={() => onToggleDropdown(module.module_id)} className={styles.dropdownTriggerBtn}>
             <MoreVertical size={16} />
           </button>
 
           {isDropdownOpen && (
             <div className={styles.dropdownMenu}>
-              <button onClick={() => onToggleDropdown(module.id)} className={styles.dropdownItem}>
-                <Eye size={14} /> View Module
+              <button onClick={() => { onView(module); onToggleDropdown(module.module_id); }} className={styles.dropdownItem}>
+                View Module
               </button>
               <button onClick={() => onEdit(module)} className={styles.dropdownItem}>
                 <FileEdit size={14} /> Edit Module
               </button>
-              <button onClick={() => onDuplicate(module.id)} className={styles.dropdownItem}>
-                <Copy size={14} /> Duplicate Module
-              </button>
               <button onClick={() => onToggleStatus(module)} className={`${styles.dropdownItem} ${styles.dropdownPublish}`}>
-                <Globe size={14} /> {module.status === "Published" ? "Unpublish" : "Publish"}
+                <Globe size={14} /> {module.status === "published" ? "Unpublish" : "Publish"}
               </button>
               <div className={styles.dropdownDivider}></div>
-              <button onClick={() => onDelete(module.id)} className={`${styles.dropdownItem} ${styles.dropdownDelete}`}>
+              <button onClick={() => onDelete(module.module_id)} className={`${styles.dropdownItem} ${styles.dropdownDelete}`}>
                 <Trash2 size={14} /> Delete Module
               </button>
             </div>
@@ -82,32 +79,32 @@ export default function ModuleCard({
 
       <div className={styles.cardBody}>
         <div>
-          <div className={styles.categoryLabel}>{module.category}</div>
+          <div className={styles.categoryLabel}>{module.category_name ?? 'Uncategorized'}</div>
           <h3 className={styles.cardTitle}>{module.title}</h3>
-          <p className={styles.cardDesc}>{module.description}</p>
+          <p className={styles.cardDesc}>{module.description ?? ''}</p>
         </div>
 
         <div className={styles.cardMetricsRow}>
           <div className={styles.metricItem}>
             <Clock size={14} className={styles.metricIconMuted} />
-            <span>{module.duration}</span>
+            <span>N/A</span>
           </div>
           <div className={`${styles.metricItem} ${styles.metricCenter}`}>
             <Eye size={14} className={styles.metricIconMuted} />
-            <span>{module.views} views</span>
+            <span>0 views</span>
           </div>
           <div className={`${styles.metricItem} ${styles.metricEnd}`}>
             <TrendingUp size={14} className={styles.metricIconSuccess} />
-            <span>{module.completionRate} CR</span>
+            <span>0% CR</span>
           </div>
         </div>
       </div>
 
       <div className={styles.cardFooter}>
-        <span className={styles.footerLink}>Details</span>
+        <span className={styles.footerLink} onClick={() => onView(module)}>Details</span>
         <div className={styles.cardFooterActions}>
           <span className={styles.footerLink} onClick={() => onEdit(module)}>Edit</span>
-          <Button variant="admin-danger" onClick={() => onDelete(module.id)}>Delete</Button>
+          <Button variant="admin-danger" onClick={() => onDelete(module.module_id)}>Delete</Button>
         </div>
       </div>
     </div>

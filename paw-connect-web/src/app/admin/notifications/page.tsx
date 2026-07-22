@@ -32,11 +32,11 @@ export default function NotificationsPage() {
   const tabs: { key: FilterTab; label: string }[] = [
     { key: 'all', label: 'All' },
     { key: 'unread', label: `Unread${unreadCount ? ` (${unreadCount})` : ''}` },
-    { key: 'adoption_application', label: 'Adoptions' },
-    { key: 'rescue_case', label: 'Rescues' },
-    { key: 'message', label: 'Messages' },
-    { key: 'health_alert', label: 'Health' },
-    { key: 'system', label: 'System' },
+    { key: 'adoption_status', label: 'Adoptions' },
+    { key: 'new_application', label: 'Applications' },
+    { key: 'new_message', label: 'Messages' },
+    { key: 'new_report', label: 'Reports' },
+    { key: 'new_community_listing', label: 'Listings' },
   ];
 
   function handleFilterChange(next: FilterTab) {
@@ -88,30 +88,24 @@ export default function NotificationsPage() {
           {notifications.map((n) => {
             const Icon = TYPE_ICONS[n.type];
             return (
-              <li key={n.id} className={`${styles.card} ${!n.isRead ? styles.cardUnread : ''}`}>
-                {!n.isRead && <span className={styles.unreadDot} />}
+              <li key={n.notification_id} className={`${styles.card} ${!n.is_read ? styles.cardUnread : ''}`}>
+                {!n.is_read && <span className={styles.unreadDot} />}
                 <div className={styles.cardIcon}>
                   <Icon size={18} />
                 </div>
                 <div className={styles.cardBody}>
                   <div className={styles.cardTopRow}>
                     <span className={styles.cardType}>{TYPE_LABELS[n.type]}</span>
-                    <span className={styles.cardTime}>{formatRelativeTime(n.createdAt)}</span>
+                    <span className={styles.cardTime}>{formatRelativeTime(n.created_at)}</span>
                   </div>
-                  <p className={styles.cardTitle}>{n.title}</p>
-                  <p className={styles.cardMessage}>{n.message}</p>
-                  {(n.priority === 'high' || n.priority === 'urgent') && (
-                    <span className={`${styles.priorityBadge} ${styles[`priority-${n.priority}`]}`}>
-                      {n.priority}
-                    </span>
-                  )}
+                  <p className={styles.cardTitle}>{n.message_text}</p>
                 </div>
                 <div className={styles.cardActions}>
-                  {!n.isRead && (
+                  {!n.is_read && (
                     <Button
                       variant="admin-ghost"
                       square
-                      onClick={() => markAsRead(n.id)}
+                      onClick={() => markAsRead(n.notification_id)}
                       title="Mark as read"
                     >
                       <Check size={14} />
@@ -120,7 +114,7 @@ export default function NotificationsPage() {
                   <Button
                     variant="admin-danger"
                     square
-                    onClick={() => handleDelete(n.id)}
+                    onClick={() => handleDelete(n.notification_id)}
                     title="Delete notification"
                   >
                     <Trash2 size={14} />

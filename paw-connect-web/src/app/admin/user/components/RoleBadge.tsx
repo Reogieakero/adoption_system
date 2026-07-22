@@ -8,10 +8,8 @@ export interface RoleBadgeProps {
 }
 
 const ROLE_STYLE_MAP: Record<string, string> = {
-  Administrator: "roleAdmin",
-  Rescuer: "roleRescuer",
-  Adopter: "roleAdopter",
-  Citizen: "roleCitizen",
+  admin: "roleAdmin",
+  resident: "roleCitizen",
 };
 
 export default function RoleBadge({ role, className }: RoleBadgeProps) {

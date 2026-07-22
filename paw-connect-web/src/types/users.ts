@@ -1,5 +1,5 @@
-export type UserRole = 'Administrator' | 'Rescuer' | 'Adopter' | 'Citizen';
-export type UserStatus = 'Active' | 'Pending' | 'Suspended';
+export type UserRole = 'resident' | 'admin';
+export type UserStatus = 'pending_verification' | 'active' | 'suspended';
 
 export interface AdminUserSummary {
   id: string;

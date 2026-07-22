@@ -1,80 +1,54 @@
 import { AppError } from '../errors/AppError';
 import { healthRepository } from '../repositories/health.repository';
-import { AnimalHealth, CreateHealthHistoryInput, UpdateVitalsInput } from '../types/health.types';
-import { rowToAnimalHealth, rowToHistoryEntry } from '../utils/healthMapper';
-
-const VALID_HEALTH_STATUSES = ['Healthy', 'Under Treatment', 'Recovering', 'Critical'];
-const VALID_VACCINATION_STATUSES = [
-  'Vaccinated',
-  'Not Fully Vaccinated',
-  'Due',
-  'Not Vaccinated',
-];
-
-function validateHistoryInput(input: CreateHealthHistoryInput): void {
-  if (!input.date || !input.event || !input.notes) {
-    throw new AppError(400, 'Fields "date", "event", and "notes" are all required');
-  }
-  if (Number.isNaN(Date.parse(input.date))) {
-    throw new AppError(400, 'Field "date" must be a valid date (YYYY-MM-DD)');
-  }
-}
-
-function validateVitalsInput(input: UpdateVitalsInput): void {
-  if (input.heartRate !== undefined && (Number.isNaN(input.heartRate) || input.heartRate < 0)) {
-    throw new AppError(400, 'Field "heartRate" must be a non-negative number');
-  }
-  if (input.healthStatus !== undefined && !VALID_HEALTH_STATUSES.includes(input.healthStatus)) {
-    throw new AppError(400, `Invalid healthStatus "${input.healthStatus}"`);
-  }
-  if (
-    input.vaccinationStatus !== undefined &&
-    !VALID_VACCINATION_STATUSES.includes(input.vaccinationStatus)
-  ) {
-    throw new AppError(400, `Invalid vaccinationStatus "${input.vaccinationStatus}"`);
-  }
-}
+import { HealthRecordWithPet, UpdateHealthRecordInput } from '../types/health.types';
+import { rowToHealthRecord } from '../utils/healthMapper';
 
 export const healthService = {
-  async listAnimalsHealth(): Promise<AnimalHealth[]> {
-    const rows = await healthRepository.findAllAnimals();
-    return rows.map((row) => rowToAnimalHealth(row));
+  async listHealthRecords(): Promise<HealthRecordWithPet[]> {
+    const rows = await healthRepository.findAll();
+    return rows.map(rowToHealthRecord);
   },
 
-  async getAnimalHealthDetail(id: string): Promise<AnimalHealth> {
-    const row = await healthRepository.findAnimalById(id);
+  async getHealthByPetId(petId: number): Promise<HealthRecordWithPet> {
+    const row = await healthRepository.findByPetId(petId);
     if (!row) {
-      throw new AppError(404, 'Animal not found');
+      throw new AppError(404, 'Health record not found for this pet');
     }
-    const historyRows = await healthRepository.findHistoryByAnimalId(id);
-    return rowToAnimalHealth(row, historyRows.map(rowToHistoryEntry));
+    return rowToHealthRecord(row);
   },
 
-  async addHistoryEntry(id: string, input: CreateHealthHistoryInput): Promise<AnimalHealth> {
-    validateHistoryInput(input);
-
-    const exists = await healthRepository.exists(id);
-    if (!exists) {
-      throw new AppError(404, 'Animal not found');
+  async upsertHealthRecord(
+    petId: number,
+    medicalHistory: string | null,
+    vaccinationStatus: string | null,
+    heartRateBpm: number | null,
+    createdByUserId: number
+  ): Promise<HealthRecordWithPet> {
+    const petExists = await healthRepository.petExists(petId);
+    if (!petExists) {
+      throw new AppError(404, 'Pet not found');
     }
 
-    await healthRepository.addHistoryEntry(id, input);
-    return this.getAnimalHealthDetail(id);
+    await healthRepository.upsert(petId, medicalHistory, vaccinationStatus, heartRateBpm, createdByUserId);
+    return this.getHealthByPetId(petId);
   },
 
-  async updateVitals(id: string, input: UpdateVitalsInput): Promise<AnimalHealth> {
-    validateVitalsInput(input);
-
-    const exists = await healthRepository.exists(id);
-    if (!exists) {
-      throw new AppError(404, 'Animal not found');
+  async updateHealthRecord(petId: number, input: UpdateHealthRecordInput): Promise<HealthRecordWithPet> {
+    const petExists = await healthRepository.petExists(petId);
+    if (!petExists) {
+      throw new AppError(404, 'Pet not found');
     }
 
-    const updated = await healthRepository.updateVitals(id, input);
+    const recordExists = await healthRepository.exists(petId);
+    if (!recordExists) {
+      throw new AppError(404, 'Health record not found for this pet');
+    }
+
+    const updated = await healthRepository.update(petId, input);
     if (!updated) {
       throw new AppError(400, 'No valid fields provided for update');
     }
 
-    return this.getAnimalHealthDetail(id);
+    return this.getHealthByPetId(petId);
   },
 };

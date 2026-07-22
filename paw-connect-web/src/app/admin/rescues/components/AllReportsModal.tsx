@@ -1,19 +1,21 @@
 ﻿import React, { useState } from 'react';
 import Button from '@/components/ui/button';
 import styles from './AllReportsModal.module.css';
-import type { RescueCase, RescueStage } from '@/types';
+import type { AnimalReport, RescueStage } from '@/types';
 import CaseCard from './CaseCard';
 import CaseTable from './CaseTable';
 import ViewModeToggle, { ViewMode } from './ViewModeToggle';
 
 interface AllReportsModalProps {
   stage: RescueStage;
-  items: RescueCase[];
-  onView: (item: RescueCase) => void;
+  stageLabel?: string;
+  items: AnimalReport[];
+  onView: (item: AnimalReport) => void;
+  onAction?: (item: AnimalReport, actionId: string) => void;
   onClose: () => void;
 }
 
-export default function AllReportsModal({ stage, items, onView, onClose }: AllReportsModalProps) {
+export default function AllReportsModal({ stage, stageLabel, items, onView, onAction, onClose }: AllReportsModalProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
 
   return (
@@ -21,7 +23,7 @@ export default function AllReportsModal({ stage, items, onView, onClose }: AllRe
       <div className={styles.modalContent}> {/*[cite: 6] */}
         <div className={styles.modalHeader}> {/*[cite: 6] */}
           <div>
-            <h3 className={styles.modalTitle}>{stage}</h3> {/*[cite: 6] */}
+            <h3 className={styles.modalTitle}>{stageLabel ?? stage}</h3> {/*[cite: 6] */}
             <span className={styles.modalSubtitle}>{items.length} total reports</span> {/*[cite: 6] */}
           </div>
 
@@ -47,11 +49,11 @@ export default function AllReportsModal({ stage, items, onView, onClose }: AllRe
           {viewMode === 'cards' ? ( 
             <div className={styles.reportsGrid}>
               {items.map((item) => (
-                <CaseCard key={item.id} item={item} onView={onView} /> 
+                <CaseCard key={item.report_id} item={item} onView={onView} onAction={onAction} /> 
               ))}
             </div>
           ) : (
-            <CaseTable items={items} onView={onView} />
+            <CaseTable items={items} onView={onView} onAction={onAction} />
           )}
         </div>
       </div>

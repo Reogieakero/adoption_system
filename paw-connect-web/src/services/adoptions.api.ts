@@ -1,5 +1,5 @@
 ﻿import { createServiceClient } from '@/lib/api-client';
-import type { AdoptionApplication, ApplicationDetails, AdoptionStatus } from '@/types';
+import type { AdoptionApplication, UpdateApplicationStatusPayload } from '@/types';
 
 const { request } = createServiceClient('/api/admin/adoptions');
 
@@ -8,22 +8,22 @@ export async function fetchAdoptions(): Promise<AdoptionApplication[]> {
   return data.applications;
 }
 
-export async function fetchAdoptionDetails(id: string): Promise<ApplicationDetails> {
-  const data = await request<{ success: true; details: ApplicationDetails }>(
+export async function fetchAdoptionById(id: number): Promise<AdoptionApplication> {
+  const data = await request<{ success: true; details: AdoptionApplication }>(
     `/${encodeURIComponent(id)}/details`
   );
   return data.details;
 }
 
 export async function updateAdoptionStatus(
-  id: string,
-  status: AdoptionStatus
+  id: number,
+  payload: UpdateApplicationStatusPayload
 ): Promise<AdoptionApplication> {
   const data = await request<{ success: true; application: AdoptionApplication }>(
     `/${encodeURIComponent(id)}/status`,
     {
       method: 'PATCH',
-      body: JSON.stringify({ status }),
+      body: JSON.stringify(payload),
     }
   );
   return data.application;

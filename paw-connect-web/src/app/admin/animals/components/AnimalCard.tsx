@@ -1,33 +1,24 @@
 ﻿import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import Button from '@/components/ui/button';
 import styles from './AnimalCard.module.css';
 import { resolvePhotoUrl } from '@/services/resolve-photo-url';
-
-export interface AnimalCardData {
-  id: string;
-  name: string;
-  species: string;
-  breed: string;
-  sex: string;
-  age: string;
-  photo: string;
-  bio: string;
-  healthStatus: string;
-  adoptionStatus: string;
-}
+import { formatStatus } from '@/lib/format-status';
+import type { Pet } from '@/types';
 
 interface AnimalCardProps {
-  animal: AnimalCardData;
+  animal: Pet;
   href: string;
 }
 
 function adoptionBadgeClass(status: string) {
   switch (status) {
-    case 'Available':
+    case 'available':
       return styles.bgTeal;
-    case 'Pending':
+    case 'pending':
       return styles.bgOrange;
-    case 'Adopted':
+    case 'adopted':
       return styles.bgPrimary;
     default:
       return styles.bgSlate;
@@ -50,7 +41,8 @@ function healthBadgeClass(status: string) {
 }
 
 export default function AnimalCard({ animal, href }: AnimalCardProps) {
-  const photoSrc = resolvePhotoUrl(animal.photo);
+  const router = useRouter()
+  const photoSrc = resolvePhotoUrl(animal.primary_photo_url ?? '');
 
   return (
     <Link href={href} className={styles.cardLink}>
@@ -66,32 +58,45 @@ export default function AnimalCard({ animal, href }: AnimalCardProps) {
           <div className={styles.overlayInfo}>
             <div className={styles.cardHeader}>
               <h3 className={styles.cardName}>{animal.name}</h3>
-              <span className={styles.cardSpecies}>{animal.species}</span>
+              <span className={styles.cardSpecies}>{formatStatus(animal.species)}</span>
             </div>
-            <div className={styles.cardId}>{animal.id}</div>
+            <div className={styles.cardId}>{animal.pet_id}</div>
 
             <div className={styles.hoverContent}>
               <div className={styles.detailRow}>
                 <span className={styles.detailLabel}>Breed:</span>
-                <span className={styles.detailValue}>{animal.breed}</span>
+                <span className={styles.detailValue}>{animal.breed_detail ?? animal.breed_type}</span>
               </div>
               <div className={styles.detailRow}>
                 <span className={styles.detailLabel}>Age/Sex:</span>
-                <span className={styles.detailValue}>{animal.age} / {animal.sex}</span>
+                <span className={styles.detailValue}>{animal.age_estimate} / {formatStatus(animal.sex)}</span>
               </div>
               <div className={styles.detailRow}>
                 <span className={styles.detailLabel}>Health:</span>
-                <span className={styles.detailValue}>{animal.healthStatus}</span>
+                <span className={styles.detailValue}>Healthy</span>
               </div>
             </div>
 
             <div className={styles.cardBadge}>
-              <span className={`${styles.badge} ${adoptionBadgeClass(animal.adoptionStatus)}`}>
-                {animal.adoptionStatus}
+              <span className={`${styles.badge} ${adoptionBadgeClass(animal.status)}`}>
+                {formatStatus(animal.status)}
               </span>
-              <span className={`${styles.badge} ${healthBadgeClass(animal.healthStatus)}`}>
-                {animal.healthStatus}
+              <span className={`${styles.badge} ${healthBadgeClass('Healthy')}`}>
+                Healthy
               </span>
+            </div>
+
+            <div className={styles.cardFooter}>
+              <Button
+                variant="admin-secondary"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  router.push(`/admin/health/${animal.pet_id}/log`)
+                }}
+              >
+                Log Vitals
+              </Button>
             </div>
           </div>
         </div>

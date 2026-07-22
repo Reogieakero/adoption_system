@@ -1,11 +1,12 @@
 ﻿import React from 'react';
 import styles from './AnimalGrid.module.css';
-import AnimalCard, { AnimalCardData } from './AnimalCard';
+import AnimalCard from './AnimalCard';
 import EmptyState from './EmptyState';
+import type { Pet } from '@/types';
 
 interface AnimalGridProps {
-  animals: AnimalCardData[];
-  getHref: (animal: AnimalCardData) => string;
+  animals: Pet[];
+  getHref: (animal: Pet) => string;
   emptyMessage?: string;
 }
 
@@ -17,7 +18,7 @@ export default function AnimalGrid({ animals, getHref, emptyMessage }: AnimalGri
   return (
     <div className={styles.gridContainer}>
       {animals.map((animal) => (
-        <AnimalCard key={animal.id} animal={animal} href={getHref(animal)} />
+        <AnimalCard key={animal.pet_id} animal={animal} href={getHref(animal)} />
       ))}
     </div>
   );

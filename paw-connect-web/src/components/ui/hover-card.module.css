@@ -1,0 +1,47 @@
+.wrapper {
+  position: relative;
+}
+
+.popup {
+  position: absolute;
+  left: calc(100% + 11px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  box-shadow: var(--shadow-lg);
+  color: var(--text-primary);
+  font-size: var(--text-sm);
+  width: 200px;
+  animation: fadeIn 0.15s ease;
+  pointer-events: none;
+}
+
+.popup::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  transform: translateY(-50%);
+  border: 7px solid transparent;
+  border-right-color: var(--border);
+}
+
+.popup::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: calc(100% - 1px);
+  transform: translateY(-50%);
+  border: 6px solid transparent;
+  border-right-color: var(--card);
+  z-index: 1;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-50%) translateX(-5px); }
+  to { opacity: 1; transform: translateY(-50%) translateX(0); }
+}

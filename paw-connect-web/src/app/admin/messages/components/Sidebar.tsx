@@ -9,12 +9,29 @@ import styles from './Sidebar.module.css';
 
 interface SidebarProps {
   conversations: Conversation[];
-  activeConvoId: string;
+  activeConvoId: number;
   activeTab: string;
   searchQuery: string;
-  onSelectConversation: (id: string) => void;
+  onSelectConversation: (id: number) => void;
   onTabChange: (tab: string) => void;
   onSearchChange: (value: string) => void;
+}
+
+function getLastMessageText(conversation: Conversation): string {
+  if (conversation.messages.length === 0) return '';
+  const last = conversation.messages[conversation.messages.length - 1];
+  return last.message_text ?? '';
+}
+
+function hasUnread(conversation: Conversation): boolean {
+  return conversation.messages.some(m => !m.is_read);
+}
+
+function getCategory(linked_type: Conversation['linked_type']): string {
+  switch (linked_type) {
+    case 'adoption_application': return 'Adoption';
+    case 'animal_report': return 'Report';
+  }
 }
 
 export default function Sidebar({
@@ -27,13 +44,14 @@ export default function Sidebar({
   onSearchChange
 }: SidebarProps) {
   const filteredConversations = conversations.filter(c => {
-    const matchesSearch = c.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          c.lastMessage.toLowerCase().includes(searchQuery.toLowerCase());
+    const lastMsg = getLastMessageText(c);
+    const matchesSearch = c.resident_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          lastMsg.toLowerCase().includes(searchQuery.toLowerCase());
 
     if (!matchesSearch) return false;
     if (activeTab === 'All') return true;
-    if (activeTab === 'Unread') return c.isUnread;
-    return c.category.toLowerCase() === activeTab.toLowerCase();
+    if (activeTab === 'Unread') return hasUnread(c);
+    return getCategory(c.linked_type).toLowerCase() === activeTab.toLowerCase();
   });
 
   return (
@@ -54,9 +72,9 @@ export default function Sidebar({
       <div className={styles.conversationList}>
         {filteredConversations.map(convo => (
           <ConversationCard
-            key={convo.id}
+            key={convo.thread_id}
             conversation={convo}
-            isActive={convo.id === activeConvoId}
+            isActive={convo.thread_id === activeConvoId}
             onSelect={onSelectConversation}
           />
         ))}

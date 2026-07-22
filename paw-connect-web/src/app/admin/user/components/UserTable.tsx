@@ -12,16 +12,15 @@ import type { UserEntry, RoleFilterValue, StatusFilterValue } from "../types";
 
 const ROLE_OPTIONS = [
   { label: "All Roles", value: "All" },
-  { label: "Citizen", value: "Citizen" },
-  { label: "Adopter", value: "Adopter" },
-  { label: "Rescuer", value: "Rescuer" },
+  { label: "Resident", value: "resident" },
+  { label: "Admin", value: "admin" },
 ];
 
 const STATUS_OPTIONS = [
   { label: "All", value: "All" },
-  { label: "Active", value: "Active" },
-  { label: "Pending", value: "Pending" },
-  { label: "Suspended", value: "Suspended" },
+  { label: "Active", value: "active" },
+  { label: "Pending Verification", value: "pending_verification" },
+  { label: "Suspended", value: "suspended" },
 ];
 
 export interface UserTableProps {

@@ -1,37 +1,26 @@
-export type NotificationType =
-  | 'adoption_application'
-  | 'rescue_case'
-  | 'message'
-  | 'health_alert'
-  | 'user_registration'
-  | 'system';
-
-export type NotificationPriority = 'low' | 'normal' | 'high' | 'urgent';
+export type NotificationType = 'adoption_status' | 'report_status' | 'new_message' | 'new_report' | 'new_community_listing' | 'new_application';
+export type NotificationLinkedType = 'adoption_application' | 'animal_report' | 'pet' | 'message_thread';
 
 export interface Notification {
-  id: number;
+  notification_id: number;
+  recipient_id: number;
   type: NotificationType;
-  title: string;
-  message: string;
-  entityType: string | null;
-  entityId: number | null;
-  priority: NotificationPriority;
-  isRead: boolean;
-  readAt: string | null;
-  createdBy: number | null;
-  link: string | null;
-  createdAt: string;
+  linked_type: NotificationLinkedType | null;
+  linked_id: number | null;
+  message_text: string;
+  is_read: boolean;
+  is_emailed: boolean;
+  emailed_at: string | null;
+  created_at: string;
 }
 
 export interface CreateNotificationInput {
+  recipient_id: number;
   type: NotificationType;
-  title: string;
-  message: string;
-  entityType?: string;
-  entityId?: number;
-  priority?: NotificationPriority;
-  createdBy?: number;
-  link?: string;
+  linked_type?: NotificationLinkedType | null;
+  linked_id?: number | null;
+  message_text: string;
+  is_emailed?: boolean;
 }
 
 export interface NotificationListQuery {
@@ -39,6 +28,7 @@ export interface NotificationListQuery {
   limit?: number;
   type?: NotificationType;
   unreadOnly?: boolean;
+  recipient_id?: number;
 }
 
 export interface NotificationListResult {

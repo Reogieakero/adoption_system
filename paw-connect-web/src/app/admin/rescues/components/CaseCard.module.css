@@ -117,3 +117,12 @@
 .viewDetailsTrigger:hover {
   background: var(--info);
 }
+
+.cardActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.25rem;
+  padding: 0 1rem 0.75rem;
+  position: relative;
+  z-index: 2;
+}

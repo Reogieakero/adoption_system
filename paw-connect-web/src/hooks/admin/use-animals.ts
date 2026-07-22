@@ -1,18 +1,18 @@
 ﻿'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import type { Animal } from '@/types';
-import { fetchAnimalById, fetchAnimals } from '@/services/animals.api';
+import type { Pet } from '@/types';
+import { fetchPetById, fetchPets } from '@/services/animals.api';
 
 interface UseAnimalsResult {
-  animals: Animal[];
+  animals: Pet[];
   isLoading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
 }
 
 export function useAnimals(): UseAnimalsResult {
-  const [animals, setAnimals] = useState<Animal[]>([]);
+  const [animals, setAnimals] = useState<Pet[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,7 +20,7 @@ export function useAnimals(): UseAnimalsResult {
     setIsLoading(true);
     setError(null);
     try {
-      const data = await fetchAnimals();
+      const data = await fetchPets();
       setAnimals(data);
     } catch (err) {
       setAnimals([]);
@@ -38,14 +38,14 @@ export function useAnimals(): UseAnimalsResult {
 }
 
 interface UseAnimalResult {
-  animal: Animal | null;
+  animal: Pet | null;
   isLoading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
 }
 
 export function useAnimal(id: string | null): UseAnimalResult {
-  const [animal, setAnimal] = useState<Animal | null>(null);
+  const [animal, setAnimal] = useState<Pet | null>(null);
   const [isLoading, setIsLoading] = useState(Boolean(id));
   const [error, setError] = useState<string | null>(null);
 
@@ -59,7 +59,8 @@ export function useAnimal(id: string | null): UseAnimalResult {
     setIsLoading(true);
     setError(null);
     try {
-      const data = await fetchAnimalById(id);
+      const numericId = Number(id);
+      const data = await fetchPetById(numericId);
       setAnimal(data);
     } catch (err) {
       setAnimal(null);

@@ -193,24 +193,14 @@ export default function RegisterPage() {
                   </div>
                 )}
 
-                <FormRow>
-                  <FormInput
-                    id="firstName"
-                    type="text"
-                    label="First Name"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    required
-                  />
-                  <FormInput
-                    id="lastName"
-                    type="text"
-                    label="Last Name"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    required
-                  />
-                </FormRow>
+                <FormInput
+                  id="fullName"
+                  type="text"
+                  label="Full Name"
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  required
+                />
 
                 <FormInput
                   id="email"

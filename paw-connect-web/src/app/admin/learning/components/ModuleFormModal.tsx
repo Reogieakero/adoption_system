@@ -5,7 +5,20 @@ import { Image as ImageIcon } from "lucide-react";
 import Button from "@/components/ui/button";
 import styles from "./ModuleFormModal.module.css";
 import ShadcnSelect from '@/components/ui/shadcn-select';
-import type { LearningModuleFormState, ModuleDifficulty, SelectOption } from "@/types";
+import type { SelectOption } from "@/types";
+
+interface LearningModuleFormState {
+  title: string;
+  category: string;
+  difficulty: string;
+  duration: string;
+  description: string;
+  objectives: string;
+  content: string;
+  videoUrl: string;
+  pdfUrl: string;
+  status: string;
+}
 
 interface ModuleFormModalProps {
   isEditing: boolean;
@@ -86,7 +99,7 @@ export default function ModuleFormModal({
                 <label>Difficulty Level</label>
                 <ShadcnSelect
                   value={form.difficulty}
-                  onChange={(val) => onFormChange((f) => ({ ...f, difficulty: val as ModuleDifficulty }))}
+                  onChange={(val) => onFormChange((f) => ({ ...f, difficulty: val }))}
                   options={difficultyOptions}
                   placeholder="Select Difficulty"
                 />
@@ -192,8 +205,8 @@ export default function ModuleFormModal({
               <label className={styles.switchToggle}>
                 <input
                   type="checkbox"
-                  checked={form.status === "Published"}
-                  onChange={(e) => onFormChange((f) => ({ ...f, status: e.target.checked ? "Published" : "Draft" }))}
+                  checked={form.status === "published"}
+                  onChange={(e) => onFormChange((f) => ({ ...f, status: e.target.checked ? "published" : "draft" }))}
                 />
                 <span className={styles.slider}></span>
               </label>

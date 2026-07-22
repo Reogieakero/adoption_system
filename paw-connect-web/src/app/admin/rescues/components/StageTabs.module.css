@@ -5,6 +5,12 @@
   flex-shrink: 0;
 }
 
+.tabIcon {
+  display: inline-flex;
+  align-items: center;
+  opacity: 0.7;
+}
+
 .tabCount {
   font-size: 0.68rem;
   font-weight: 600;

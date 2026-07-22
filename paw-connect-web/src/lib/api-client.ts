@@ -50,7 +50,8 @@ export function buildFormData(payload: Record<string, unknown>, fileKey: string,
   const formData = new FormData();
   Object.entries(payload).forEach(([key, value]) => {
     if (key === fileKey) return;
-    formData.append(key, value == null ? '' : String(value));
+    if (value == null) return;
+    formData.append(key, String(value));
   });
   if (file) {
     formData.append(fileKey, file);

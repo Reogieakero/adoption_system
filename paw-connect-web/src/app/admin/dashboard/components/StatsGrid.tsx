@@ -1,11 +1,15 @@
-﻿import {
-  ClipboardCheck,
-  Siren,
-  HeartPulse,
-  Bell,
-  type LucideIcon,
-} from 'lucide-react';
+﻿'use client';
+
+import { useState, useEffect } from 'react';
+import { ClipboardCheck, Siren, HeartPulse, Bell, type LucideIcon } from 'lucide-react';
+import { createServiceClient } from '@/lib/api-client';
 import styles from './StatsGrid.module.css';
+
+const { request } = createServiceClient('/api/admin/dashboard');
+
+const ICON_MAP: Record<string, LucideIcon> = {
+  ClipboardCheck, Siren, HeartPulse, Bell,
+};
 
 interface StatCard {
   label: string;
@@ -14,23 +18,28 @@ interface StatCard {
   icon: LucideIcon;
 }
 
-const ATTENTION_CARDS: StatCard[] = [
-  { label: 'Pending Adoptions', value: '37', subtext: 'Awaiting coordinator review', icon: ClipboardCheck },
-  { label: 'Rescue Reports', value: '12', subtext: 'Active dispatch cases', icon: Siren },
-  { label: 'Health Alerts', value: '5', subtext: 'Critical medical updates', icon: HeartPulse },
-  { label: 'Notifications', value: '18', subtext: 'Unread administrative updates', icon: Bell },
-];
-
 export default function StatsGrid() {
+  const [cards, setCards] = useState<StatCard[]>([]);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    request<{ success: true; stats: { label: string; value: string; subtext: string; icon: string }[] }>('/stats')
+      .then((data) => {
+        setCards(data.stats.map((s) => ({ ...s, icon: ICON_MAP[s.icon] ?? Bell })));
+        setLoaded(true);
+      })
+      .catch(() => setLoaded(true));
+  }, []);
+
+  if (!loaded) return null;
+
   return (
     <section className={styles.statsGrid} aria-label="Key Administrative Metrics">
-      {ATTENTION_CARDS.map(({ label, value, subtext, icon: Icon }) => (
+      {cards.map(({ label, value, subtext, icon: Icon }) => (
         <div key={label} className={styles.statCard}>
           <div className={styles.statHeader}>
             <span className={styles.statLabel}>{label}</span>
-            <span className={styles.statIconContainer}>
-              <Icon size={16} strokeWidth={2} />
-            </span>
+            <span className={styles.statIconContainer}><Icon size={16} strokeWidth={2} /></span>
           </div>
           <div className={styles.statBody}>
             <span className={styles.statValue}>{value}</span>

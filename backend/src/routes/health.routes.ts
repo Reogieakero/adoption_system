@@ -7,8 +7,8 @@ const router = Router();
 router.use(authenticateAdmin);
 
 router.get('/', healthController.list);
-router.get('/:id', healthController.getDetail);
-router.post('/:id/history', healthController.addHistoryEntry);
-router.patch('/:id/vitals', healthController.updateVitals);
+router.get('/:id', healthController.getByPetId);
+router.post('/:id', healthController.upsert);
+router.patch('/:id', healthController.update);
 
 export default router;

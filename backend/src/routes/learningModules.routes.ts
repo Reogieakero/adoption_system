@@ -7,11 +7,21 @@ const router = Router();
 
 router.use(authenticateAdmin);
 
-router.get('/', learningModuleController.list);
+// Categories
+router.get('/categories', learningModuleController.listCategories);
+router.post('/categories', learningModuleController.createCategory);
+
+// Modules
+router.get('/', learningModuleController.listModules);
+router.get('/category/:categoryId', learningModuleController.listByCategory);
 router.get('/:id', learningModuleController.getById);
-router.post('/', upload.single('image'), learningModuleController.create);
+router.post('/', upload.single('cover_image'), learningModuleController.create);
 router.post('/:id/duplicate', learningModuleController.duplicate);
-router.patch('/:id', upload.single('image'), learningModuleController.update);
+router.patch('/:id', upload.single('cover_image'), learningModuleController.update);
 router.delete('/:id', learningModuleController.remove);
+
+// Progress
+router.get('/:id/progress/:residentId', learningModuleController.getProgress);
+router.post('/:id/progress', learningModuleController.updateProgress);
 
 export default router;

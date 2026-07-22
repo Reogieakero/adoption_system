@@ -24,9 +24,16 @@
 }
 
 .thAction {
-  width: 44px;
+  text-align: right;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  font-weight: 600;
+  padding: 0.65rem 1rem;
   border-bottom: 1px solid var(--border);
   background-color: var(--surface-secondary);
+  white-space: nowrap;
 }
 
 .row:not(:last-child) .td,
@@ -101,4 +108,11 @@
 .priorityMedium {
   background-color: var(--success-bg);
   color: var(--success);
+}
+
+.actionCell {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.25rem;
 }

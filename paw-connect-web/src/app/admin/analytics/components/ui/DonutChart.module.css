@@ -4,11 +4,11 @@
   gap: 18px;
 }
 
-.chart-wrapper {
+.chartWrapper {
   position: relative;
 }
 
-.center-overlay {
+.centerOverlay {
   position: absolute;
   inset: 0;
   display: flex;
@@ -18,12 +18,12 @@
   pointer-events: none;
 }
 
-.total-value {
+.totalValue {
   font-size: 22px;
   font-weight: 700;
 }
 
-.total-label {
+.totalLabel {
   font-size: 11px;
   color: var(--muted-foreground);
 }
@@ -34,24 +34,24 @@
   gap: 10px;
 }
 
-.legend-item {
+.legendItem {
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 12.5px;
 }
 
-.legend-dot {
+.legendDot {
   width: 8px;
   height: 8px;
   border-radius: 999px;
 }
 
-.legend-name {
+.legendName {
   color: var(--muted-foreground);
 }
 
-.legend-value {
+.legendValue {
   font-weight: 600;
   margin-left: auto;
 }

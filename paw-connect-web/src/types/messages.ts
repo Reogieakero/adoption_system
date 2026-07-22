@@ -1,27 +1,30 @@
+export type ThreadLinkedType = 'adoption_application' | 'animal_report';
+
+export interface MessageThread {
+  thread_id: number;
+  linked_type: ThreadLinkedType;
+  linked_id: number;
+  resident_id: number;
+  created_at: string;
+}
+
 export interface Message {
-  id: string;
-  sender: 'user' | 'admin';
-  text: string;
-  time: string;
-  status: 'sent' | 'delivered' | 'read';
-  attachment?: {
-    type: 'image' | 'file';
-    url?: string;
-    name?: string;
-    size?: string;
-  };
+  message_id: number;
+  thread_id: number;
+  sender_id: number;
+  sender_name: string;
+  message_text: string | null;
+  photo_url: string | null;
+  is_read: boolean;
+  sent_at: string;
 }
 
 export interface Conversation {
-  id: string;
-  userName: string;
-  userRole: 'Citizen' | 'Adopter' | 'Rescuer';
-  avatarFallback: string;
-  avatarUrl?: string;
-  relatedAnimal?: string;
-  category: 'Adoption' | 'Rescue' | 'General';
-  lastMessage: string;
-  time: string;
-  isUnread: boolean;
+  thread_id: number;
+  linked_type: ThreadLinkedType;
+  linked_id: number;
+  resident_id: number;
+  resident_name: string;
   messages: Message[];
+  created_at: string;
 }

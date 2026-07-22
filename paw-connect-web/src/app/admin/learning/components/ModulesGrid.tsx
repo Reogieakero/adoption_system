@@ -3,16 +3,16 @@
 import React from "react";
 import styles from "./ModulesGrid.module.css";
 import ModuleCard from "./ModuleCard";
-import type { LearningModule } from "@/types";
+import type { ElearningModule } from "@/types";
 
 interface ModulesGridProps {
-  modules: LearningModule[];
-  activeDropdownId: string | null;
-  onToggleDropdown: (id: string) => void;
-  onEdit: (module: LearningModule) => void;
-  onDuplicate: (id: string) => void;
-  onToggleStatus: (module: LearningModule) => void;
-  onDelete: (id: string) => void;
+  modules: ElearningModule[];
+  activeDropdownId: number | null;
+  onToggleDropdown: (id: number) => void;
+  onEdit: (module: ElearningModule) => void;
+  onView: (module: ElearningModule) => void;
+  onToggleStatus: (module: ElearningModule) => void;
+  onDelete: (id: number) => void;
 }
 
 export default function ModulesGrid({
@@ -20,7 +20,7 @@ export default function ModulesGrid({
   activeDropdownId,
   onToggleDropdown,
   onEdit,
-  onDuplicate,
+  onView,
   onToggleStatus,
   onDelete,
 }: ModulesGridProps) {
@@ -28,12 +28,12 @@ export default function ModulesGrid({
     <div className={styles.modulesGrid}>
       {modules.map((module) => (
         <ModuleCard
-          key={module.id}
+          key={module.module_id}
           module={module}
-          isDropdownOpen={activeDropdownId === module.id}
+          isDropdownOpen={activeDropdownId === module.module_id}
           onToggleDropdown={onToggleDropdown}
           onEdit={onEdit}
-          onDuplicate={onDuplicate}
+          onView={onView}
           onToggleStatus={onToggleStatus}
           onDelete={onDelete}
         />

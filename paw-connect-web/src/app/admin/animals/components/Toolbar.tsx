@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Button from '@/components/ui/button';
 import SearchBar from '@/components/ui/search-bar';
 import ShadcnSelect from '@/components/ui/shadcn-select';
+import { formatStatus } from '@/lib/format-status';
 import styles from './Toolbar.module.css';
 
 interface ToolbarProps {
@@ -51,7 +52,7 @@ export default function Toolbar({
 
         <ShadcnSelect
           options={statusOptions.map((opt) => ({
-            label: opt === 'All' ? 'All Statuses' : opt,
+            label: opt === 'All' ? 'All Statuses' : formatStatus(opt),
             value: opt,
           }))}
           value={statusFilter}

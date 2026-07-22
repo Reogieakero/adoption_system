@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { getAllUsers, removeUser, setUserStatus, UserServiceError } from '../services/user.service';
 import { UserStatus } from '../types/user.types';
 
-const VALID_STATUSES: UserStatus[] = ['Active', 'Pending', 'Suspended'];
+const VALID_STATUSES: UserStatus[] = ['active', 'pending_verification', 'suspended'];
 
 /**
  * GET /api/admin/users

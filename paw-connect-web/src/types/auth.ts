@@ -1,6 +1,5 @@
 ﻿export interface RegisterFormData {
-  firstName: string;
-  lastName: string;
+  fullName: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -13,8 +12,7 @@ export interface FieldError {
 
 export interface RegisterUser {
   id: number;
-  firstName: string;
-  lastName: string;
+  fullName: string;
   email: string;
 }
 
@@ -32,7 +30,6 @@ export interface GoogleSignInPending {
 }
 
 export interface CompleteGoogleSignupFormData {
-  firstName: string;
-  lastName: string;
+  fullName: string;
   email: string;
 }

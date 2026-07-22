@@ -1,32 +1,30 @@
 ﻿'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import type { LearningModule, CreateLearningModulePayload, UpdateLearningModulePayload } from '@/types';
+import type { ElearningModule, CreateElearningModulePayload, UpdateElearningModulePayload } from '@/types';
 import {
   createLearningModule,
   deleteLearningModule,
-  duplicateLearningModule,
   fetchLearningModules,
   updateLearningModule,
 } from '@/services/learning-modules.api';
 
 interface UseLearningModulesResult {
-  modules: LearningModule[];
+  modules: ElearningModule[];
   isLoading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
-  addModule: (payload: CreateLearningModulePayload, imageFile?: File | null) => Promise<LearningModule>;
+  addModule: (payload: CreateElearningModulePayload, imageFile?: File | null) => Promise<ElearningModule>;
   editModule: (
-    id: string,
-    payload: UpdateLearningModulePayload,
+    id: number,
+    payload: UpdateElearningModulePayload,
     imageFile?: File | null
-  ) => Promise<LearningModule>;
-  removeModule: (id: string) => Promise<void>;
-  duplicateModule: (id: string) => Promise<LearningModule>;
+  ) => Promise<ElearningModule>;
+  removeModule: (id: number) => Promise<void>;
 }
 
 export function useLearningModules(): UseLearningModulesResult {
-  const [modules, setModules] = useState<LearningModule[]>([]);
+  const [modules, setModules] = useState<ElearningModule[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -49,7 +47,7 @@ export function useLearningModules(): UseLearningModulesResult {
   }, [refetch]);
 
   const addModule = useCallback(
-    async (payload: CreateLearningModulePayload, imageFile: File | null = null) => {
+    async (payload: CreateElearningModulePayload, imageFile: File | null = null) => {
       const created = await createLearningModule(payload, imageFile);
       setModules((prev) => [created, ...prev]);
       return created;
@@ -58,24 +56,18 @@ export function useLearningModules(): UseLearningModulesResult {
   );
 
   const editModule = useCallback(
-    async (id: string, payload: UpdateLearningModulePayload, imageFile: File | null = null) => {
+    async (id: number, payload: UpdateElearningModulePayload, imageFile: File | null = null) => {
       const updated = await updateLearningModule(id, payload, imageFile);
-      setModules((prev) => prev.map((m) => (m.id === id ? updated : m)));
+      setModules((prev) => prev.map((m) => (m.module_id === id ? updated : m)));
       return updated;
     },
     []
   );
 
-  const removeModule = useCallback(async (id: string) => {
+  const removeModule = useCallback(async (id: number) => {
     await deleteLearningModule(id);
-    setModules((prev) => prev.filter((m) => m.id !== id));
+    setModules((prev) => prev.filter((m) => m.module_id !== id));
   }, []);
 
-  const duplicateModule = useCallback(async (id: string) => {
-    const copy = await duplicateLearningModule(id);
-    setModules((prev) => [copy, ...prev]);
-    return copy;
-  }, []);
-
-  return { modules, isLoading, error, refetch, addModule, editModule, removeModule, duplicateModule };
+  return { modules, isLoading, error, refetch, addModule, editModule, removeModule };
 }

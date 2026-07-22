@@ -3,6 +3,7 @@
 import React from 'react';
 import styles from './AnimalDetail.module.css';
 import { useAnimal } from '@/hooks/admin/use-animals';
+import { formatStatus } from '@/lib/format-status';
 import TopBar from './components/TopBar';
 import PhotoDossier from './components/PhotoDossier';
 import RecordSection from './components/RecordSection';
@@ -58,12 +59,11 @@ export default function AnimalDetailPage({ id }: { id: string }) {
               eyebrow="Record 01"
               title="Identification"
               fields={[
-                { label: 'Species', value: animal.species },
-                { label: 'Breed', value: animal.breed },
-                { label: 'Sex', value: animal.sex },
-                { label: 'Estimated Age', value: animal.age },
-                { label: 'Size', value: animal.size },
-                { label: 'Color / Markings', value: animal.colorMarkings },
+                { label: 'Species', value: formatStatus(animal.species) },
+                { label: 'Breed', value: animal.breed_detail ?? animal.breed_type },
+                { label: 'Sex', value: formatStatus(animal.sex) },
+                { label: 'Estimated Age', value: animal.age_estimate ?? 'Unknown' },
+                { label: 'Type', value: animal.source_type === 'shelter' ? 'Shelter' : 'Community' },
               ]}
             />
 
@@ -71,28 +71,18 @@ export default function AnimalDetailPage({ id }: { id: string }) {
               eyebrow="Record 02"
               title="Status & Health"
               fields={[
-                { label: 'Rescue Status', value: animal.rescueStatus },
-                { label: 'Adoption Status', value: animal.adoptionStatus },
-                { label: 'Health Status', value: animal.healthStatus },
-                { label: 'Vaccination Status', value: animal.vaccinationStatus },
-                {
-                  label: 'Heart Rate',
-                  value: animal.heartRate,
-                  mono: true,
-                  showPulse: animal.heartRate !== 'No Data',
-                },
+                { label: 'Adoption Status', value: formatStatus(animal.status) },
+                { label: 'Location', value: animal.location_area ?? 'Unknown' },
               ]}
             />
 
             <RecordSection
               eyebrow="Record 03"
-              title="Location & Timeline"
+              title="Timeline"
               fields={[
-                { label: 'Current Shelter / Location', value: animal.location },
-                { label: 'Date Rescued', value: animal.dateRescued, mono: true },
-                { label: 'Date Added', value: animal.dateAdded, mono: true },
-                { label: 'Last Updated', value: animal.lastUpdated, mono: true },
-                { label: 'Animal ID', value: animal.id, mono: true },
+                { label: 'Created', value: animal.created_at, mono: true },
+                { label: 'Last Updated', value: animal.updated_at, mono: true },
+                { label: 'Pet ID', value: String(animal.pet_id), mono: true },
               ]}
             />
           </div>

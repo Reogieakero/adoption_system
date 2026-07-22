@@ -37,7 +37,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Rescues', fullLabel: 'Rescue Reports', href: '/admin/rescues', icon: Siren },
   { label: 'Health', fullLabel: 'Health Monitoring', href: '/admin/health', icon: HeartPulse },
   { label: 'Heatmap', fullLabel: 'Heatmap & Mapping', href: '/admin/heatmap', icon: Map },
-  // { label: 'Analytics', fullLabel: 'Analytics & Reports', href: '/admin/analytics', icon: BarChart3 },
+  { label: 'Analytics', fullLabel: 'Analytics & Reports', href: '/admin/analytics', icon: BarChart3 },
   { label: 'Notifications', fullLabel: 'Notifications', href: '/admin/notifications', icon: Bell },
   { label: 'Messaging', fullLabel: 'Messaging', href: '/admin/messages', icon: MessageSquare },
   { label: 'Learning', fullLabel: 'E-learning Management', href: '/admin/learning', icon: GraduationCap },
