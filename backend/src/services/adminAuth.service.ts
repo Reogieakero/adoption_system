@@ -21,14 +21,21 @@ export const adminAuthService = {
       throw new AppError(401, 'Invalid email or password');
     }
 
-    const passwordMatches = await bcrypt.compare(password, env.adminPasswordHash);
-    if (!passwordMatches) {
-      throw new AppError(401, 'Invalid email or password');
-    }
-
     let adminUser = await findByEmail(env.adminEmail);
 
-    if (!adminUser) {
+    if (adminUser) {
+      // User exists — compare against the stored hash (supports password changes)
+      const passwordMatches = await bcrypt.compare(password, adminUser.password_hash ?? '');
+      if (!passwordMatches) {
+        throw new AppError(401, 'Invalid email or password');
+      }
+    } else {
+      // First-time login — compare against the env-configured hash
+      const passwordMatches = await bcrypt.compare(password, env.adminPasswordHash);
+      if (!passwordMatches) {
+        throw new AppError(401, 'Invalid email or password');
+      }
+
       const [result] = await pool.query<ResultSetHeader>(
         `INSERT INTO users (full_name, email, password_hash, auth_provider, role, status, email_verified)
          VALUES (?, ?, ?, 'local', 'admin', 'active', TRUE)`,

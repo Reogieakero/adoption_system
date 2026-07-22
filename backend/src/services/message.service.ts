@@ -1,4 +1,5 @@
 import { messageRepository } from '../repositories/message.repository';
+import { notificationService } from './notification.service';
 import { ThreadLinkedType } from '../types/message.types';
 import { AppError } from '../errors/AppError';
 
@@ -46,6 +47,18 @@ export const messageService = {
     }
 
     const messageId = await messageRepository.insertMessage(threadId, senderId, messageText, photoUrl);
+
+    // Notify the resident about the new message
+    await notificationService.create({
+      recipient_id: thread.resident_id,
+      type: 'new_message',
+      linked_type: 'message_thread',
+      linked_id: threadId,
+      message_text: messageText
+        ? `New message: "${messageText.length > 80 ? messageText.slice(0, 80) + '...' : messageText}"`
+        : 'New message (photo)',
+    });
+
     const messages = await messageRepository.findMessagesByThreadId(threadId);
     return messages.find((m) => m.message_id === messageId) ?? null;
   },

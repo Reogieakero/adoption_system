@@ -429,3 +429,29 @@ CREATE TABLE report_exports (
     FOREIGN KEY (requested_by_admin_id) REFERENCES users (user_id)
     ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =============================================================================
+-- 17. app_settings
+-- =============================================================================
+CREATE TABLE app_settings (
+  setting_key   VARCHAR(100) NOT NULL,
+  setting_value TEXT         NOT NULL,
+  updated_at    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (setting_key)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO app_settings (setting_key, setting_value) VALUES
+  ('map_location', 'Mati City 8200'),
+  ('map_zoom', '12'),
+  ('enable_heatmap', 'true'),
+  ('module_visibility', 'public'),
+  ('allow_quiz_retakes', 'always'),
+  ('enable_certificates', 'true'),
+  ('enable_reviews', 'true'),
+  ('date_format', 'MM/DD/YYYY'),
+  ('time_format', '12h'),
+  ('time_zone', 'EST'),
+  ('session_timeout', '30 minutes'),
+  ('enable_2fa', 'false'),
+  ('require_strong_passwords', 'true');

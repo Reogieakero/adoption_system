@@ -12,12 +12,34 @@ export async function findAllUsersForAdmin(): Promise<AdminUserRow[]> {
   return rows;
 }
 
+export async function findAdminUserIds(): Promise<number[]> {
+  const [rows] = await pool.query<RowDataPacket[]>(
+    "SELECT user_id FROM users WHERE role = 'admin'"
+  );
+  return rows.map((r) => Number(r.user_id));
+}
+
 export async function findUserByIdForAdmin(id: number): Promise<AdminUserRow | null> {
   const [rows] = await pool.query<AdminUserRow[]>(
     `${ADMIN_USER_LIST_QUERY.replace('ORDER BY u.created_at DESC', 'WHERE u.user_id = ?')}`,
     [id]
   );
   return rows[0] ?? null;
+}
+
+export async function updateUserProfile(id: number, fields: { full_name?: string; phone_number?: string | null; address?: string | null }): Promise<void> {
+  const updates: string[] = [];
+  const values: unknown[] = [];
+  if (fields.full_name !== undefined) { updates.push('full_name = ?'); values.push(fields.full_name); }
+  if (fields.phone_number !== undefined) { updates.push('phone_number = ?'); values.push(fields.phone_number); }
+  if (fields.address !== undefined) { updates.push('address = ?'); values.push(fields.address); }
+  if (updates.length === 0) return;
+  values.push(id);
+  await pool.query(`UPDATE users SET ${updates.join(', ')} WHERE user_id = ?`, values);
+}
+
+export async function updatePassword(userId: number, passwordHash: string): Promise<void> {
+  await pool.query('UPDATE users SET password_hash = ? WHERE user_id = ?', [passwordHash, userId]);
 }
 
 export async function updateUserStatus(id: number, status: UserStatus): Promise<void> {
@@ -145,6 +167,9 @@ export const userRepository = {
   linkGoogleUid,
   findAllUsersForAdmin,
   findUserByIdForAdmin,
+  findAdminUserIds,
+  updateUserProfile,
+  updatePassword,
   updateUserStatus,
   deleteUserById,
   createVerificationCode,

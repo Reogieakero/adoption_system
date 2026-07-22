@@ -15,6 +15,7 @@ import messagesRoutes from './routes/messages.routes';
 import logsRoutes from './routes/logs.routes';
 import dashboardRoutes from './routes/dashboard.routes';
 import analyticsRoutes from './routes/analytics.routes';
+import settingsRoutes from './routes/settings.routes';
 import publicRoutes from './routes/public.routes';
 import { errorHandler, notFound } from './middleware/errorHandler';
 import path from 'path';
@@ -46,6 +47,7 @@ app.use('/api/admin/messages', messagesRoutes);
 app.use('/api/admin/logs', logsRoutes);
 app.use('/api/admin/dashboard', dashboardRoutes);
 app.use('/api/admin/analytics', analyticsRoutes);
+app.use('/api/admin/settings', settingsRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

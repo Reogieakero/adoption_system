@@ -28,6 +28,7 @@ export default function SettingsTabs({ activeTab, onTabChange }: SettingsTabsPro
           key={tab.key}
           variant="admin-ghost"
           active={activeTab === tab.key}
+          type="button"
           onClick={() => onTabChange(tab.key)}
         >
           {tab.label}

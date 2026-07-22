@@ -1,5 +1,6 @@
 import { AppError } from '../errors/AppError';
 import { adoptionRepository } from '../repositories/adoption.repository';
+import { notificationService } from './notification.service';
 import { AdoptionApplicationWithDetails, AdoptionStatus, UpdateApplicationStatusInput } from '../types/adoption.types';
 import { rowToAdoptionApplication } from '../utils/adoptionMapper';
 
@@ -31,6 +32,15 @@ export const adoptionService = {
 
     await adoptionRepository.updateStatus(id, status, 1, rejectionReason ?? null);
 
+    // Notify the resident about the adoption status change
+    await notificationService.create({
+      recipient_id: application.resident_id,
+      type: 'adoption_status',
+      linked_type: 'adoption_application',
+      linked_id: id,
+      message_text: `Your adoption application for "${application.pet_name}" has been ${status === 'approved' ? 'approved' : status === 'rejected' ? 'reviewed' : 'updated'}.`,
+    });
+
     // Business rule: when one application is approved, set all other
     // pending_review applications for the same pet to pet_unavailable
     if (status === 'approved') {
@@ -43,6 +53,13 @@ export const adoptionService = {
             1,
             'Another application was approved for this pet.'
           );
+          await notificationService.create({
+            recipient_id: pending.resident_id,
+            type: 'adoption_status',
+            linked_type: 'adoption_application',
+            linked_id: pending.application_id,
+            message_text: `Your adoption application for "${pending.pet_name}" is no longer available — another application was approved.`,
+          });
         }
       }
 

@@ -1,5 +1,6 @@
 import { AppError } from '../errors/AppError';
 import { notificationRepository } from '../repositories/notification.repository';
+import { notificationPreferenceRepository } from '../repositories/notificationPreference.repository';
 import {
   CreateNotificationInput,
   Notification,
@@ -57,8 +58,16 @@ export const notificationService = {
     return notificationRepository.countUnread();
   },
 
-  async create(input: CreateNotificationInput): Promise<Notification> {
+  async create(input: CreateNotificationInput): Promise<Notification | null> {
     validateCreateInput(input);
+
+    // Check the recipient's preference — skip if in-app is disabled for this type
+    const prefs = await notificationPreferenceRepository.findByUserId(input.recipient_id);
+    const pref = prefs.find((p) => p.notification_type === input.type);
+    if (pref && !pref.in_app_enabled) {
+      return null;
+    }
+
     const id = await notificationRepository.create(input);
     const row = await notificationRepository.findById(id);
     if (!row) {

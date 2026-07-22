@@ -38,16 +38,8 @@
 .summaryGrid {
   display: grid;
   gap: 1.25rem;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   margin-bottom: 2.5rem;
-}
-
-@media (min-width: 640px) {
-  .summaryGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-
-@media (min-width: 1024px) {
-  .summaryGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
 .summaryCard {

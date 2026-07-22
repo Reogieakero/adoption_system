@@ -14,7 +14,8 @@ interface SelectProps {
   onChange: (value: string) => void
   placeholder?: string
   width?: number
-  showLeftIcon?: boolean
+  className?: string
+  triggerStyle?: React.CSSProperties
 }
 
 export default function Select({
@@ -23,7 +24,8 @@ export default function Select({
   onChange,
   placeholder = 'Select...',
   width,
-  showLeftIcon = false,
+  className,
+  triggerStyle,
 }: SelectProps) {
   const [isOpen, setIsOpen] = React.useState(false)
   const containerRef = React.useRef<HTMLDivElement>(null)
@@ -47,9 +49,9 @@ export default function Select({
   return (
     <div className={styles.selectContainer} ref={containerRef}>
       <button
-        type="button"
-        className={`${styles.selectTrigger} ${isOpen ? styles.selectTriggerOpen : ''}`}
-        style={width ? { width } : undefined}
+          type="button"
+          className={`${styles.selectTrigger} ${isOpen ? styles.selectTriggerOpen : ''} ${className ?? ''}`}
+          style={{ ...(width ? { width } : {}), ...triggerStyle }}
         onClick={() => setIsOpen(!isOpen)}
       >
         <span>{selectedOption ? selectedOption.label : placeholder}</span>

@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { ChevronLeft, ChevronRight, FileText } from "lucide-react";
 import Button from '@/components/ui/button';
@@ -9,9 +7,13 @@ import styles from "../page.module.css";
 interface LogTableProps {
   logs: LogEntry[];
   onViewDetails: (log: LogEntry) => void;
+  page: number;
+  totalPages: number;
+  total: number;
+  onPageChange: (page: number) => void;
 }
 
-export default function LogTable({ logs, onViewDetails }: LogTableProps) {
+export default function LogTable({ logs, onViewDetails, page, totalPages, total, onPageChange }: LogTableProps) {
   if (logs.length === 0) {
     return (
       <div className={styles.emptyStateContainer}>
@@ -23,6 +25,9 @@ export default function LogTable({ logs, onViewDetails }: LogTableProps) {
       </div>
     );
   }
+
+  const from = (page - 1) * logs.length + 1;
+  const to = Math.min(page * logs.length, total);
 
   return (
     <div className={styles.tableResponsiveContainer}>
@@ -67,12 +72,12 @@ export default function LogTable({ logs, onViewDetails }: LogTableProps) {
       </table>
 
       <div className={styles.paginationContainer}>
-        <span className={styles.paginationText}>Showing 1-{logs.length} of {logs.length} entries</span>
+        <span className={styles.paginationText}>Showing {from}-{to} of {total} entries</span>
         <div className={styles.paginationButtonGroup}>
-          <Button variant="admin-secondary" disabled>
+          <Button variant="admin-secondary" disabled={page <= 1} onClick={() => onPageChange(page - 1)}>
             <ChevronLeft size={14} /> Prev
           </Button>
-          <Button variant="admin-secondary" disabled>
+          <Button variant="admin-secondary" disabled={page >= totalPages} onClick={() => onPageChange(page + 1)}>
             Next <ChevronRight size={14} />
           </Button>
         </div>

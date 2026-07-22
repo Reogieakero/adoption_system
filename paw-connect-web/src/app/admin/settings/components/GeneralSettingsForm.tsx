@@ -1,68 +1,83 @@
 "use client";
 
 import React from "react";
-import { Building2, Mail, Phone, MapPin, UploadCloud } from "lucide-react";
+import { User, Mail, Phone, MapPin } from "lucide-react";
+import type { ProfileData } from '@/services/settings.api';
 import styles from "../page.module.css";
 
 interface GeneralSettingsFormProps {
-  orgName: string;
-  setOrgName: (v: string) => void;
-  contactEmail: string;
-  setContactEmail: (v: string) => void;
-  contactNumber: string;
-  setContactNumber: (v: string) => void;
-  officeAddress: string;
-  setOfficeAddress: (v: string) => void;
+  profile: ProfileData;
+  onChange: (p: ProfileData) => void;
 }
 
-export default function GeneralSettingsForm({
-  orgName, setOrgName, contactEmail, setContactEmail, contactNumber, setContactNumber, officeAddress, setOfficeAddress
-}: GeneralSettingsFormProps) {
+export default function GeneralSettingsForm({ profile, onChange }: GeneralSettingsFormProps) {
+  const set = (field: keyof ProfileData) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange({ ...profile, [field]: e.target.value });
+  };
+
   return (
     <div className={styles.cardShadcn}>
       <div className={styles.cardHeaderShadcn}>
         <div className={styles.cardHeaderFlex}>
-          <Building2 size={18} color="var(--text-secondary)" />
-          <h2>General Settings</h2>
+          <User size={18} color="var(--text-secondary)" />
+          <h2>Admin Profile</h2>
         </div>
-        <p>Primary legal configuration pipelines for organizational identifiers.</p>
+        <p>Your account name and contact information.</p>
       </div>
       <div className={styles.cardContentShadcn}>
         <div className={styles.formGroup}>
-          <label>Organization Name</label>
-          <input type="text" value={orgName} onChange={(e) => setOrgName(e.target.value)} className={styles.formInputShadcn} placeholder="Global Organization ID" />
+          <label>Full Name</label>
+          <div className={styles.inputIconWrapper}>
+            <User size={14} className={styles.innerIcon} />
+            <input
+              type="text"
+              value={profile.full_name}
+              onChange={set('full_name')}
+              className={styles.formInputWithIcon}
+            />
+          </div>
         </div>
 
         <div className={styles.formGroup}>
-          <label>Organization Logo</label>
-          <div className={styles.uploadBox}>
-            <UploadCloud size={20} color="var(--text-muted)" />
-            <span>Click to upload digital stamp assets (SVG, PNG max 2MB)</span>
+          <label>Email</label>
+          <div className={styles.inputIconWrapper}>
+            <Mail size={14} className={styles.innerIcon} />
+            <input
+              type="email"
+              value={profile.email}
+              disabled
+              className={styles.formInputWithIcon}
+            />
           </div>
         </div>
 
         <div className={styles.formGrid2}>
           <div className={styles.formGroup}>
-            <label>Contact Email</label>
-            <div className={styles.inputIconWrapper}>
-              <Mail size={14} className={styles.innerIcon} />
-              <input type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} className={styles.formInputWithIcon} />
-            </div>
-          </div>
-          <div className={styles.formGroup}>
-            <label>Contact Number</label>
+            <label>Phone Number</label>
             <div className={styles.inputIconWrapper}>
               <Phone size={14} className={styles.innerIcon} />
-              <input type="text" value={contactNumber} onChange={(e) => setContactNumber(e.target.value)} className={styles.formInputWithIcon} />
+              <input
+                type="text"
+                value={profile.phone_number || ''}
+                onChange={set('phone_number')}
+                className={styles.formInputWithIcon}
+                placeholder="+1 (555) 000-0000"
+              />
             </div>
           </div>
         </div>
 
         <div className={styles.formGroup}>
-          <label>Office Address</label>
+          <label>Address</label>
           <div className={styles.inputIconWrapper}>
             <MapPin size={14} className={styles.innerIcon} />
-            <input type="text" value={officeAddress} onChange={(e) => setOfficeAddress(e.target.value)} className={styles.formInputWithIcon} />
+            <input
+              type="text"
+              value={profile.address || ''}
+              onChange={set('address')}
+              className={styles.formInputWithIcon}
+              placeholder="Office address"
+            />
           </div>
         </div>
       </div>

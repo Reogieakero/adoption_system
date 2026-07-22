@@ -51,7 +51,6 @@ export default function FilterBar({
           onChange={onCategoryChange}
           options={categoryOptions}
           placeholder="All Categories"
-          showLeftIcon
         />
         <ShadcnSelect
           value={selectedDifficulty}

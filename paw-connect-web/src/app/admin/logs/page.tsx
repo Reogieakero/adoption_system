@@ -1,9 +1,8 @@
 ﻿"use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Download } from "lucide-react";
 import Button from '@/components/ui/button';
-import DatePicker from '@/components/ui/date-picker';
 import type { LogEntry } from '@/types';
 import { createServiceClient } from '@/lib/api-client';
 import styles from "./page.module.css";
@@ -12,41 +11,62 @@ import LogFilters from './components/LogFilters';
 import LogTable from './components/LogTable';
 import LogDetailDrawer from './components/LogDetailDrawer';
 
+interface LogsResponse {
+  success: boolean;
+  logs: LogEntry[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  summary: { total: number; today: number };
+}
+
 export default function ActivityLogsPage() {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [moduleFilter, setModuleFilter] = useState("All");
-  const [statusFilter, setStatusFilter] = useState("All");
-  const [auditDate, setAuditDate] = useState("2026-07-12");
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [summary, setSummary] = useState({ total: 0, today: 0 });
 
   const [selectedLog, setSelectedLog] = useState<LogEntry | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  useEffect(() => {
-    async function fetchLogs() {
-      try {
-        const { request } = createServiceClient('/api/admin/logs');
-        const res = await request<{ success: boolean; logs: LogEntry[] }>('');
-        setLogs(res.logs);
-      } catch (err) {
-        console.error('Failed to fetch logs:', err);
-      } finally {
-        setLoading(false);
-      }
+  const fetchLogs = useCallback(async () => {
+    try {
+      setLoading(true);
+      const { request } = createServiceClient('/api/admin/logs');
+      const params = new URLSearchParams();
+      params.set('page', String(page));
+      if (search) params.set('search', search);
+      if (moduleFilter !== 'All') params.set('module', moduleFilter);
+      const res = await request<LogsResponse>(`?${params.toString()}`);
+      setLogs(res.logs);
+      setTotal(res.total);
+      setTotalPages(res.totalPages);
+      setSummary(res.summary);
+    } catch (err) {
+      console.error('Failed to fetch logs:', err);
+    } finally {
+      setLoading(false);
     }
-    fetchLogs();
-  }, []);
+  }, [page, search, moduleFilter]);
 
-  const filteredLogs = logs.filter((log) => {
-    const matchesSearch =
-      log.user.toLowerCase().includes(search.toLowerCase()) ||
-      log.activity.toLowerCase().includes(search.toLowerCase()) ||
-      log.id.toLowerCase().includes(search.toLowerCase());
-    const matchesModule = moduleFilter === "All" || log.module === moduleFilter;
-    const matchesStatus = statusFilter === "All" || log.status === statusFilter;
-    return matchesSearch && matchesModule && matchesStatus;
-  });
+  useEffect(() => {
+    fetchLogs();
+  }, [fetchLogs]);
+
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    setPage(1);
+  };
+
+  const handleModuleFilterChange = (value: string) => {
+    setModuleFilter(value);
+    setPage(1);
+  };
 
   const handleOpenDrawer = (log: LogEntry) => {
     setSelectedLog(log);
@@ -66,28 +86,29 @@ export default function ActivityLogsPage() {
     <div className={styles.adminContainer}>
       <div className={styles.headerContainer}>
         <div className={styles.headerActions}>
-          <DatePicker value={auditDate} onChange={setAuditDate} />
           <Button variant="admin-secondary" onClick={() => alert("Exporting audit trails...")}>
             <Download size={14} /> Export Logs
           </Button>
         </div>
       </div>
 
-      <LogSummaryCards />
+      <LogSummaryCards total={summary.total} today={summary.today} />
 
       <div className={styles.cardShadcn}>
         <LogFilters
           search={search}
-          onSearchChange={setSearch}
+          onSearchChange={handleSearchChange}
           moduleFilter={moduleFilter}
-          onModuleFilterChange={setModuleFilter}
-          statusFilter={statusFilter}
-          onStatusFilterChange={setStatusFilter}
+          onModuleFilterChange={handleModuleFilterChange}
         />
 
         <LogTable
-          logs={filteredLogs}
+          logs={logs}
           onViewDetails={handleOpenDrawer}
+          page={page}
+          totalPages={totalPages}
+          total={total}
+          onPageChange={setPage}
         />
       </div>
 

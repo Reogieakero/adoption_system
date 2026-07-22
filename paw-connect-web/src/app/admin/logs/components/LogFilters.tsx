@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import SearchBar from '@/components/ui/search-bar';
 import ShadcnSelect from '@/components/ui/shadcn-select';
@@ -17,23 +15,15 @@ const moduleOptions = [
   { label: "Authentication", value: "Authentication" }
 ];
 
-const statusOptions = [
-  { label: "All Statuses", value: "All" },
-  { label: "Success", value: "Success" },
-  { label: "Failed", value: "Failed" }
-];
-
 interface LogFiltersProps {
   search: string;
   onSearchChange: (value: string) => void;
   moduleFilter: string;
   onModuleFilterChange: (value: string) => void;
-  statusFilter: string;
-  onStatusFilterChange: (value: string) => void;
 }
 
 export default function LogFilters({
-  search, onSearchChange, moduleFilter, onModuleFilterChange, statusFilter, onStatusFilterChange
+  search, onSearchChange, moduleFilter, onModuleFilterChange
 }: LogFiltersProps) {
   return (
     <div className={styles.tableToolbar}>
@@ -54,13 +44,6 @@ export default function LogFilters({
             options={moduleOptions}
           />
         </div>
-
-        <ShadcnSelect
-          value={statusFilter}
-          onChange={onStatusFilterChange}
-          placeholder="All Statuses"
-          options={statusOptions}
-        />
       </div>
     </div>
   );

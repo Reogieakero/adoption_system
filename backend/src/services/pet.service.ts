@@ -2,6 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import { AppError } from '../errors/AppError';
 import { petRepository } from '../repositories/pet.repository';
+import { notificationService } from './notification.service';
+import { userRepository } from '../repositories/user.repository';
 import { CreatePetInput, UpdatePetInput } from '../types/pet.types';
 import { rowToPet, PetRow } from '../utils/petMapper';
 
@@ -20,6 +22,21 @@ export const petService = {
 
   async createPet(input: CreatePetInput): Promise<PetRow> {
     const petId = await petRepository.create(input);
+
+    // Notify admins when a community listing is created
+    if (input.source_type === 'community') {
+      const adminIds = await userRepository.findAdminUserIds();
+      for (const adminId of adminIds) {
+        await notificationService.create({
+          recipient_id: adminId,
+          type: 'new_community_listing',
+          linked_type: 'pet',
+          linked_id: petId,
+          message_text: `A new community listing "${input.name}" has been posted.`,
+        });
+      }
+    }
+
     return this.getPetById(petId);
   },
 

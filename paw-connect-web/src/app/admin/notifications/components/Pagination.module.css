@@ -1,0 +1,14 @@
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.pageInfo {
+  font-family: var(--font-geist-mono), 'Geist Mono', monospace;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
