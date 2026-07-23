@@ -1,0 +1,9 @@
+.layoutWrapper {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.mainContent {
+  margin-top: 56px;
+  padding: 1.5rem;
+}

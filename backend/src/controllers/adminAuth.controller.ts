@@ -20,7 +20,7 @@ export const adminAuthController = {
     }
 
     try {
-      const result = await adminAuthService.login(email, password);
+      const result = await adminAuthService.login(email, password, req.ip);
       res.json({ success: true, ...result });
     } catch (err) {
       handleServiceError(err, res, next);

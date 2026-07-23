@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import { userRepository } from '../repositories/user.repository';
 import { notificationPreferenceRepository } from '../repositories/notificationPreference.repository';
 import { appSettingsRepository } from '../repositories/appSettings.repository';
+import { logService } from '../services/log.service';
 import { AppError } from '../errors/AppError';
 
 export const settingsController = {
@@ -43,6 +44,13 @@ export const settingsController = {
         full_name: full_name ?? user.full_name,
         phone_number: phone_number !== undefined ? phone_number : user.phone_number,
         address: address !== undefined ? address : user.address,
+      });
+
+      await logService.logAction({
+        userId,
+        action: 'Updated',
+        entityType: 'Settings',
+        description: 'Profile settings updated',
       });
 
       const updated = await userRepository.findById(userId);
@@ -89,6 +97,13 @@ export const settingsController = {
 
       const hash = await bcrypt.hash(new_password, 10);
       await userRepository.updatePassword(userId, hash);
+
+      await logService.logAction({
+        userId,
+        action: 'Updated',
+        entityType: 'Settings',
+        description: 'Password changed',
+      });
 
       res.json({ success: true, message: 'Password updated successfully' });
     } catch (err) {
@@ -141,6 +156,14 @@ export const settingsController = {
         sanitized[key] = String(value);
       }
       await appSettingsRepository.setMany(sanitized);
+
+      await logService.logAction({
+        userId: req.admin!.id,
+        action: 'Updated',
+        entityType: 'Settings',
+        description: `App settings updated: ${Object.keys(sanitized).join(', ')}`,
+      });
+
       const updated = await appSettingsRepository.getAll();
       res.json({ success: true, settings: updated });
     } catch (err) {
@@ -166,6 +189,13 @@ export const settingsController = {
           v.email ?? true
         );
       }
+
+      await logService.logAction({
+        userId,
+        action: 'Updated',
+        entityType: 'Settings',
+        description: 'Notification preferences updated',
+      });
 
       const updated = await notificationPreferenceRepository.findByUserId(userId);
       const map: Record<string, { in_app: boolean; email: boolean }> = {};

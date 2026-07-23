@@ -3,6 +3,7 @@ import path from 'path';
 import { AppError } from '../errors/AppError';
 import { petRepository } from '../repositories/pet.repository';
 import { notificationService } from './notification.service';
+import { logService } from './log.service';
 import { userRepository } from '../repositories/user.repository';
 import { CreatePetInput, UpdatePetInput } from '../types/pet.types';
 import { rowToPet, PetRow } from '../utils/petMapper';
@@ -22,6 +23,14 @@ export const petService = {
 
   async createPet(input: CreatePetInput): Promise<PetRow> {
     const petId = await petRepository.create(input);
+
+    await logService.logAction({
+      userId: input.created_by_user_id,
+      action: 'Created',
+      entityType: 'Animal',
+      entityId: petId,
+      description: `Pet "${input.name}" (${input.species}) created as ${input.source_type} listing`,
+    });
 
     // Notify admins when a community listing is created
     if (input.source_type === 'community') {
@@ -51,6 +60,14 @@ export const petService = {
       throw new AppError(400, 'No valid fields provided for update');
     }
 
+    await logService.logAction({
+      userId: input.updated_by_user_id ?? null,
+      action: 'Updated',
+      entityType: 'Animal',
+      entityId: id,
+      description: `Pet "${existing.name}" (${existing.species}) updated`,
+    });
+
     return this.getPetById(id);
   },
 
@@ -61,6 +78,14 @@ export const petService = {
     }
 
     await petRepository.softDelete(id, deletedByUserId);
+
+    await logService.logAction({
+      userId: deletedByUserId,
+      action: 'Deleted',
+      entityType: 'Animal',
+      entityId: id,
+      description: `Pet "${existing.name}" soft-deleted`,
+    });
   },
 
   async generate3DModel(id: number): Promise<PetRow> {

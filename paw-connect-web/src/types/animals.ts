@@ -25,8 +25,14 @@ export interface Pet {
   created_at: string;
   updated_at: string;
   primary_photo_url?: string | null;
-  photos?: { photo_id: number; file_url: string; is_primary: boolean }[];
+  photos?: { photo_id: number; file_url: string; is_primary: boolean | number }[];
   asset_3d?: { asset_id: number; asset_url: string; asset_type: string } | null;
+  health_record?: {
+    record_id: number;
+    pet_id: number;
+    medical_history: string | null;
+    vaccination_status: string | null;
+  } | null;
 }
 
 export type PetFormData = Omit<Pet, 'pet_id' | 'created_at' | 'updated_at' | 'deleted_at' | 'deleted_by_user_id' | 'updated_by_user_id' | 'created_by_user_id' | 'posted_by_user_id' | 'rejection_reason' | 'primary_photo_url' | 'photos' | 'asset_3d'>;

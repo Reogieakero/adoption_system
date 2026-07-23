@@ -28,7 +28,6 @@ export interface UserTableProps {
   activeRowMenuId: string | null;
   onToggleRowMenu: (id: string | null) => void;
   onView: (user: UserEntry) => void;
-  onEdit: (user: UserEntry) => void;
   onToggleStatus: (id: string) => void;
   onDelete: (id: string) => void;
   search: string;
@@ -44,7 +43,6 @@ export default function UserTable({
   activeRowMenuId,
   onToggleRowMenu,
   onView,
-  onEdit,
   onToggleStatus,
   onDelete,
   search,
@@ -127,7 +125,6 @@ export default function UserTable({
                       <RowActionsMenu
                         user={user}
                         onView={onView}
-                        onEdit={onEdit}
                         onToggleStatus={onToggleStatus}
                         onDelete={onDelete}
                       />

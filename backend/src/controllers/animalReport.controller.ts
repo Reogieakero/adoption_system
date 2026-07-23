@@ -25,7 +25,7 @@ export const animalReportController = {
   async updateStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { status, resolution_notes } = req.body as { status: ReportStatus; resolution_notes?: string | null };
-      const report = await animalReportService.updateStatus(Number(req.params.id), status, resolution_notes ?? null);
+      const report = await animalReportService.updateStatus(Number(req.params.id), status, req.admin?.id, resolution_notes ?? null);
       res.json({ success: true, report });
     } catch (err) {
       handleServiceError(err, res, next);

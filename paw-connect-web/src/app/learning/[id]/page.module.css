@@ -1,0 +1,79 @@
+.page {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.back {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 1rem;
+}
+
+.back:hover {
+  color: var(--text-primary);
+}
+
+.article {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem;
+}
+
+.description {
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.videoWrap {
+  aspect-ratio: 16 / 9;
+  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.content {
+  color: var(--text-primary);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+}
+
+.content p {
+  margin-bottom: 1rem;
+}
+
+.footer {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.completedBadge {
+  color: #16a34a;
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.muted {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}

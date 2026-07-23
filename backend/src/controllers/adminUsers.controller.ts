@@ -35,7 +35,7 @@ export async function updateStatus(req: Request, res: Response, next: NextFuncti
       return res.status(400).json({ success: false, message: 'Invalid status value' });
     }
 
-    const user = await setUserStatus(id, status);
+    const user = await setUserStatus(id, status, req.admin?.id);
     res.json({ success: true, user });
   } catch (err) {
     if (err instanceof UserServiceError) {
@@ -56,7 +56,7 @@ export async function deleteUser(req: Request, res: Response, next: NextFunction
       return res.status(400).json({ success: false, message: 'Invalid user id' });
     }
 
-    await removeUser(id);
+    await removeUser(id, req.admin?.id);
     res.json({ success: true });
   } catch (err) {
     if (err instanceof UserServiceError) {

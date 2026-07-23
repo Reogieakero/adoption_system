@@ -9,6 +9,7 @@ import { PublicUser } from '../types/user.types';
 import { signUserToken, signPendingGoogleToken, verifyPendingGoogleToken } from '../utils/jwt';
 import { sendVerificationEmail } from '../utils/mailer';
 import { generateVerificationCode, getExpiryDate } from '../utils/verificationCode';
+import { logService } from './log.service';
 import type { PendingGooglePayload } from '../utils/jwt';
 
 const SALT_ROUNDS = 10;
@@ -74,6 +75,14 @@ export const authService = {
 
     await userRepository.createVerificationCode(userId, code, 'registration', expires);
     await sendVerificationEmail(input.email, code);
+
+    await logService.logAction({
+      userId,
+      action: 'Registered',
+      entityType: 'User',
+      entityId: userId,
+      description: `New user registration: ${input.fullName} (${input.email})`,
+    });
 
     return {
       requiresVerification: true,
@@ -146,6 +155,14 @@ export const authService = {
     }
 
     const token = signUserToken(user.user_id, user.email);
+
+    await logService.logAction({
+      userId: user.user_id,
+      action: 'Logged In',
+      entityType: 'Authentication',
+      entityId: user.user_id,
+      description: `User login: ${user.email}`,
+    });
 
     return {
       token,

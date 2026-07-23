@@ -5,6 +5,7 @@ import {
   updateUserStatus,
 } from '../repositories/user.repository';
 import { toAdminUserSummary } from '../utils/userMapper';
+import { logService } from './log.service';
 import { AdminUserSummary, UserStatus } from '../types/user.types';
 
 export class UserServiceError extends Error {
@@ -24,7 +25,8 @@ export async function getAllUsers(): Promise<AdminUserSummary[]> {
 
 export async function setUserStatus(
   id: number,
-  status: UserStatus
+  status: UserStatus,
+  adminId?: number
 ): Promise<AdminUserSummary> {
   const existing = await findUserByIdForAdmin(id);
   if (!existing) {
@@ -32,14 +34,31 @@ export async function setUserStatus(
   }
 
   await updateUserStatus(id, status);
+
+  await logService.logAction({
+    userId: adminId ?? null,
+    action: 'Updated Status',
+    entityType: 'User',
+    entityId: id,
+    description: `User "${existing.full_name}" status changed to "${status}"`,
+  });
+
   const updated = await findUserByIdForAdmin(id);
   return toAdminUserSummary(updated!);
 }
 
-export async function removeUser(id: number): Promise<void> {
+export async function removeUser(id: number, adminId?: number): Promise<void> {
   const existing = await findUserByIdForAdmin(id);
   if (!existing) {
     throw new UserServiceError(404, 'User not found');
   }
   await deleteUserById(id);
+
+  await logService.logAction({
+    userId: adminId ?? null,
+    action: 'Deleted',
+    entityType: 'User',
+    entityId: id,
+    description: `User "${existing.full_name}" permanently deleted`,
+  });
 }

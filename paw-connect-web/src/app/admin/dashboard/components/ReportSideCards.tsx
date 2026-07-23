@@ -80,7 +80,11 @@ export default function ReportSideCards() {
                   </span>
                   <h3 className={styles.animalName}>{a.pet_name}</h3>
                 </div>
-                <img src={a.photo_url ?? ''} alt="" className={styles.avatarImage} />
+                {a.photo_url ? (
+                  <img src={a.photo_url} alt="" className={styles.avatarImage} />
+                ) : (
+                  <div className={styles.avatarPlaceholder}>{a.pet_name?.charAt(0) ?? '?'}</div>
+                )}
               </div>
               <p className={styles.animalDetails}>
                 <span><strong>Breed/Type:</strong> {a.breed_detail ?? a.pet_name}</span><br />

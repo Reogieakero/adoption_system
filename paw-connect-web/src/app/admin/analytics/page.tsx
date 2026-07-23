@@ -19,7 +19,7 @@ export default function AnalyticsDashboardPage() {
 
   return (
     <div className={styles.root}>
-      <Header onRefresh={refetch} refreshing={isLoading} />
+      <Header data={data ?? null} onRefresh={refetch} refreshing={isLoading} />
 
       <main
         className={styles.fadeIn}

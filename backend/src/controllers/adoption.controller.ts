@@ -25,7 +25,7 @@ export const adoptionController = {
   async updateStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { status, rejection_reason } = req.body as { status: AdoptionStatus; rejection_reason?: string | null };
-      const application = await adoptionService.updateStatus(Number(req.params.id), status, rejection_reason ?? null);
+      const application = await adoptionService.updateStatus(Number(req.params.id), status, req.admin!.id, rejection_reason ?? null);
       res.json({ success: true, application });
     } catch (err) {
       handleServiceError(err, res, next);

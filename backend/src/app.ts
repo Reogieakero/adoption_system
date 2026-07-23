@@ -17,6 +17,7 @@ import dashboardRoutes from './routes/dashboard.routes';
 import analyticsRoutes from './routes/analytics.routes';
 import settingsRoutes from './routes/settings.routes';
 import publicRoutes from './routes/public.routes';
+import residentRoutes from './routes/resident.routes';
 import { errorHandler, notFound } from './middleware/errorHandler';
 import path from 'path';
 
@@ -34,6 +35,7 @@ app.get('/api/health', (_req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/public', publicRoutes);
+app.use('/api/resident', residentRoutes);
 app.use('/api/admin', adminAuthRoutes);
 app.use('/api/admin/pets', petsRoutes);
 app.use('/api/admin/adoptions', adoptionsRoutes);

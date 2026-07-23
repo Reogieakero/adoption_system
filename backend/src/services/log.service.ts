@@ -1,6 +1,24 @@
 import { logRepository } from '../repositories/log.repository';
 
 export const logService = {
+  async logAction(params: {
+    userId?: number | null;
+    action: string;
+    entityType: string;
+    entityId?: number | null;
+    description?: string | null;
+    ipAddress?: string | null;
+  }): Promise<void> {
+    await logRepository.create({
+      userId: params.userId ?? null,
+      action: params.action,
+      entityType: params.entityType,
+      entityId: params.entityId ?? null,
+      description: params.description ?? null,
+      ipAddress: params.ipAddress ?? null,
+    });
+  },
+
   async listLogs(params: {
     page: number;
     limit: number;

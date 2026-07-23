@@ -22,12 +22,16 @@ export default function AnimalCard({ animal, onView }: AnimalCardProps) {
   return (
     <button type="button" className={styles.card} onClick={() => onView(animal)}>
       <div className={styles.imageWrap}>
-        <img
-          src={animal.primary_photo_url ?? ''}
-          alt={animal.name}
-          className={styles.image}
-          loading="lazy"
-        />
+        {animal.primary_photo_url ? (
+          <img
+            src={animal.primary_photo_url}
+            alt={animal.name}
+            className={styles.image}
+            loading="lazy"
+          />
+        ) : (
+          <div className={styles.image} />
+        )}
         {badge && <span className={styles.badge}>{badge}</span>}
       </div>
 

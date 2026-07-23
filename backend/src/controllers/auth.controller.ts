@@ -1,6 +1,21 @@
 import { Request, Response, NextFunction } from 'express';
 import { AppError } from '../errors/AppError';
 import { authService } from '../services/auth.service';
+import { userRepository } from '../repositories/user.repository';
+
+function toPublicUser(user: {
+  user_id: number;
+  full_name: string;
+  email: string;
+  auth_provider?: string | null;
+}) {
+  return {
+    id: user.user_id,
+    fullName: user.full_name,
+    email: user.email,
+    authProvider: user.auth_provider ?? ('local' as const),
+  };
+}
 
 function handleServiceError(err: unknown, res: Response, next: NextFunction): void {
   if (err instanceof AppError) {
@@ -15,6 +30,21 @@ function handleServiceError(err: unknown, res: Response, next: NextFunction): vo
 }
 
 export const authController = {
+  async getMe(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const userId = req.user!.id;
+      const user = await userRepository.findById(userId);
+      if (!user) {
+        res.status(404).json({ success: false, message: 'User not found' });
+        return;
+      }
+      res.json({ success: true, user: toPublicUser(user) });
+    } catch (err) {
+      handleServiceError(err, res, next);
+    }
+  },
+
+  // (keep existing methods below)
   async register(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { fullName, email, password } = req.body as {

@@ -51,7 +51,7 @@ export default function FeaturedAnimals() {
           <Link key={animal.pet_id} href={`/animals/${animal.pet_id}`} className={styles.card}>
             <div className={styles.imageWrap}>
               <img
-                src={animal.primary_photo_url ?? ''}
+                src={animal.primary_photo_url ?? undefined}
                 alt={animal.name}
                 className={styles.image}
                 loading="lazy"

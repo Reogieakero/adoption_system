@@ -1,10 +1,10 @@
 ﻿"use client";
 
-import { InputHTMLAttributes, forwardRef } from 'react';
+import { InputHTMLAttributes, forwardRef, type ReactNode } from 'react';
 import styles from './form-input.module.css';
 
 interface FormInputProps extends InputHTMLAttributes<HTMLInputElement> {
-  label: string;
+  label: string | ReactNode;
   id: string;
 }
 

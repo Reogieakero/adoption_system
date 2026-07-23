@@ -1,6 +1,7 @@
 import { AppError } from '../errors/AppError';
 import { animalReportRepository } from '../repositories/animalReport.repository';
 import { notificationService } from './notification.service';
+import { logService } from './log.service';
 import { userRepository } from '../repositories/user.repository';
 import { AnimalReport, CreateAnimalReportInput, ReportStatus, UpdateAnimalReportInput } from '../types/animalReport.types';
 import { rowToAnimalReport } from '../utils/animalReportMapper';
@@ -10,6 +11,11 @@ const VALID_STATUSES: ReportStatus[] = ['submitted', 'in_progress', 'dispatched'
 export const animalReportService = {
   async listReports(): Promise<AnimalReport[]> {
     const rows = await animalReportRepository.findAll();
+    return rows.map(rowToAnimalReport);
+  },
+
+  async getMyReports(residentId: number): Promise<AnimalReport[]> {
+    const rows = await animalReportRepository.findByResidentId(residentId);
     return rows.map(rowToAnimalReport);
   },
 
@@ -23,6 +29,14 @@ export const animalReportService = {
 
   async createReport(input: CreateAnimalReportInput): Promise<AnimalReport> {
     const reportId = await animalReportRepository.create(input);
+
+    await logService.logAction({
+      userId: null,
+      action: 'Created',
+      entityType: 'Reports',
+      entityId: reportId,
+      description: `New ${input.species} rescue report submitted by resident`,
+    });
 
     // Notify all admins about the new report
     const adminIds = await userRepository.findAdminUserIds();
@@ -39,7 +53,7 @@ export const animalReportService = {
     return this.getReportById(reportId);
   },
 
-  async updateStatus(id: number, status: ReportStatus, resolutionNotes?: string | null): Promise<AnimalReport> {
+  async updateStatus(id: number, status: ReportStatus, adminId?: number, resolutionNotes?: string | null): Promise<AnimalReport> {
     if (!VALID_STATUSES.includes(status)) {
       throw new AppError(400, `Invalid status "${status}"`);
     }
@@ -50,6 +64,13 @@ export const animalReportService = {
     }
 
     await animalReportRepository.updateStatus(id, status, resolutionNotes ?? null);
+    await logService.logAction({
+      userId: adminId ?? null,
+      action: 'Updated Status',
+      entityType: 'Reports',
+      entityId: id,
+      description: `Report #${id} status changed to "${status}"`,
+    });
 
     // Notify the resident about the report status change
     const report = await this.getReportById(id);

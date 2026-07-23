@@ -19,21 +19,6 @@
   gap: 10px;
 }
 
-.brandMark {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 8px;
-  background-color: var(--text-primary);
-  color: var(--background);
-  font-family: var(--font-geist-sans), ui-sans-serif, sans-serif;
-  font-size: 12.5px;
-  font-weight: 600;
-  flex-shrink: 0;
-}
-
 .brandLabel {
   font-family: var(--font-geist-sans), ui-sans-serif, sans-serif;
   font-size: 14px;
@@ -49,37 +34,74 @@
   margin: 0 2px;
 }
 
-.eyebrow {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  white-space: nowrap;
-}
-
 .actions {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.logoutBtn {
+.avatarWrapper {
+  position: relative;
+}
+
+.avatarBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background-color: var(--surface);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.avatarBtn:hover {
+  background-color: var(--hover);
+  border-color: var(--text-muted);
+  color: var(--text-primary);
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 180px;
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  padding: 4px;
+  z-index: 400;
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
   font-family: var(--font-geist-sans), ui-sans-serif, sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: var(--text-primary);
-  background: none;
-  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  text-decoration: none;
   border-radius: 6px;
-  padding: 6px 14px;
-  cursor: pointer;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
-  flex-shrink: 0;
+  transition: background-color 0.1s ease;
 }
 
-.logoutBtn:hover {
-  background-color: var(--navy-06);
-  border-color: var(--text-muted);
+.dropdownItem:hover {
+  background-color: var(--hover);
+  color: var(--text-primary);
+}
+
+.dropdownDivider {
+  height: 1px;
+  background-color: var(--border);
+  margin: 4px 0;
+}
+
+.logoutBtn {
+  width: 100%;
 }

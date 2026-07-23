@@ -1,40 +1,39 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { API_BASE_URL } from '@/lib/config';
+import { residentFetch } from '@/lib/resident-api';
 import PersonalizedHeader from '@/components/home/auth/PersonalizedHeader';
-import QuickActionsStrip from '@/components/home/auth/QuickActionsStrip';
 import CategoryPillRail from '@/components/home/auth/CategoryPillRail';
 import BentoHeroSection from '@/components/home/auth/BentoHeroSection';
+import StatsCards from '@/components/home/auth/StatsCards';
 import PickedForYouSection from '@/components/home/auth/PickedForYouSection';
-import SuccessStories from '@/components/home/auth/SuccessStories';
 import RecentRescues from '@/components/home/auth/RecentRescues';
-import CommunityImpactBar from '@/components/home/auth/CommunityImpactBar';
+import SuccessStories from '@/components/home/auth/SuccessStories';
 import styles from './home.module.css';
 
+interface UserProfile {
+  id: number;
+  fullName: string;
+  email: string;
+}
+
 export default function HomePage() {
-  const router = useRouter();
-  const [authed, setAuthed] = useState(false);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
-    const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
-    if (!token) {
-      router.replace('/login');
-      return;
-    }
-    setAuthed(true);
-  }, [router]);
-
-  if (!authed) return null;
+    residentFetch<{ user: UserProfile }>('/api/auth/me')
+      .then((data) => setProfile(data.user))
+      .catch(() => {});
+  }, []);
 
   return (
     <main className={styles.page}>
       <div className={styles.container}>
-        <PersonalizedHeader name="Alex" />
-        <QuickActionsStrip />
+        <PersonalizedHeader name={profile?.fullName} />
         <CategoryPillRail />
         <BentoHeroSection />
-        <CommunityImpactBar />
+        <StatsCards />
         <PickedForYouSection />
         <RecentRescues />
         <SuccessStories />

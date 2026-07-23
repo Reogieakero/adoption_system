@@ -1,12 +1,11 @@
 ﻿import React from "react";
-import { FileEdit, ShieldAlert, Trash2 } from "lucide-react";
+import { ShieldAlert, Trash2 } from "lucide-react";
 import styles from "./RowActionsMenu.module.css";
 import type { UserEntry } from "../types";
 
 export interface RowActionsMenuProps {
   user: UserEntry;
   onView: (user: UserEntry) => void;
-  onEdit: (user: UserEntry) => void;
   onToggleStatus: (id: string) => void;
   onDelete: (id: string) => void;
 }
@@ -14,7 +13,6 @@ export interface RowActionsMenuProps {
 export default function RowActionsMenu({
   user,
   onView,
-  onEdit,
   onToggleStatus,
   onDelete,
 }: RowActionsMenuProps) {
@@ -24,9 +22,6 @@ export default function RowActionsMenu({
     <div className={styles.dropdownMenuShadcn}>
       <button type="button" className={styles.dropdownItem} onClick={() => onView(user)}>
         View Profile
-      </button>
-      <button type="button" className={styles.dropdownItem} onClick={() => onEdit(user)}>
-        <FileEdit size={13} /> Edit Account
       </button>
       <button
         type="button"

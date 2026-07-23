@@ -20,7 +20,7 @@ export default function PickedForYouSection() {
       .then((res) => res.json())
       .then((data) => {
         if (!cancelled && data.success) {
-          setAnimals(data.pets.filter((a: Pet) => a.status === 'available'));
+          setAnimals(data.pets.filter((a: Pet) => a.status === 'available').slice(0, 5));
         }
       })
       .catch(() => {

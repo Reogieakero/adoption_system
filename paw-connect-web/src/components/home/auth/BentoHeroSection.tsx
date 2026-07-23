@@ -1,44 +1,58 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { PawPrint, Home, Heart } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 import Button from '@/components/ui/button';
+import { publicFetch } from '@/lib/resident-api';
 import styles from './BentoHeroSection.module.css';
 
+const HERO_IMAGE = 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=1200&q=80';
+
+interface LatestModule {
+  module_id: number;
+  title: string;
+  description: string | null;
+  category_name: string;
+}
+
 export default function BentoHeroSection() {
+  const [mod, setMod] = useState<LatestModule | null>(null);
+
+  useEffect(() => {
+    publicFetch<{ module: LatestModule | null }>('/api/public/content/latest-module')
+      .then((data) => setMod(data.module))
+      .catch(() => {});
+  }, []);
+
   return (
     <section className={styles.bento}>
-      {/* Large feature tile — Adopt */}
-      <div className={styles.featureLarge}>
-        <div className={styles.featureIconWrap}>
-          <PawPrint size={24} />
+      <div className={styles.heroCard}>
+        <div className={styles.heroBg} style={{ backgroundImage: `url(${HERO_IMAGE})` }} />
+        <div className={styles.heroOverlay} />
+        <div className={styles.heroContent}>
+          <h2 className={styles.heroTitle}>Adopt a pet</h2>
+          <p className={styles.heroDesc}>
+            Every pet deserves a loving home. Browse animals near you ready to meet their forever family.
+          </p>
+          <Link href="/animals">
+            <Button variant="admin-primary">Browse pets</Button>
+          </Link>
         </div>
-        <h2 className={styles.featureTitle}>Adopt a pet</h2>
-        <p className={styles.featureDesc}>
-          Every pet deserves a loving home. Browse animals near you ready to meet their forever family.
-        </p>
-        <Link href="/animals">
-          <Button variant="admin-primary">Browse pets</Button>
-        </Link>
       </div>
 
-      {/* Stacked side tiles */}
-      <div className={styles.sideStack}>
-        <div className={styles.sideTileFoster}>
-          <Home size={22} />
-          <div>
-            <span className={styles.sideLabel}>Foster</span>
-            <p className={styles.sideDesc}>Short-term care saves lives</p>
+      {mod && (
+        <Link href={`/learning/${mod.module_id}`} className={styles.learningCard}>
+          <div className={styles.learningIcon}>
+            <BookOpen size={20} />
           </div>
-        </div>
-        <div className={styles.sideTileDonate}>
-          <Heart size={22} />
-          <div>
-            <span className={styles.sideLabel}>Donate</span>
-            <p className={styles.sideDesc}>Support shelters and rescues</p>
+          <div className={styles.learningBody}>
+            <span className={styles.learningEyebrow}>Latest guide</span>
+            <h3 className={styles.learningTitle}>{mod.title}</h3>
+            {mod.description && <p className={styles.learningDesc}>{mod.description}</p>}
           </div>
-        </div>
-      </div>
+        </Link>
+      )}
     </section>
   );
 }

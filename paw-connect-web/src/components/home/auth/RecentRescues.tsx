@@ -1,16 +1,26 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { AlertCircle, MapPin, Clock } from 'lucide-react';
+import { MapPin, Clock, Dog, Cat } from 'lucide-react';
 import { API_BASE_URL } from '@/lib/config';
 import type { AnimalReport } from '@/types';
 import styles from './RecentRescues.module.css';
 
+const TABS = [
+  { label: 'All', value: '' },
+  { label: 'Submitted', value: 'submitted' },
+  { label: 'In Progress', value: 'in_progress' },
+  { label: 'Dispatched', value: 'dispatched' },
+  { label: 'Resolved', value: 'resolved' },
+];
+
 export default function RecentRescues() {
-  const [cases, setCases] = useState<AnimalReport[]>([]);
+  const [allCases, setAllCases] = useState<AnimalReport[]>([]);
+  const [activeTab, setActiveTab] = useState('');
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const failedImages = useRef(new Set<string>());
 
   useEffect(() => {
     let cancelled = false;
@@ -18,60 +28,107 @@ export default function RecentRescues() {
       .then((res) => res.json())
       .then((data) => {
         if (!cancelled && data.success) {
-          setCases(data.reports);
+          setAllCases(data.reports);
         }
       })
-      .catch(() => {
-        if (!cancelled) setError(true);
-      })
+      .catch(() => {})
       .finally(() => {
         if (!cancelled) setLoading(false);
       });
     return () => { cancelled = true; };
   }, []);
 
+  const filtered = activeTab ? allCases.filter((rc) => rc.status === activeTab) : allCases;
+  const duplicated = [...filtered, ...filtered];
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track || filtered.length === 0) return;
+
+    let animationId: number;
+    let pos = 0;
+    const speed = 0.5;
+
+    function step() {
+      pos -= speed;
+      const half = track!.scrollWidth / 2;
+      if (Math.abs(pos) >= half) {
+        pos = 0;
+      }
+      track!.scrollLeft = Math.abs(pos);
+      animationId = requestAnimationFrame(step);
+    }
+
+    animationId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(animationId);
+  }, [filtered.length]);
+
   if (loading) {
-    return <section className={styles.section}><div className={styles.header}><h2 className={styles.title}>Rescues needing attention</h2></div></section>;
+    return (
+      <section className={styles.section}>
+        <div className={styles.header}><h2 className={styles.title}>Rescue Transactions</h2></div>
+      </section>
+    );
   }
 
-  if (error || cases.length === 0) {
-    return null;
-  }
+  if (allCases.length === 0) return null;
 
   return (
     <section className={styles.section}>
       <div className={styles.header}>
-        <h2 className={styles.title}>Rescues needing attention</h2>
-        <Link href="/admin/rescues" className={styles.viewAll}>
-          View all
-        </Link>
+        <h2 className={styles.title}>Rescue Transactions</h2>
+        <Link href="/rescues/report" className={styles.viewAll}>Report a rescue</Link>
       </div>
 
-      <div className={styles.feed}>
-        {cases.map((rc) => (
-          <Link key={rc.report_id} href={`/admin/rescues/${rc.report_id}`} className={styles.card}>
-            <div className={styles.imageWrap}>
-              <img src={rc.photo_url} alt={rc.species} className={styles.image} loading="lazy" />
-              <span className={`${styles.priority} ${styles.critical}`}>
-                {rc.status}
-              </span>
-            </div>
-            <div className={styles.body}>
-              <h3 className={styles.animalType}>{rc.species}</h3>
-              <p className={styles.condition}>{rc.condition_description}</p>
-              <div className={styles.metaRow}>
-                <span className={styles.metaItem}>
-                  <MapPin size={12} />
-                  {rc.location_area}
-                </span>
-                <span className={styles.metaItem}>
-                  <Clock size={12} />
-                  {rc.submitted_at}
-                </span>
-              </div>
-            </div>
-          </Link>
+      <div className={styles.tabs}>
+        {TABS.map((tab) => (
+          <button
+            key={tab.value}
+            type="button"
+            className={`${styles.tab} ${activeTab === tab.value ? styles.tabActive : ''}`}
+            onClick={() => setActiveTab(tab.value)}
+          >
+            {tab.label}
+          </button>
         ))}
+      </div>
+
+      <div className={styles.track} ref={trackRef}>
+        {duplicated.map((rc, i) => {
+          const key = `${rc.report_id}-${i}`;
+          const showIcon = !rc.photo_url || failedImages.current.has(key);
+
+          return (
+            <Link key={key} href="/rescues/report" className={styles.card}>
+              <span className={`${styles.badge} ${styles[rc.status] || ''}`}>{rc.status.replace('_', ' ')}</span>
+              <div className={styles.imageWrap}>
+                {showIcon ? (
+                  <div className={styles.noImageLabel}>
+                    {rc.species === 'cat' ? <Cat size={24} /> : <Dog size={24} />}
+                  </div>
+                ) : (
+                  <img
+                    src={`${API_BASE_URL}${rc.photo_url.split(',')[0]}`}
+                    alt={rc.species}
+                    className={styles.image}
+                    loading="lazy"
+                    onError={() => { failedImages.current.add(key);; }}
+                  />
+                )}
+              </div>
+              <div className={styles.body}>
+                <h3 className={styles.animalType}>{rc.species}</h3>
+                <p className={styles.condition}>{rc.condition_description}</p>
+                <div className={styles.metaRow}>
+                  {rc.location_area && (
+                    <span className={styles.metaItem}><MapPin size={11} />{rc.location_area}</span>
+                  )}
+                  <span className={styles.metaItem}><Clock size={11} />{rc.submitted_at}</span>
+                </div>
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </section>
   );

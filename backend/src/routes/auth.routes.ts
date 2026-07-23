@@ -1,9 +1,11 @@
 import { Router } from 'express';
 import { authController } from '../controllers/auth.controller';
 import { validateRegister, handleValidationErrors } from '../middleware/validateRegister';
+import { authenticateUser } from '../middleware/authenticateUser';
 
 const router = Router();
 
+router.get('/me', authenticateUser, authController.getMe);
 router.post(
   '/register',
   validateRegister,

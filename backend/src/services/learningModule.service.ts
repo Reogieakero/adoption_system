@@ -1,5 +1,6 @@
 import { AppError } from '../errors/AppError';
 import { learningModuleRepository } from '../repositories/learningModule.repository';
+import { logService } from './log.service';
 import {
   ElearningCategory, ElearningModule, ModuleProgress,
   CreateElearningModuleInput, UpdateElearningModuleInput, CreateCategoryInput,
@@ -27,6 +28,14 @@ export const learningModuleService = {
 
   async createCategory(input: CreateCategoryInput): Promise<ElearningCategory> {
     const id = await learningModuleRepository.createCategory(input);
+
+    await logService.logAction({
+      action: 'Created',
+      entityType: 'E-Learning',
+      entityId: id,
+      description: `E-learning category "${input.name}" created`,
+    });
+
     return this.getCategoryById(id);
   },
 
@@ -55,6 +64,15 @@ export const learningModuleService = {
     }
 
     const id = await learningModuleRepository.createModule(input);
+
+    await logService.logAction({
+      userId: input.created_by_admin_id,
+      action: 'Created',
+      entityType: 'E-Learning',
+      entityId: id,
+      description: `E-learning module "${input.title}" created`,
+    });
+
     return this.getModuleById(id);
   },
 
@@ -69,6 +87,14 @@ export const learningModuleService = {
     }
 
     await learningModuleRepository.updateModule(id, input);
+
+    await logService.logAction({
+      action: 'Updated',
+      entityType: 'E-Learning',
+      entityId: id,
+      description: `E-learning module "${existing.title}" updated`,
+    });
+
     return this.getModuleById(id);
   },
 
@@ -79,6 +105,13 @@ export const learningModuleService = {
     }
 
     await learningModuleRepository.deleteModule(id);
+
+    await logService.logAction({
+      action: 'Deleted',
+      entityType: 'E-Learning',
+      entityId: id,
+      description: `E-learning module "${existing.title}" deleted`,
+    });
   },
 
   async duplicateModule(id: number): Promise<ElearningModule> {

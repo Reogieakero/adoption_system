@@ -85,11 +85,6 @@ export default function UserManagementPage() {
     setTimeout(() => setSelectedUser(null), 250);
   };
 
-  const handleEditUser = (user: AdminUserSummary) => {
-    setActiveRowMenuId(null);
-    alert(`Initiating edit pipeline for user metadata context: ${user.name}`);
-  };
-
   const handleAddUser = () => {
     alert("Deployment pipeline for creating new unified user accounts triggers modal form.");
   };
@@ -132,7 +127,6 @@ export default function UserManagementPage() {
         activeRowMenuId={activeRowMenuId}
         onToggleRowMenu={setActiveRowMenuId}
         onView={handleOpenSheet}
-        onEdit={handleEditUser}
         onToggleStatus={handleToggleStatus}
         onDelete={handleDeleteUser}
         search={search}

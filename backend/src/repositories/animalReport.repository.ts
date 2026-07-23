@@ -27,6 +27,14 @@ export const animalReportRepository = {
     return rows.length > 0;
   },
 
+  async findByResidentId(residentId: number): Promise<ReportRow[]> {
+    const [rows] = await pool.query<ReportRow[]>(
+      'SELECT * FROM animal_reports WHERE resident_id = ? ORDER BY submitted_at DESC',
+      [residentId]
+    );
+    return rows;
+  },
+
   async create(input: CreateAnimalReportInput): Promise<number> {
     const [result] = await pool.query<ResultSetHeader>(
       `INSERT INTO animal_reports (resident_id, species, condition_description, photo_url, latitude, longitude, location_area, contact_preference, is_valid_for_heatmap)

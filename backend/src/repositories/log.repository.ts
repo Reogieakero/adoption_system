@@ -74,6 +74,21 @@ export const logRepository = {
     return { rows, total };
   },
 
+  async create(data: {
+    userId: number | null;
+    action: string;
+    entityType: string;
+    entityId: number | null;
+    description: string | null;
+    ipAddress: string | null;
+  }): Promise<void> {
+    await pool.query(
+      `INSERT INTO activity_logs (user_id, action, entity_type, entity_id, description, ip_address)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [data.userId, data.action, data.entityType, data.entityId, data.description, data.ipAddress]
+    );
+  },
+
   async getSummary(): Promise<{ total: number; today: number }> {
     const [totalRows] = await pool.query<CountRow[]>('SELECT COUNT(*) AS total FROM activity_logs');
     const [todayRows] = await pool.query<CountRow[]>(

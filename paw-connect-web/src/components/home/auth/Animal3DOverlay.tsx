@@ -60,7 +60,9 @@ export default function Animal3DOverlay({ animal, onClose }: Animal3DOverlayProp
             </div>
           ) : (
             <div className={styles.photoFallback}>
-              <img src={animal.primary_photo_url ?? ''} alt={animal.name} className={styles.photo} />
+              {animal.primary_photo_url && (
+                <img src={animal.primary_photo_url} alt={animal.name} className={styles.photo} />
+              )}
               <p className={styles.fallbackNote}>
                 3D view not available for this pet yet
               </p>

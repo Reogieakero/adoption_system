@@ -1,11 +1,27 @@
 ﻿"use client";
 
+import { useState, useRef, useEffect } from "react";
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { User, BarChart3, History, Settings as SettingsIcon, LogOut } from 'lucide-react';
 import ThemeToggle from '@/components/ui/theme-toggle';
+import Button from '@/components/ui/button';
 import styles from './admin-navbar.module.css';
 
 export default function AdminNavbar() {
   const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   function handleLogout() {
     sessionStorage.removeItem('adminAuthToken');
@@ -21,9 +37,39 @@ export default function AdminNavbar() {
 
       <div className={styles.actions}>
         <ThemeToggle />
-        <button type="button" className={styles.logoutBtn} onClick={handleLogout}>
-          Log out
-        </button>
+        <div className={styles.avatarWrapper} ref={ref}>
+          <button
+            type="button"
+            className={styles.avatarBtn}
+            onClick={() => setOpen(!open)}
+          >
+            <User size={18} />
+          </button>
+
+          {open && (
+            <div className={styles.dropdown}>
+              <Link href="/admin/analytics" className={styles.dropdownItem} onClick={() => setOpen(false)}>
+                <BarChart3 size={15} />
+                Analytics
+              </Link>
+              <Link href="/admin/logs" className={styles.dropdownItem} onClick={() => setOpen(false)}>
+                <History size={15} />
+                Logs
+              </Link>
+              <Link href="/admin/settings" className={styles.dropdownItem} onClick={() => setOpen(false)}>
+                <SettingsIcon size={15} />
+                Settings
+              </Link>
+              <div className={styles.dropdownDivider} />
+              <div className={styles.dropdownItem}>
+                <Button variant="admin-secondary" onClick={handleLogout} className={styles.logoutBtn}>
+                  <LogOut size={14} />
+                  Log out
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );

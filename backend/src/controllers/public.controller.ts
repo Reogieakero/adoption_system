@@ -17,12 +17,62 @@ export const publicController = {
     } catch (err) { next(err); }
   },
 
-  async recentReports(_req: Request, res: Response, next: NextFunction): Promise<void> {
+  async recentReports(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const status = req.query.status as string | undefined;
+      let query = 'SELECT * FROM animal_reports';
+      const params: unknown[] = [];
+
+      if (status) {
+        query += ' WHERE status = ?';
+        params.push(status);
+      }
+
+      query += ' ORDER BY submitted_at DESC LIMIT 20';
+
+      const [rows] = await pool.query<RowDataPacket[]>(query, params);
+      res.json({ success: true, reports: rows });
+    } catch (err) { next(err); }
+  },
+
+  async petDetail(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const [rows] = await pool.query<RowDataPacket[]>(
-        `SELECT * FROM animal_reports ORDER BY submitted_at DESC LIMIT 3`
+        `SELECT p.*, pp.file_url AS primary_photo_url
+         FROM pets p
+         LEFT JOIN pet_photos pp ON pp.pet_id = p.pet_id AND pp.is_primary = 1
+         WHERE p.pet_id = ? AND p.status = 'available'`,
+        [req.params.id]
       );
-      res.json({ success: true, reports: rows });
+      if (!rows[0]) {
+        res.status(404).json({ success: false, message: 'Pet not found' });
+        return;
+      }
+
+      const [photos] = await pool.query<RowDataPacket[]>(
+        'SELECT photo_id, file_url, is_primary FROM pet_photos WHERE pet_id = ? ORDER BY is_primary DESC, uploaded_at ASC',
+        [req.params.id]
+      );
+
+      const [healthRows] = await pool.query<RowDataPacket[]>(
+        'SELECT * FROM health_records WHERE pet_id = ? LIMIT 1',
+        [req.params.id]
+      );
+
+      const [assetRows] = await pool.query<RowDataPacket[]>(
+        'SELECT * FROM pet_3d_assets WHERE pet_id = ? LIMIT 1',
+        [req.params.id]
+      );
+
+      res.json({
+        success: true,
+        pet: {
+          ...rows[0],
+          photos,
+          health_record: healthRows[0] ?? null,
+          asset_3d: assetRows[0] ?? null,
+        },
+      });
     } catch (err) { next(err); }
   },
 
@@ -72,14 +122,34 @@ export const publicController = {
 
   async impactStats(_req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+      const [[{ adopted }]] = await pool.query<RowDataPacket[]>('SELECT COUNT(*) AS adopted FROM pets WHERE status = ?', ['adopted']);
+      const [[{ available }]] = await pool.query<RowDataPacket[]>('SELECT COUNT(*) AS available FROM pets WHERE status = ?', ['available']);
+      const [[{ resolved }]] = await pool.query<RowDataPacket[]>('SELECT COUNT(*) AS resolved FROM animal_reports WHERE status = ?', ['resolved']);
+      const [[{ applications }]] = await pool.query<RowDataPacket[]>('SELECT COUNT(*) AS applications FROM adoption_applications');
+
       res.json({
         success: true,
         stats: [
-          { label: 'Pets Adopted', value: 150, suffix: '+' },
-          { label: 'Rescues Completed', value: 320, suffix: '+' },
-          { label: 'Active Volunteers', value: 85, suffix: '' },
+          { label: 'Pets Adopted', value: adopted },
+          { label: 'Available Pets', value: available },
+          { label: 'Rescues Completed', value: resolved },
+          { label: 'Applications', value: applications },
         ],
       });
+    } catch (err) { next(err); }
+  },
+
+  async latestModule(_req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const [rows] = await pool.query<RowDataPacket[]>(
+        `SELECT m.*, c.name AS category_name
+         FROM elearning_modules m
+         JOIN elearning_categories c ON c.category_id = m.category_id
+         WHERE m.status = 'published'
+         ORDER BY m.created_at DESC
+         LIMIT 1`
+      );
+      res.json({ success: true, module: rows[0] ?? null });
     } catch (err) { next(err); }
   },
 };

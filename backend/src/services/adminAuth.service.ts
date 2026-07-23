@@ -5,6 +5,7 @@ import { env } from '../config/env';
 import { AppError } from '../errors/AppError';
 import { signAdminToken } from '../utils/jwt';
 import { findByEmail } from '../repositories/user.repository';
+import { logService } from './log.service';
 
 export interface AdminLoginResult {
   token: string;
@@ -12,7 +13,7 @@ export interface AdminLoginResult {
 }
 
 export const adminAuthService = {
-  async login(email: string, password: string): Promise<AdminLoginResult> {
+  async login(email: string, password: string, ipAddress?: string): Promise<AdminLoginResult> {
     if (!env.adminEmail || !env.adminPasswordHash) {
       throw new AppError(500, 'Admin credentials are not configured');
     }
@@ -47,6 +48,14 @@ export const adminAuthService = {
     const adminId = adminUser?.user_id ?? 0;
 
     const token = signAdminToken(adminId, env.adminEmail);
+
+    await logService.logAction({
+      userId: adminId,
+      action: 'Logged In',
+      entityType: 'Authentication',
+      description: `Admin login by ${env.adminEmail}`,
+      ipAddress,
+    });
 
     return {
       token,

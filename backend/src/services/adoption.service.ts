@@ -1,6 +1,9 @@
+import { RowDataPacket } from 'mysql2/promise';
+import pool from '../config/db';
 import { AppError } from '../errors/AppError';
 import { adoptionRepository } from '../repositories/adoption.repository';
 import { notificationService } from './notification.service';
+import { logService } from './log.service';
 import { AdoptionApplicationWithDetails, AdoptionStatus, UpdateApplicationStatusInput } from '../types/adoption.types';
 import { rowToAdoptionApplication } from '../utils/adoptionMapper';
 
@@ -12,6 +15,47 @@ export const adoptionService = {
     return rows.map(rowToAdoptionApplication);
   },
 
+  async getMyApplications(residentId: number): Promise<AdoptionApplicationWithDetails[]> {
+    const rows = await adoptionRepository.findByResidentId(residentId);
+    return rows.map(rowToAdoptionApplication);
+  },
+
+  async createApplication(input: { pet_id: number; resident_id: number; reason_for_adopting?: string | null; living_situation?: string | null; has_other_pets?: boolean | null; household_members_count?: number | null; additional_notes?: string | null }): Promise<AdoptionApplicationWithDetails> {
+    const pet = await pool.query<RowDataPacket[]>('SELECT pet_id, name, status FROM pets WHERE pet_id = ?', [input.pet_id]);
+    if (!pet[0][0]) {
+      throw new AppError(404, 'Pet not found');
+    }
+    if (pet[0][0].status !== 'available') {
+      throw new AppError(400, 'This pet is not available for adoption');
+    }
+
+    const existing = await adoptionRepository.findByResidentId(input.resident_id);
+    const alreadyApplied = existing.find((a) => a.pet_id === input.pet_id && a.status === 'pending_review');
+    if (alreadyApplied) {
+      throw new AppError(409, 'You already have a pending application for this pet');
+    }
+
+    const applicationId = await adoptionRepository.create(input);
+
+    await logService.logAction({
+      userId: input.resident_id,
+      action: 'Created',
+      entityType: 'Adoption',
+      entityId: applicationId,
+      description: `Adoption application submitted for pet #${input.pet_id}`,
+    });
+
+    await notificationService.create({
+      recipient_id: input.resident_id,
+      type: 'adoption_status',
+      linked_type: 'adoption_application',
+      linked_id: applicationId,
+      message_text: `Your adoption application for "${pet[0][0].name}" has been submitted and is pending review.`,
+    });
+
+    return this.getApplicationDetails(applicationId);
+  },
+
   async getApplicationDetails(id: number): Promise<AdoptionApplicationWithDetails> {
     const row = await adoptionRepository.findById(id);
     if (!row) {
@@ -20,7 +64,7 @@ export const adoptionService = {
     return rowToAdoptionApplication(row);
   },
 
-  async updateStatus(id: number, status: AdoptionStatus, rejectionReason?: string | null): Promise<AdoptionApplicationWithDetails> {
+  async updateStatus(id: number, status: AdoptionStatus, adminId: number, rejectionReason?: string | null): Promise<AdoptionApplicationWithDetails> {
     if (!VALID_STATUSES.includes(status)) {
       throw new AppError(400, `Invalid status "${status}"`);
     }
@@ -30,7 +74,14 @@ export const adoptionService = {
       throw new AppError(404, 'Adoption application not found');
     }
 
-    await adoptionRepository.updateStatus(id, status, 1, rejectionReason ?? null);
+    await adoptionRepository.updateStatus(id, status, adminId, rejectionReason ?? null);
+    await logService.logAction({
+      userId: adminId,
+      action: 'Updated Status',
+      entityType: 'Adoption',
+      entityId: id,
+      description: `Adoption application #${id} status changed to "${status}" for pet "${application.pet_name}"`,
+    });
 
     // Notify the resident about the adoption status change
     await notificationService.create({
