@@ -1,12 +1,16 @@
-import fs from 'fs';
-import path from 'path';
-import { initializeApp, cert, App } from 'firebase-admin/app';
+import { initializeApp, cert, getApps, App } from "firebase-admin/app";
 
-const serviceAccountPath = path.join(__dirname, '../../config/firebase-service-account.json');
-const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf8'));
+const firebaseConfig = {
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+  privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+};
 
-const firebaseApp: App = initializeApp({
-  credential: cert(serviceAccount),
-});
+const firebaseApp: App =
+  getApps().length > 0
+    ? getApps()[0]
+    : initializeApp({
+        credential: cert(firebaseConfig),
+      });
 
 export default firebaseApp;
