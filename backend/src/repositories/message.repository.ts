@@ -1,19 +1,23 @@
 import pool from '../config/db';
-import { RowDataPacket, ResultSetHeader } from 'mysql2/promise';
-import { MessageThreadRow, MessageWithSenderRow, rowToMessage } from '../utils/messageMapper';
+import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
+import { MessageThreadRow, MessageWithSenderRow, rowToMessage, ThreadDetailRow } from '../utils/messageMapper';
 import { ThreadLinkedType } from '../types/message.types';
-
-export async function findAllThreads(): Promise<MessageThreadRow[]> {
-  const [rows] = await pool.query<MessageThreadRow[]>(
-    `SELECT mt.* FROM message_threads mt ORDER BY mt.created_at DESC`
-  );
-  return rows;
-}
 
 export async function findThreadById(threadId: number): Promise<MessageThreadRow | null> {
   const [rows] = await pool.query<MessageThreadRow[]>(
     'SELECT * FROM message_threads WHERE thread_id = ?',
     [threadId]
+  );
+  return rows[0] ?? null;
+}
+
+export async function findThreadByLinkedEntity(
+  linkedType: ThreadLinkedType,
+  linkedId: number
+): Promise<MessageThreadRow | null> {
+  const [rows] = await pool.query<MessageThreadRow[]>(
+    'SELECT * FROM message_threads WHERE linked_type = ? AND linked_id = ?',
+    [linkedType, linkedId]
   );
   return rows[0] ?? null;
 }
@@ -30,12 +34,31 @@ export async function findMessagesByThreadId(threadId: number): Promise<ReturnTy
   return rows.map(rowToMessage);
 }
 
-export async function findThreadsWithDetails(): Promise<
-  (MessageThreadRow & { resident_name: string; last_message_at: string; unread_count: number })[]
-> {
-  const [rows] = await pool.query<
-    (MessageThreadRow & { resident_name: string; last_message_at: string; unread_count: number })[]
-  >(
+export async function findThreadsForResident(residentId: number): Promise<ThreadDetailRow[]> {
+  const [rows] = await pool.query<ThreadDetailRow[]>(
+    `SELECT mt.*, u.full_name AS resident_name,
+            COALESCE(lm.last_message_at, mt.created_at) AS last_message_at,
+            COALESCE(uc.unread_count, 0) AS unread_count
+     FROM message_threads mt
+     JOIN users u ON u.user_id = mt.resident_id
+     LEFT JOIN (
+       SELECT thread_id, MAX(sent_at) AS last_message_at
+       FROM messages GROUP BY thread_id
+     ) lm ON lm.thread_id = mt.thread_id
+     LEFT JOIN (
+       SELECT thread_id, COUNT(*) AS unread_count
+       FROM messages WHERE is_read = 0 AND sender_id != ?
+       GROUP BY thread_id
+     ) uc ON uc.thread_id = mt.thread_id
+     WHERE mt.resident_id = ?
+     ORDER BY last_message_at DESC`,
+    [residentId, residentId]
+  );
+  return rows;
+}
+
+export async function findAllThreadsForAdmin(): Promise<ThreadDetailRow[]> {
+  const [rows] = await pool.query<ThreadDetailRow[]>(
     `SELECT mt.*, u.full_name AS resident_name,
             COALESCE(lm.last_message_at, mt.created_at) AS last_message_at,
             COALESCE(uc.unread_count, 0) AS unread_count
@@ -80,33 +103,31 @@ export async function insertMessage(
   return result.insertId;
 }
 
-export async function markThreadMessagesRead(threadId: number, adminId: number): Promise<void> {
+export async function markThreadMessagesRead(threadId: number, userId: number): Promise<void> {
   await pool.query(
-    'UPDATE messages SET is_read = 1 WHERE thread_id = ? AND sender_id != ?',
-    [threadId, adminId]
+    'UPDATE messages SET is_read = 1 WHERE thread_id = ? AND sender_id != ? AND is_read = 0',
+    [threadId, userId]
   );
 }
 
-export async function findOrCreateThread(
-  linkedType: ThreadLinkedType,
-  linkedId: number,
-  residentId: number
-): Promise<number> {
-  const [rows] = await pool.query<MessageThreadRow[]>(
-    'SELECT thread_id FROM message_threads WHERE linked_type = ? AND linked_id = ?',
-    [linkedType, linkedId]
+export async function getUnreadCountForUser(userId: number): Promise<number> {
+  const [rows] = await pool.query<RowDataPacket[]>(
+    `SELECT COUNT(*) AS total FROM messages m
+     JOIN message_threads mt ON mt.thread_id = m.thread_id
+     WHERE m.is_read = 0 AND m.sender_id != ? AND mt.resident_id = ?`,
+    [userId, userId]
   );
-  if (rows[0]) return rows[0].thread_id;
-  return createThread(linkedType, linkedId, residentId);
+  return Number(rows[0].total);
 }
 
 export const messageRepository = {
-  findAllThreads,
   findThreadById,
+  findThreadByLinkedEntity,
   findMessagesByThreadId,
-  findThreadsWithDetails,
+  findThreadsForResident,
+  findAllThreadsForAdmin,
   createThread,
   insertMessage,
   markThreadMessagesRead,
-  findOrCreateThread,
+  getUnreadCountForUser,
 };

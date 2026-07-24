@@ -3,6 +3,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import ResidentNavbar from './resident-navbar';
+import ChatWithAdmin from './ChatWithAdmin';
 import styles from './resident-layout.module.css';
 
 interface ResidentLayoutProps {
@@ -28,6 +29,7 @@ export default function ResidentLayout({ children }: ResidentLayoutProps) {
     <div className={styles.layoutWrapper}>
       <ResidentNavbar />
       <main className={styles.mainContent}>{children}</main>
+      <ChatWithAdmin />
     </div>
   );
 }

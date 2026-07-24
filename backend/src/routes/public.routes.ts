@@ -10,5 +10,6 @@ router.get('/reports/recent', publicController.recentReports);
 router.get('/content/testimonials', publicController.testimonials);
 router.get('/content/stats', publicController.impactStats);
 router.get('/content/latest-module', publicController.latestModule);
+router.get('/admins', publicController.admins);
 
 export default router;

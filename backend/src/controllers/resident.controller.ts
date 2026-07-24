@@ -6,6 +6,7 @@ import { notificationService } from '../services/notification.service';
 import { handleServiceError } from '../middleware/authenticateAdmin';
 import { CreateAnimalReportInput } from '../types/animalReport.types';
 import { ProgressStatus } from '../types/learningModule.types';
+import { findAdminUsers } from '../repositories/user.repository';
 
 export const residentController = {
   // ── Adoption Applications ──────────────────────────────────────────
@@ -170,6 +171,13 @@ export const residentController = {
     try {
       const count = await notificationService.markAllAsRead();
       res.json({ success: true, count });
+    } catch (err) { handleServiceError(err, res, next); }
+  },
+
+  async listChatAdmins(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const admins = await findAdminUsers();
+      res.json({ success: true, data: admins });
     } catch (err) { handleServiceError(err, res, next); }
   },
 };

@@ -1,5 +1,5 @@
 import { RowDataPacket } from 'mysql2/promise';
-import { Message, MessageWithSender, MessageThread, ThreadWithMessages, ThreadLinkedType } from '../types/message.types';
+import { MessageWithSender, ThreadLinkedType } from '../types/message.types';
 
 export interface MessageThreadRow extends RowDataPacket {
   thread_id: number;
@@ -21,6 +21,12 @@ export interface MessageRow extends RowDataPacket {
 
 export interface MessageWithSenderRow extends MessageRow {
   sender_name: string;
+}
+
+export interface ThreadDetailRow extends MessageThreadRow {
+  resident_name: string;
+  last_message_at: Date;
+  unread_count: number;
 }
 
 export function rowToMessage(row: MessageWithSenderRow): MessageWithSender {

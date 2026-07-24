@@ -19,6 +19,13 @@ export async function findAdminUserIds(): Promise<number[]> {
   return rows.map((r) => Number(r.user_id));
 }
 
+export async function findAdminUsers(): Promise<{ user_id: number; full_name: string }[]> {
+  const [rows] = await pool.query<RowDataPacket[]>(
+    "SELECT user_id, full_name FROM users WHERE role = 'admin' AND user_id != 1 ORDER BY user_id DESC"
+  );
+  return rows.map((r) => ({ user_id: Number(r.user_id), full_name: r.full_name }));
+}
+
 export async function findUserByIdForAdmin(id: number): Promise<AdminUserRow | null> {
   const [rows] = await pool.query<AdminUserRow[]>(
     `${ADMIN_USER_LIST_QUERY.replace('ORDER BY u.created_at DESC', 'WHERE u.user_id = ?')}`,

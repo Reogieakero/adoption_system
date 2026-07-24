@@ -89,7 +89,11 @@ export function useRealtimeCounts(): Counts {
     });
 
     const socketUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-    const socket = io(socketUrl, { transports: ['websocket', 'polling'] });
+    const adminToken = typeof window !== 'undefined' ? sessionStorage.getItem('adminAuthToken') : null;
+    const socket = io(socketUrl, {
+      auth: { token: adminToken },
+      transports: ['websocket', 'polling'],
+    });
     socketRef.current = socket;
 
     socket.on('connect', () => {

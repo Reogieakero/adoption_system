@@ -139,6 +139,18 @@ export const publicController = {
     } catch (err) { next(err); }
   },
 
+  async admins(_req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const [rows] = await pool.query<RowDataPacket[]>(
+        "SELECT user_id, full_name FROM users WHERE role = 'admin' AND user_id != 1 ORDER BY user_id DESC"
+      );
+      res.json({
+        success: true,
+        data: rows.map((r) => ({ user_id: Number(r.user_id), full_name: r.full_name })),
+      });
+    } catch (err) { next(err); }
+  },
+
   async latestModule(_req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const [rows] = await pool.query<RowDataPacket[]>(

@@ -4,6 +4,7 @@ import React, { Component, ErrorInfo, ReactNode } from 'react';
 import AdminSidebar from '@/components/admin/admin-sidebar';
 import AdminNavbar from '@/components/admin/admin-navbar';
 import Button from '@/components/ui/button';
+import AdminChatWidget from '@/components/admin/AdminChatWidget';
 import styles from './AdminLayout.module.css';
 
 interface Props {
@@ -66,6 +67,7 @@ export default function AdminLayout({
           </SafeErrorBoundary>
         </main>
       </div>
+      <AdminChatWidget />
     </div>
   );
 }

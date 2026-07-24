@@ -1,0 +1,1 @@
+SELECT user_id, full_name, role FROM users WHERE user_id = 8 OR role = 'resident';

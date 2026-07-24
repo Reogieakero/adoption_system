@@ -22,7 +22,17 @@ export interface MessageWithSender extends Message {
   sender_name: string;
 }
 
-export interface ThreadWithMessages extends MessageThread {
-  messages: MessageWithSender[];
+export interface ThreadSummary {
+  thread_id: number;
+  linked_type: ThreadLinkedType;
+  linked_id: number;
+  resident_id: number;
   resident_name: string;
+  last_message_at: string;
+  unread_count: number;
+  created_at: string;
+}
+
+export interface SendMessagePayload {
+  message_text?: string;
 }
