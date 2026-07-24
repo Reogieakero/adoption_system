@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from "bcryptjs";
 import pool from '../config/db';
 
 const BARANGAYS = [

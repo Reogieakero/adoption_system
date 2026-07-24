@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from "bcryptjs";
 import pool from '../config/db';
 import { ResultSetHeader } from 'mysql2/promise';
 import { env } from '../config/env';

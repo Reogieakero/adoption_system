@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import bcrypt from 'bcrypt';
+import bcrypt from "bcryptjs";
 import { userRepository } from '../repositories/user.repository';
 import { notificationPreferenceRepository } from '../repositories/notificationPreference.repository';
 import { appSettingsRepository } from '../repositories/appSettings.repository';

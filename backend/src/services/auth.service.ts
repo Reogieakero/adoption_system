@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { getAuth } from 'firebase-admin/auth';
 import pool from '../config/db';
 import firebaseApp from '../config/firebaseAdmin';
