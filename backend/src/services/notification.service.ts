@@ -1,6 +1,7 @@
 import { AppError } from '../errors/AppError';
 import { notificationRepository } from '../repositories/notification.repository';
 import { notificationPreferenceRepository } from '../repositories/notificationPreference.repository';
+import { emitDataChanged } from '../socket';
 import {
   CreateNotificationInput,
   Notification,
@@ -77,6 +78,9 @@ export const notificationService = {
     if (!row) {
       throw new AppError(500, 'Failed to create notification');
     }
+
+    emitDataChanged();
+
     return rowToNotification(row);
   },
 

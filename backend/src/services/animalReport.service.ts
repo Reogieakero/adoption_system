@@ -3,6 +3,7 @@ import { animalReportRepository } from '../repositories/animalReport.repository'
 import { notificationService } from './notification.service';
 import { logService } from './log.service';
 import { userRepository } from '../repositories/user.repository';
+import { emitDataChanged } from '../socket';
 import { AnimalReport, CreateAnimalReportInput, ReportStatus, UpdateAnimalReportInput } from '../types/animalReport.types';
 import { rowToAnimalReport } from '../utils/animalReportMapper';
 
@@ -54,6 +55,7 @@ export const animalReportService = {
       });
     }
 
+    emitDataChanged();
     return this.getReportById(reportId);
   },
 
@@ -75,6 +77,8 @@ export const animalReportService = {
       entityId: id,
       description: `Report #${id} status changed to "${status}"`,
     });
+
+    emitDataChanged();
 
     // Notify the resident about the report status change
     const report = await this.getReportById(id);

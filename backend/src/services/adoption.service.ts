@@ -5,6 +5,7 @@ import { adoptionRepository } from '../repositories/adoption.repository';
 import { notificationService } from './notification.service';
 import { logService } from './log.service';
 import { userRepository } from '../repositories/user.repository';
+import { emitDataChanged } from '../socket';
 import { AdoptionApplicationWithDetails, AdoptionStatus, UpdateApplicationStatusInput } from '../types/adoption.types';
 import { rowToAdoptionApplication } from '../utils/adoptionMapper';
 
@@ -70,6 +71,7 @@ export const adoptionService = {
       });
     }
 
+    emitDataChanged();
     return this.getApplicationDetails(applicationId);
   },
 
@@ -121,6 +123,8 @@ export const adoptionService = {
         message_text: `Adoption application for "${application.pet_name}" has been ${statusLabel}.`,
       });
     }
+
+    emitDataChanged();
 
     // Business rule: when one application is approved, set all other
     // pending_review applications for the same pet to pet_unavailable

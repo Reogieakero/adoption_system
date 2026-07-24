@@ -1,6 +1,5 @@
 ﻿"use client";
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -12,12 +11,9 @@ import {
   HeartPulse,
   Map,
   GraduationCap,
-  Bell,
   type LucideIcon,
 } from 'lucide-react';
-import { fetchUnreadCount } from '@/services/notifications.api';
-import { fetchAdoptionPendingCount } from '@/services/adoptions.api';
-import { fetchReportPendingCount } from '@/services/rescues.api';
+import { useRealtimeCounts } from '@/hooks/admin/use-realtime-counts';
 import styles from './admin-sidebar.module.css';
 
 interface NavItem {
@@ -37,7 +33,6 @@ const NAV_SECTIONS: NavSection[] = [
   {
     title: 'Management',
     items: [
-      { label: 'Notifications', fullLabel: 'Notifications', href: '/admin/notifications', icon: Bell, countKey: 'notifications' },
       { label: 'Dashboard', fullLabel: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
       { label: 'Users', fullLabel: 'User Management', href: '/admin/user', icon: Users },
       { label: 'Animals', fullLabel: 'Animal Records', href: '/admin/animals', icon: PawPrint },
@@ -62,25 +57,7 @@ const NAV_SECTIONS: NavSection[] = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
-  const [counts, setCounts] = useState<Record<string, number>>({});
-
-  useEffect(() => {
-    async function fetchCounts() {
-      try {
-        const [notifCount, adoptionCount, rescueCount] = await Promise.all([
-          fetchUnreadCount(),
-          fetchAdoptionPendingCount(),
-          fetchReportPendingCount(),
-        ]);
-        setCounts({ notifications: notifCount, adoptions: adoptionCount, rescues: rescueCount });
-      } catch {
-        // ignore
-      }
-    }
-    fetchCounts();
-    const interval = setInterval(fetchCounts, 30000);
-    return () => clearInterval(interval);
-  }, []);
+  const counts = useRealtimeCounts();
 
   return (
     <aside className={styles.sidebar}>
@@ -104,7 +81,6 @@ export default function AdminSidebar() {
                       {count > 0 && <span className={styles.countBadge}>{count > 99 ? '99+' : count}</span>}
                     </span>
                     <span className={styles.navLabel}>{label}</span>
-                    {count > 0 && <span className={styles.countLabel}>{count > 99 ? '99+' : count}</span>}
                   </Link>
                 );
               })}
