@@ -6,3 +6,4 @@ dist/
 firebase-service-account.json
 *.log
 backend/uploads/
+node_modules
