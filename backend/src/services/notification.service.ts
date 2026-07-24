@@ -42,7 +42,9 @@ export const notificationService = {
 
     const [{ rows, total }, unreadCount] = await Promise.all([
       notificationRepository.findAll({ ...query, page, limit }),
-      notificationRepository.countUnread(),
+      query.recipient_id
+        ? notificationRepository.countUnread(query.recipient_id)
+        : notificationRepository.countUnread(),
     ]);
 
     return {
@@ -54,8 +56,10 @@ export const notificationService = {
     };
   },
 
-  async getUnreadCount(): Promise<number> {
-    return notificationRepository.countUnread();
+  async getUnreadCount(recipientId?: number): Promise<number> {
+    return recipientId
+      ? notificationRepository.countUnread(recipientId)
+      : notificationRepository.countUnread();
   },
 
   async create(input: CreateNotificationInput): Promise<Notification | null> {
@@ -86,8 +90,8 @@ export const notificationService = {
     return rowToNotification(updated!);
   },
 
-  async markAllAsRead(): Promise<number> {
-    return notificationRepository.markAllAsRead();
+  async markAllAsRead(recipientId?: number): Promise<number> {
+    return notificationRepository.markAllAsRead(recipientId);
   },
 
   async remove(id: number): Promise<void> {

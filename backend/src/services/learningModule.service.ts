@@ -45,6 +45,11 @@ export const learningModuleService = {
     return rows.map(rowToElearningModule);
   },
 
+  async listPublishedModulesWithProgress(residentId: number): Promise<ElearningModule[]> {
+    const rows = await learningModuleRepository.findPublishedModulesWithProgress(residentId);
+    return rows.map(rowToElearningModule);
+  },
+
   async getModulesByCategory(categoryId: number): Promise<ElearningModule[]> {
     const rows = await learningModuleRepository.findModulesByCategory(categoryId);
     return rows.map(rowToElearningModule);
@@ -131,6 +136,10 @@ export const learningModuleService = {
   },
 
   // ── Progress ────────────────────────────────────────────────────────
+  async getCompletedCounts(): Promise<{ module_id: number; completed_count: number }[]> {
+    return learningModuleRepository.findCompletedCounts();
+  },
+
   async getProgress(moduleId: number, residentId: number): Promise<ModuleProgress | null> {
     const row = await learningModuleRepository.findProgressByModuleAndResident(moduleId, residentId);
     return row ? rowToProgress(row) : null;

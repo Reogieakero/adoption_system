@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { ChevronLeft } from 'lucide-react';
 import Button from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { residentFetch } from '@/lib/resident-api';
 import type { ElearningModule, ModuleProgress } from '@/types';
 import styles from './page.module.css';
@@ -35,7 +37,17 @@ export default function ModuleDetailPage() {
         method: 'PATCH',
         body: JSON.stringify({ status: 'completed' }),
       });
-      setProgress((prev) => prev ? { ...prev, status: 'completed' } : null);
+      setProgress((prev) => {
+        if (prev) return { ...prev, status: 'completed' };
+        return {
+          progress_id: 0,
+          module_id: Number(id),
+          resident_id: 0,
+          status: 'completed',
+          started_at: new Date().toISOString(),
+          completed_at: new Date().toISOString(),
+        };
+      });
     } catch {
       // ignore
     } finally {
@@ -48,11 +60,17 @@ export default function ModuleDetailPage() {
 
   return (
     <div className={styles.page}>
-      <button type="button" className={styles.back} onClick={() => router.push('/learning')}>
-        &larr; Pet Care Guides
+      <button type="button" className={styles.back} onClick={() => router.back()}>
+        <ChevronLeft size={16} /> Back
       </button>
 
       <article className={styles.article}>
+        {progress?.status === 'completed' && (
+          <span className={styles.badgePosition}>
+            <Badge variant="success">Completed</Badge>
+          </span>
+        )}
+
         <h1 className={styles.title}>{mod.title}</h1>
 
         {mod.description && <p className={styles.description}>{mod.description}</p>}
@@ -65,15 +83,13 @@ export default function ModuleDetailPage() {
 
         <div className={styles.content} dangerouslySetInnerHTML={{ __html: mod.content_body }} />
 
-        <div className={styles.footer}>
-          {progress?.status === 'completed' ? (
-            <p className={styles.completedBadge}>&checkmark; Completed</p>
-          ) : (
+        {progress?.status !== 'completed' && (
+          <div className={styles.footer}>
             <Button variant="admin-primary" onClick={handleMarkComplete} disabled={updating}>
-              {updating ? 'Updating...' : 'Mark as Complete'}
+              {updating ? 'Completing...' : 'Mark as Complete'}
             </Button>
-          )}
-        </div>
+          </div>
+        )}
       </article>
     </div>
   );

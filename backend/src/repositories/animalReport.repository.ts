@@ -1,22 +1,46 @@
-import { ResultSetHeader } from 'mysql2/promise';
+import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 import pool from '../config/db';
 import { CreateAnimalReportInput, ReportStatus, UpdateAnimalReportInput } from '../types/animalReport.types';
 import { ReportRow } from '../utils/animalReportMapper';
 
 export const animalReportRepository = {
+  async countPending(): Promise<number> {
+    const [rows] = await pool.query<RowDataPacket[]>(
+      "SELECT COUNT(*) AS count FROM animal_reports WHERE status IN ('submitted', 'in_progress')"
+    );
+    return Number(rows[0].count);
+  },
+
   async findAll(): Promise<ReportRow[]> {
     const [rows] = await pool.query<ReportRow[]>(
-      'SELECT * FROM animal_reports ORDER BY submitted_at DESC'
+      `SELECT ar.*, u.full_name AS resident_name, u.email AS resident_email, u.phone_number AS resident_phone
+       FROM animal_reports ar
+       LEFT JOIN users u ON ar.resident_id = u.user_id
+       ORDER BY ar.submitted_at DESC`
     );
     return rows;
   },
 
   async findById(id: number): Promise<ReportRow | undefined> {
     const [rows] = await pool.query<ReportRow[]>(
-      'SELECT * FROM animal_reports WHERE report_id = ?',
+      `SELECT ar.*, u.full_name AS resident_name, u.email AS resident_email, u.phone_number AS resident_phone
+       FROM animal_reports ar
+       LEFT JOIN users u ON ar.resident_id = u.user_id
+       WHERE ar.report_id = ?`,
       [id]
     );
     return rows[0];
+  },
+
+  async findByResidentId(residentId: number): Promise<ReportRow[]> {
+    const [rows] = await pool.query<ReportRow[]>(
+      `SELECT ar.*, u.full_name AS resident_name, u.email AS resident_email, u.phone_number AS resident_phone
+       FROM animal_reports ar
+       LEFT JOIN users u ON ar.resident_id = u.user_id
+       WHERE ar.resident_id = ? ORDER BY ar.submitted_at DESC`,
+      [residentId]
+    );
+    return rows;
   },
 
   async exists(id: number): Promise<boolean> {
@@ -25,14 +49,6 @@ export const animalReportRepository = {
       [id]
     );
     return rows.length > 0;
-  },
-
-  async findByResidentId(residentId: number): Promise<ReportRow[]> {
-    const [rows] = await pool.query<ReportRow[]>(
-      'SELECT * FROM animal_reports WHERE resident_id = ? ORDER BY submitted_at DESC',
-      [residentId]
-    );
-    return rows;
   },
 
   async create(input: CreateAnimalReportInput): Promise<number> {

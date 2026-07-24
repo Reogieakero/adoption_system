@@ -39,6 +39,7 @@
 .secondaryCellText { font-size: 0.76rem; color: var(--text-muted); }
 .animalProfileCell { display: flex; align-items: center; gap: 0.6rem; }
 .animalAvatar { width: 30px; height: 30px; border-radius: 6px; object-fit: cover;   border: 1px solid var(--border); }
+.animalAvatarEmpty { width: 30px; height: 30px; border-radius: 6px; background: var(--surface-secondary); }
 .speciesTag { display: inline-flex; padding: 0.1rem 0.4rem; background: var(--hover); border: 1px solid var(--border); color: var(--text-primary); font-size: 0.72rem; border-radius: 4px; }
 
 .textRight {

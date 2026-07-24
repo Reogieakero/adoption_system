@@ -3,6 +3,7 @@ export interface HealthRecord {
   pet_id: number;
   medical_history: string | null;
   vaccination_status: string | null;
+  health_status: string | null;
   heart_rate_bpm: number | null;
   created_by_user_id: number;
   last_updated_by: number;
@@ -17,12 +18,14 @@ export interface HealthRecord {
 export interface CreateHealthRecordPayload {
   medical_history?: string | null;
   vaccination_status?: string | null;
+  health_status?: string | null;
   heart_rate_bpm?: number | null;
 }
 
 export interface UpdateHealthRecordPayload {
   medical_history?: string | null;
   vaccination_status?: string | null;
+  health_status?: string | null;
   heart_rate_bpm?: number | null;
   last_updated_by: number;
 }

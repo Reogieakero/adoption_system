@@ -20,7 +20,6 @@ export default function RecentRescues() {
   const [activeTab, setActiveTab] = useState('');
   const [loading, setLoading] = useState(true);
   const trackRef = useRef<HTMLDivElement>(null);
-  const failedImages = useRef(new Set<string>());
 
   useEffect(() => {
     let cancelled = false;
@@ -94,41 +93,35 @@ export default function RecentRescues() {
       </div>
 
       <div className={styles.track} ref={trackRef}>
-        {duplicated.map((rc, i) => {
-          const key = `${rc.report_id}-${i}`;
-          const showIcon = !rc.photo_url || failedImages.current.has(key);
-
-          return (
-            <Link key={key} href="/rescues/report" className={styles.card}>
-              <span className={`${styles.badge} ${styles[rc.status] || ''}`}>{rc.status.replace('_', ' ')}</span>
-              <div className={styles.imageWrap}>
-                {showIcon ? (
-                  <div className={styles.noImageLabel}>
-                    {rc.species === 'cat' ? <Cat size={24} /> : <Dog size={24} />}
-                  </div>
-                ) : (
-                  <img
-                    src={`${API_BASE_URL}${rc.photo_url.split(',')[0]}`}
-                    alt={rc.species}
-                    className={styles.image}
-                    loading="lazy"
-                    onError={() => { failedImages.current.add(key);; }}
-                  />
+        {duplicated.map((rc, i) => (
+          <Link key={`${rc.report_id}-${i}`} href="/rescues/report" className={styles.card}>
+            <span className={`${styles.badge} ${styles[rc.status] || ''}`}>{rc.status.replace('_', ' ')}</span>
+            <div className={styles.imageWrap}>
+              <div className={styles.noImageLabel}>
+                {rc.species === 'cat' ? <Cat size={24} /> : <Dog size={24} />}
+              </div>
+              {rc.photo_url && (
+                <img
+                  src={`${API_BASE_URL}${rc.photo_url.split(',')[0]}`}
+                  alt={rc.species}
+                  className={styles.image}
+                  loading="lazy"
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                />
+              )}
+            </div>
+            <div className={styles.body}>
+              <h3 className={styles.animalType}>{rc.species}</h3>
+              <p className={styles.condition}>{rc.condition_description}</p>
+              <div className={styles.metaRow}>
+                {rc.location_area && (
+                  <span className={styles.metaItem}><MapPin size={11} />{rc.location_area}</span>
                 )}
+                <span className={styles.metaItem}><Clock size={11} />{rc.submitted_at}</span>
               </div>
-              <div className={styles.body}>
-                <h3 className={styles.animalType}>{rc.species}</h3>
-                <p className={styles.condition}>{rc.condition_description}</p>
-                <div className={styles.metaRow}>
-                  {rc.location_area && (
-                    <span className={styles.metaItem}><MapPin size={11} />{rc.location_area}</span>
-                  )}
-                  <span className={styles.metaItem}><Clock size={11} />{rc.submitted_at}</span>
-                </div>
-              </div>
-            </Link>
-          );
-        })}
+            </div>
+          </Link>
+        ))}
       </div>
     </section>
   );

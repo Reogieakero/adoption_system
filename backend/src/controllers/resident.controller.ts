@@ -103,9 +103,8 @@ export const residentController = {
   // ── Learning Modules ──────────────────────────────────────────────
   async listPublishedModules(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const modules = await learningModuleService.listModules();
-      const published = modules.filter((m) => m.status === 'published');
-      res.json({ success: true, modules: published });
+      const modules = await learningModuleService.listPublishedModulesWithProgress(req.user!.id);
+      res.json({ success: true, modules });
     } catch (err) { handleServiceError(err, res, next); }
   },
 

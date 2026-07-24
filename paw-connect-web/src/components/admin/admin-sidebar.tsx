@@ -1,19 +1,23 @@
 ﻿"use client";
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
   Users,
-  Building2,
   PawPrint,
   ClipboardCheck,
   Siren,
   HeartPulse,
   Map,
   GraduationCap,
+  Bell,
   type LucideIcon,
 } from 'lucide-react';
+import { fetchUnreadCount } from '@/services/notifications.api';
+import { fetchAdoptionPendingCount } from '@/services/adoptions.api';
+import { fetchReportPendingCount } from '@/services/rescues.api';
 import styles from './admin-sidebar.module.css';
 
 interface NavItem {
@@ -21,6 +25,7 @@ interface NavItem {
   fullLabel: string;
   href: string;
   icon: LucideIcon;
+  countKey?: 'notifications' | 'adoptions' | 'rescues';
 }
 
 interface NavSection {
@@ -32,11 +37,12 @@ const NAV_SECTIONS: NavSection[] = [
   {
     title: 'Management',
     items: [
+      { label: 'Notifications', fullLabel: 'Notifications', href: '/admin/notifications', icon: Bell, countKey: 'notifications' },
       { label: 'Dashboard', fullLabel: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
       { label: 'Users', fullLabel: 'User Management', href: '/admin/user', icon: Users },
       { label: 'Animals', fullLabel: 'Animal Records', href: '/admin/animals', icon: PawPrint },
-      { label: 'Adoptions', fullLabel: 'Adoption Requests', href: '/admin/adoptions', icon: ClipboardCheck },
-      { label: 'Rescues', fullLabel: 'Rescue Reports', href: '/admin/rescues', icon: Siren },
+      { label: 'Adoptions', fullLabel: 'Adoption Requests', href: '/admin/adoptions', icon: ClipboardCheck, countKey: 'adoptions' },
+      { label: 'Rescues', fullLabel: 'Rescue Reports', href: '/admin/rescues', icon: Siren, countKey: 'rescues' },
     ],
   },
   {
@@ -56,6 +62,25 @@ const NAV_SECTIONS: NavSection[] = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const [counts, setCounts] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    async function fetchCounts() {
+      try {
+        const [notifCount, adoptionCount, rescueCount] = await Promise.all([
+          fetchUnreadCount(),
+          fetchAdoptionPendingCount(),
+          fetchReportPendingCount(),
+        ]);
+        setCounts({ notifications: notifCount, adoptions: adoptionCount, rescues: rescueCount });
+      } catch {
+        // ignore
+      }
+    }
+    fetchCounts();
+    const interval = setInterval(fetchCounts, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <aside className={styles.sidebar}>
@@ -64,8 +89,9 @@ export default function AdminSidebar() {
           {NAV_SECTIONS.map((section, i) => (
             <div key={section.title} className={styles.section}>
               {i > 0 && <hr className={styles.divider} />}
-              {section.items.map(({ label, fullLabel, href, icon: Icon }) => {
+              {section.items.map(({ label, fullLabel, href, icon: Icon, countKey }) => {
                 const isActive = pathname === href || pathname?.startsWith(`${href}/`);
+                const count = countKey ? counts[countKey] ?? 0 : 0;
                 return (
                   <Link
                     key={href}
@@ -73,8 +99,12 @@ export default function AdminSidebar() {
                     title={fullLabel}
                     className={`${styles.navItem} ${isActive ? styles.navItemActive : ''}`}
                   >
-                    <Icon size={18} strokeWidth={2} className={styles.navIcon} />
+                    <span className={styles.navIconWrap}>
+                      <Icon size={18} strokeWidth={2} className={styles.navIcon} />
+                      {count > 0 && <span className={styles.countBadge}>{count > 99 ? '99+' : count}</span>}
+                    </span>
                     <span className={styles.navLabel}>{label}</span>
+                    {count > 0 && <span className={styles.countLabel}>{count > 99 ? '99+' : count}</span>}
                   </Link>
                 );
               })}

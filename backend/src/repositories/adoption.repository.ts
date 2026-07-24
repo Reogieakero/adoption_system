@@ -71,6 +71,13 @@ export const adoptionRepository = {
     return rows;
   },
 
+  async countPending(): Promise<number> {
+    const [rows] = await pool.query<RowDataPacket[]>(
+      "SELECT COUNT(*) AS count FROM adoption_applications WHERE status = 'pending_review'"
+    );
+    return Number(rows[0].count);
+  },
+
   async create(input: { pet_id: number; resident_id: number; reason_for_adopting?: string | null; living_situation?: string | null; has_other_pets?: boolean | null; household_members_count?: number | null; additional_notes?: string | null }): Promise<number> {
     const [result] = await pool.query<ResultSetHeader>(
       `INSERT INTO adoption_applications (pet_id, resident_id, reason_for_adopting, living_situation, has_other_pets, household_members_count, additional_notes)
@@ -133,5 +140,12 @@ export const adoptionRepository = {
 
   async updatePetStatus(petId: number, status: string): Promise<void> {
     await pool.query('UPDATE pets SET status = ? WHERE pet_id = ?', [status, petId]);
+  },
+
+  async confirmHandover(applicationId: number): Promise<void> {
+    await pool.query(
+      'UPDATE adoption_applications SET handover_confirmed_at = NOW() WHERE application_id = ?',
+      [applicationId]
+    );
   },
 };

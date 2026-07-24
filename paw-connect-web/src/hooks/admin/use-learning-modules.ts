@@ -6,6 +6,7 @@ import {
   createLearningModule,
   deleteLearningModule,
   fetchLearningModules,
+  fetchModuleProgressStats,
   updateLearningModule,
 } from '@/services/learning-modules.api';
 
@@ -32,8 +33,16 @@ export function useLearningModules(): UseLearningModulesResult {
     setIsLoading(true);
     setError(null);
     try {
-      const data = await fetchLearningModules();
-      setModules(data);
+      const [modules, stats] = await Promise.all([
+        fetchLearningModules(),
+        fetchModuleProgressStats(),
+      ]);
+      if (stats.length > 0) {
+        const statsMap = new Map(stats.map((s) => [s.module_id, s.completed_count]));
+        setModules(modules.map((m) => ({ ...m, completed_count: statsMap.get(m.module_id) ?? 0 })));
+      } else {
+        setModules(modules);
+      }
     } catch (err) {
       setModules([]);
       setError(err instanceof Error ? err.message : 'Failed to load learning modules');

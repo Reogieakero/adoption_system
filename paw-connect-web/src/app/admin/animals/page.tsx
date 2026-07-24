@@ -10,34 +10,29 @@ import AnimalGrid from './components/AnimalGrid';
 import Pagination from './components/Pagination';
 
 const SPECIES_OPTIONS = ['dog', 'cat'];
-const ADOPTION_STATUSES = ['All', 'available', 'pending', 'adopted', 'pending_verification', 'rejected'];
+const HEALTH_STATUSES = ['All', 'Healthy', 'Recovering', 'Under Treatment', 'Critical'];
 
 function buildStats(animals: Pet[]): StatItem[] {
   return [
     { label: 'Total Animals', value: animals.length },
     {
-      label: 'Available',
-      value: animals.filter((a) => a.status === 'available').length,
+      label: 'Healthy',
+      value: animals.filter((a) => a.health_status === 'Healthy').length,
       color: '#10b981',
     },
     {
-      label: 'Pending Verification',
-      value: animals.filter((a) => a.status === 'pending_verification').length,
+      label: 'Recovering',
+      value: animals.filter((a) => a.health_status === 'Recovering').length,
       color: '#f59e0b',
     },
     {
-      label: 'Pending',
-      value: animals.filter((a) => a.status === 'pending').length,
+      label: 'Under Treatment',
+      value: animals.filter((a) => a.health_status === 'Under Treatment').length,
       color: '#ef4444',
     },
     {
-      label: 'Adopted',
-      value: animals.filter((a) => a.status === 'adopted').length,
-      color: 'var(--text-primary)',
-    },
-    {
-      label: 'Rejected',
-      value: animals.filter((a) => a.status === 'rejected').length,
+      label: 'Critical',
+      value: animals.filter((a) => a.health_status === 'Critical').length,
       color: 'var(--text-muted)',
     },
   ];
@@ -58,7 +53,7 @@ export default function AnimalsPage() {
         (animal.breed_detail ?? '').toLowerCase().includes(query) ||
         String(animal.pet_id).includes(query);
       const matchesSpecies = speciesFilter === 'All' || animal.species === speciesFilter;
-      const matchesStatus = statusFilter === 'All' || animal.status === statusFilter;
+      const matchesStatus = statusFilter === 'All' || animal.health_status === statusFilter;
       return matchesQuery && matchesSpecies && matchesStatus;
     });
   }, [animals, searchQuery, speciesFilter, statusFilter]);
@@ -96,7 +91,7 @@ export default function AnimalsPage() {
           speciesOptions={SPECIES_OPTIONS}
           statusFilter={typeof statusFilter === 'string' ? statusFilter : 'all'}
           onStatusChange={handleStatusChange}
-          statusOptions={ADOPTION_STATUSES}
+          statusOptions={HEALTH_STATUSES}
           addLabel="Add Animal"
         />
 

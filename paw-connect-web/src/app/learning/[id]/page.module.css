@@ -4,6 +4,9 @@
 }
 
 .back {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   background: none;
   border: none;
   color: var(--text-secondary);
@@ -18,6 +21,7 @@
 }
 
 .article {
+  position: relative;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -67,10 +71,10 @@
   border-top: 1px solid var(--border);
 }
 
-.completedBadge {
-  color: #16a34a;
-  font-weight: 600;
-  font-size: 0.9375rem;
+.badgePosition {
+  position: absolute;
+  top: 12px;
+  right: 12px;
 }
 
 .muted {

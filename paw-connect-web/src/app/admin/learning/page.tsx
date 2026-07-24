@@ -11,6 +11,7 @@ import FilterBar from "./components/FilterBar";
 import ModulesGrid from "./components/ModulesGrid";
 import EmptyState from "./components/EmptyState";
 import ModuleFormModal from "./components/ModuleFormModal";
+import { confirm, ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 interface LearningModuleFormState {
   title: string;
@@ -163,6 +164,13 @@ export default function LearningManagementPage() {
   };
 
   const handleDelete = async (id: number) => {
+    const confirmed = await confirm({
+      title: "Delete Module",
+      message: "Are you sure you want to delete this learning module? This action cannot be undone.",
+      confirmLabel: "Delete",
+      variant: "admin-danger",
+    });
+    if (!confirmed) return;
     setActiveDropdownId(null);
     try {
       await removeModule(id);
@@ -172,6 +180,14 @@ export default function LearningManagementPage() {
   };
 
   const handleToggleStatus = async (module: ElearningModule) => {
+    const action = module.status === "published" ? "unpublish" : "publish";
+    const confirmed = await confirm({
+      title: `${action === "publish" ? "Publish" : "Unpublish"} Module`,
+      message: `Are you sure you want to ${action} "${module.title}"?`,
+      confirmLabel: action === "publish" ? "Publish" : "Unpublish",
+      variant: "admin-primary",
+    });
+    if (!confirmed) return;
     setActiveDropdownId(null);
     try {
       await editModule(module.module_id, {
@@ -212,7 +228,7 @@ export default function LearningManagementPage() {
   const totalModules = modules.length;
   const publishedCount = modules.filter((m) => m.status === "published").length;
   const draftCount = modules.filter((m) => m.status === "draft").length;
-  const totalViews = 0;
+  const totalCompleted = modules.reduce((sum, m) => sum + (m.completed_count ?? 0), 0);
 
   return (
     <div className={styles.adminContainer}>
@@ -224,7 +240,7 @@ export default function LearningManagementPage() {
         totalModules={totalModules}
         publishedCount={publishedCount}
         draftCount={draftCount}
-        totalViews={totalViews}
+        totalCompleted={totalCompleted}
       />
 
       <FilterBar
@@ -262,6 +278,8 @@ export default function LearningManagementPage() {
           onAction={openCreateModal}
         />
       )}
+
+      <ConfirmDialog />
 
       {isModalOpen && (
         <ModuleFormModal

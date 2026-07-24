@@ -60,3 +60,19 @@ export async function deleteLearningModule(id: number): Promise<void> {
     method: 'DELETE',
   });
 }
+
+export interface ModuleProgressStats {
+  module_id: number;
+  completed_count: number;
+}
+
+export async function fetchModuleProgressStats(): Promise<ModuleProgressStats[]> {
+  try {
+    const data = await request<{ success: true; stats: { module_id: number; completed_count: number }[] }>(
+      '/progress/completed-counts'
+    );
+    return data.stats;
+  } catch {
+    return [];
+  }
+}

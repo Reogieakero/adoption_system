@@ -8,7 +8,7 @@ export const healthRepository = {
     const [rows] = await pool.query<HealthRecordWithPetRow[]>(
       `SELECT
         hr.record_id, hr.pet_id, hr.medical_history, hr.vaccination_status,
-        hr.heart_rate_bpm, hr.created_by_user_id, hr.last_updated_by,
+        hr.heart_rate_bpm, hr.health_status, hr.created_by_user_id, hr.last_updated_by,
         hr.created_at, hr.updated_at,
         p.name AS pet_name, p.species AS pet_species, p.breed_type AS pet_breed_type,
         (SELECT pp.file_url FROM pet_photos pp WHERE pp.pet_id = p.pet_id AND pp.is_primary = 1 LIMIT 1) AS pet_photo_url
@@ -24,7 +24,7 @@ export const healthRepository = {
     const [rows] = await pool.query<HealthRecordWithPetRow[]>(
       `SELECT
         hr.record_id, hr.pet_id, hr.medical_history, hr.vaccination_status,
-        hr.heart_rate_bpm, hr.created_by_user_id, hr.last_updated_by,
+        hr.heart_rate_bpm, hr.health_status, hr.created_by_user_id, hr.last_updated_by,
         hr.created_at, hr.updated_at,
         p.name AS pet_name, p.species AS pet_species, p.breed_type AS pet_breed_type,
         (SELECT pp.file_url FROM pet_photos pp WHERE pp.pet_id = p.pet_id AND pp.is_primary = 1 LIMIT 1) AS pet_photo_url
@@ -52,16 +52,17 @@ export const healthRepository = {
     return rows.length > 0;
   },
 
-  async upsert(petId: number, medicalHistory: string | null, vaccinationStatus: string | null, heartRateBpm: number | null, createdByUserId: number): Promise<void> {
+  async upsert(petId: number, medicalHistory: string | null, vaccinationStatus: string | null, heartRateBpm: number | null, healthStatus: string | null, createdByUserId: number): Promise<void> {
     await pool.query(
-      `INSERT INTO health_records (pet_id, medical_history, vaccination_status, heart_rate_bpm, created_by_user_id, last_updated_by)
-       VALUES (?, ?, ?, ?, ?, ?)
+      `INSERT INTO health_records (pet_id, medical_history, vaccination_status, heart_rate_bpm, health_status, created_by_user_id, last_updated_by)
+       VALUES (?, ?, ?, ?, ?, ?, ?)
        ON DUPLICATE KEY UPDATE
          medical_history = VALUES(medical_history),
          vaccination_status = VALUES(vaccination_status),
          heart_rate_bpm = VALUES(heart_rate_bpm),
+         health_status = VALUES(health_status),
          last_updated_by = VALUES(last_updated_by)`,
-      [petId, medicalHistory, vaccinationStatus, heartRateBpm, createdByUserId, createdByUserId]
+      [petId, medicalHistory, vaccinationStatus, heartRateBpm, healthStatus ?? 'Healthy', createdByUserId, createdByUserId]
     );
   },
 
@@ -80,6 +81,10 @@ export const healthRepository = {
     if (input.heart_rate_bpm !== undefined) {
       fields.push('heart_rate_bpm = ?');
       values.push(input.heart_rate_bpm);
+    }
+    if (input.health_status !== undefined) {
+      fields.push('health_status = ?');
+      values.push(input.health_status);
     }
     if (input.last_updated_by !== undefined) {
       fields.push('last_updated_by = ?');

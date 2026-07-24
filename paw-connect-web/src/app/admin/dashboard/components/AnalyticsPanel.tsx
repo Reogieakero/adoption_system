@@ -1,14 +1,14 @@
 ﻿'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { TrendingUp, TrendingDown, Activity, MapPin, ChevronDown, type LucideIcon } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { TrendingUp, TrendingDown, Activity, MapPin, type LucideIcon } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, LabelList, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import type { ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import { createServiceClient } from '@/lib/api-client';
 import Button from '@/components/ui/button';
 import styles from './AnalyticsPanel.module.css';
 
-const { request } = createServiceClient('/api/admin/dashboard');
+const { request: dashReq } = createServiceClient('/api/admin/dashboard');
 
 type ChartType = 'vertical' | 'horizontal';
 
@@ -18,9 +18,6 @@ interface ReportTool {
   id: string; icon: LucideIcon; title: string; description: string;
   trendValue: string; trendUp: boolean; chartType: ChartType; chartUnit: string; data: ChartPoint[];
 }
-
-const YEARS = ['2026', '2025', '2024'];
-const MONTHS = ['All Months', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 const AXIS_TICK_STYLE = { fontSize: 12, fill: 'var(--navy-70)' };
 const VALUE_LABEL_STYLE = { fontSize: 12, fontWeight: 600, fill: 'var(--navy)', fontFamily: "var(--font-geist-mono), 'Geist Mono', monospace" };
@@ -41,45 +38,38 @@ function ChartTooltip({ active, payload, label, unit }: { active?: boolean; payl
   );
 }
 
-function CustomSelect({ options, selected, onChange, isMonth }: { options: string[]; selected: string; onChange: (v: string) => void; isMonth?: boolean }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const handler = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setIsOpen(false); };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
-  return (
-    <div className={styles.customSelectWrapper} ref={ref}>
-      <button type="button" onClick={() => setIsOpen(!isOpen)} className={`${styles.customSelectTrigger} ${isOpen ? styles.customSelectTriggerActive : ''}`}>
-        <span>{selected}</span>
-        <ChevronDown size={12} className={`${styles.chevronIcon} ${isOpen ? styles.chevronIconOpen : ''}`} />
-      </button>
-      {isOpen && (
-        <div className={`${styles.customSelectDropdown} ${isMonth ? styles.monthDropdown : ''}`}>
-          {options.map((o) => (
-            <button key={o} type="button" onClick={() => { onChange(o); setIsOpen(false); }}
-              className={`${styles.customSelectItem} ${o === selected ? styles.customSelectItemActive : ''}`}>{o}</button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
 export default function AnalyticsPanel() {
   const [tools, setTools] = useState<ReportTool[]>(DEFAULT_TOOLS);
   const [activeId, setActiveId] = useState('adoption');
-  const [selectedYear, setSelectedYear] = useState('2026');
-  const [selectedMonth, setSelectedMonth] = useState('All Months');
   const activeTool = tools.find((t) => t.id === activeId) ?? tools[0];
 
   useEffect(() => {
-    request<{ success: true; trends: { label: string; value: number }[] }>('/adoptions/trends')
+    dashReq<{ success: true; trends: { label: string; value: number }[] }>('/adoptions/trends')
+      .then((data) => {
+        if (data.trends?.length) {
+          const total = data.trends.reduce((a, b) => a + b.value, 0);
+          setTools((prev) => prev.map((t) =>
+            t.id === 'adoption' ? { ...t, data: data.trends, trendValue: `+${total}` } : t
+          ));
+        }
+      })
+      .catch(() => {});
+
+    dashReq<{ success: true; trends: { label: string; value: number }[]; average: string }>('/rescues/efficiency')
       .then((data) => {
         if (data.trends?.length) {
           setTools((prev) => prev.map((t) =>
-            t.id === 'adoption' ? { ...t, data: data.trends, trendValue: `+${data.trends.reduce((a, b) => a + b.value, 0)}` } : t
+            t.id === 'rescue' ? { ...t, data: data.trends, trendValue: `${data.average}h` } : t
+          ));
+        }
+      })
+      .catch(() => {});
+
+    dashReq<{ success: true; trends: { label: string; value: number }[]; total: number }>('/rescues/geo-distribution')
+      .then((data) => {
+        if (data.trends?.length) {
+          setTools((prev) => prev.map((t) =>
+            t.id === 'geo' ? { ...t, data: data.trends, trendValue: `${data.total} active zones` } : t
           ));
         }
       })
@@ -100,10 +90,6 @@ export default function AnalyticsPanel() {
               <Icon size={13} strokeWidth={2} /><span>{title}</span>
             </Button>
           ))}
-        </div>
-        <div className={styles.filterGroup}>
-          <CustomSelect options={MONTHS} selected={selectedMonth} onChange={setSelectedMonth} isMonth />
-          <CustomSelect options={YEARS} selected={selectedYear} onChange={setSelectedYear} />
         </div>
       </div>
 

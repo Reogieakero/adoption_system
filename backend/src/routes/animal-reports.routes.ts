@@ -7,6 +7,7 @@ const router = Router();
 router.use(authenticateAdmin);
 
 router.get('/', animalReportController.list);
+router.get('/pending-count', animalReportController.countPending);
 router.get('/:id/details', animalReportController.getDetails);
 router.patch('/:id/status', animalReportController.updateStatus);
 

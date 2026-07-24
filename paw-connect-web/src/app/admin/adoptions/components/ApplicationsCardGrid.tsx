@@ -27,7 +27,7 @@ export function ApplicationsCardGrid({ applications, onUpdateStatus, onViewDetai
         <div key={app.application_id} className={styles.recordItemCard}>
           <div className={styles.recordCardTopRow}>
             <div className={styles.animalProfileCell}>
-              <img src={app.pet_photo_url ?? ''} alt={app.pet_name} className={styles.animalAvatar} />
+              {app.pet_photo_url ? <img src={app.pet_photo_url} alt={app.pet_name} className={styles.animalAvatar} /> : <div className={styles.animalAvatarEmpty} />}
               <div>
                 <div className={styles.primaryCellText}>{app.pet_name}</div>
                 <div className={styles.secondaryCellText}>{app.application_id} • {app.pet_species.toLowerCase()}</div>

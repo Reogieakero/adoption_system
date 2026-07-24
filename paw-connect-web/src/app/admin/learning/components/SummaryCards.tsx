@@ -8,14 +8,14 @@ interface SummaryCardsProps {
   totalModules: number;
   publishedCount: number;
   draftCount: number;
-  totalViews: number;
+  totalCompleted: number;
 }
 
 export default function SummaryCards({
   totalModules,
   publishedCount,
   draftCount,
-  totalViews,
+  totalCompleted,
 }: SummaryCardsProps) {
   return (
     <div className={styles.summaryGrid}>
@@ -45,11 +45,11 @@ export default function SummaryCards({
       </div>
       <div className={styles.summaryCard}>
         <div className={styles.summaryCardHeader}>
-          <p>Total Views</p>
+          <p>Completed</p>
           <Users size={16} className={styles.iconBlue} />
         </div>
-        <div className={`${styles.summaryCardValue} ${styles.valueBlue}`}>{totalViews.toLocaleString()}</div>
-        <p className={styles.summaryCardDesc}>Total operational reach</p>
+        <div className={`${styles.summaryCardValue} ${styles.valueBlue}`}>{totalCompleted.toLocaleString()}</div>
+        <p className={styles.summaryCardDesc}>Modules completed by residents</p>
       </div>
     </div>
   );

@@ -138,6 +138,7 @@
 }
 
 .circleAvatarFrame {
+  position: relative;
   width: 110px;
   height: 110px;
   border-radius: 50%;
@@ -147,7 +148,18 @@
   background: var(--muted);
 }
 
+.circleAvatarIcon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
 .circleAvatarImage {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;

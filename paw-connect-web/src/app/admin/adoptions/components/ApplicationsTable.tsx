@@ -34,7 +34,7 @@ export function ApplicationsTable({ applications, onUpdateStatus, onViewDetails 
                 </td>
                 <td>
                   <div className={styles.animalProfileCell}>
-                    <img src={app.pet_photo_url ?? ''} alt={app.pet_name} className={styles.animalAvatar} />
+                    {app.pet_photo_url ? <img src={app.pet_photo_url} alt={app.pet_name} className={styles.animalAvatar} /> : <div className={styles.animalAvatarEmpty} />}
                     <div>
                       <div className={styles.primaryCellText}>{app.pet_name}</div>
                       <div className={styles.secondaryCellText}>{app.application_id}</div>

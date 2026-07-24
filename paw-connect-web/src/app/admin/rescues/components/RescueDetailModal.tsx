@@ -1,7 +1,8 @@
 ﻿import React, { useRef } from 'react';
-import { X } from 'lucide-react';
+import { X, Dog, Cat } from 'lucide-react';
 import Button from '@/components/ui/button';
 import { formatStatus } from '@/lib/format-status';
+import { API_BASE_URL } from '@/lib/config';
 import styles from './RescueDetailModal.module.css';
 import type { AnimalReport, WorkflowAction } from '@/types';
 import DataSegment from './DataSegment';
@@ -72,9 +73,23 @@ export default function RescueDetailModal({
             <div className={styles.modalLeftColumn} ref={leftPanelScrollRef}>
               <div className={styles.avatarContainer}>
                 <div className={styles.circleAvatarFrame}>
-                  <img src={caseDetails.photo_url} alt="Animal Incident Target Profile" className={styles.circleAvatarImage} />
+                  <div className={styles.circleAvatarIcon}>
+                    {caseDetails.species === 'cat' ? <Cat size={36} /> : <Dog size={36} />}
+                  </div>
+                  {caseDetails.photo_url && (
+                    <img src={`${API_BASE_URL}${caseDetails.photo_url.split(',')[0]}`} alt="" className={styles.circleAvatarImage} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                  )}
                 </div>
               </div>
+
+              <DataSegment
+                title="Reported By"
+                fields={[
+                  { label: 'Name', value: caseDetails.resident_name ?? 'N/A' },
+                  { label: 'Email', value: caseDetails.resident_email ?? 'N/A' },
+                  { label: 'Phone', value: caseDetails.resident_phone ?? 'N/A' }
+                ]}
+              />
 
               <DataSegment
                 title="Report Details"

@@ -3,6 +3,7 @@ export type PetSpecies = 'dog' | 'cat';
 export type PetBreedType = 'aspin' | 'puspin' | 'other';
 export type PetSex = 'male' | 'female' | 'unknown';
 export type PetStatus = 'pending_verification' | 'available' | 'pending' | 'adopted' | 'rejected';
+export type PetHealthStatus = 'Healthy' | 'Recovering' | 'Under Treatment' | 'Critical';
 
 export interface Pet {
   pet_id: number;
@@ -16,6 +17,7 @@ export interface Pet {
   sex: PetSex;
   description: string | null;
   status: PetStatus;
+  health_status: PetHealthStatus;
   rejection_reason: string | null;
   location_area: string | null;
   created_by_user_id: number;
@@ -32,7 +34,8 @@ export interface Pet {
     pet_id: number;
     medical_history: string | null;
     vaccination_status: string | null;
+    health_status: PetHealthStatus;
   } | null;
 }
 
-export type PetFormData = Omit<Pet, 'pet_id' | 'created_at' | 'updated_at' | 'deleted_at' | 'deleted_by_user_id' | 'updated_by_user_id' | 'created_by_user_id' | 'posted_by_user_id' | 'rejection_reason' | 'primary_photo_url' | 'photos' | 'asset_3d'>;
+export type PetFormData = Omit<Pet, 'pet_id' | 'created_at' | 'updated_at' | 'deleted_at' | 'deleted_by_user_id' | 'updated_by_user_id' | 'created_by_user_id' | 'posted_by_user_id' | 'rejection_reason' | 'health_status' | 'primary_photo_url' | 'photos' | 'asset_3d'>;

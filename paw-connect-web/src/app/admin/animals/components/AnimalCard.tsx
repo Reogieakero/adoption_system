@@ -73,7 +73,7 @@ export default function AnimalCard({ animal, href }: AnimalCardProps) {
               </div>
               <div className={styles.detailRow}>
                 <span className={styles.detailLabel}>Health:</span>
-                <span className={styles.detailValue}>Healthy</span>
+                <span className={styles.detailValue}>{animal.health_status}</span>
               </div>
             </div>
 
@@ -81,8 +81,8 @@ export default function AnimalCard({ animal, href }: AnimalCardProps) {
               <span className={`${styles.badge} ${adoptionBadgeClass(animal.status)}`}>
                 {formatStatus(animal.status)}
               </span>
-              <span className={`${styles.badge} ${healthBadgeClass('Healthy')}`}>
-                Healthy
+              <span className={`${styles.badge} ${healthBadgeClass(animal.health_status)}`}>
+                {animal.health_status}
               </span>
             </div>
 

@@ -3,6 +3,11 @@ import type { AdoptionApplication, UpdateApplicationStatusPayload } from '@/type
 
 const { request } = createServiceClient('/api/admin/adoptions');
 
+export async function fetchAdoptionPendingCount(): Promise<number> {
+  const data = await request<{ success: true; count: number }>('/pending-count');
+  return data.count;
+}
+
 export async function fetchAdoptions(): Promise<AdoptionApplication[]> {
   const data = await request<{ success: true; applications: AdoptionApplication[] }>('');
   return data.applications;

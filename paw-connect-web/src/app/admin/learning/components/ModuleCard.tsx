@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   MoreVertical,
   Eye,
@@ -35,11 +35,12 @@ export default function ModuleCard({
   onToggleStatus,
   onDelete,
 }: ModuleCardProps) {
+  const [imgError, setImgError] = useState(false);
   return (
     <div className={styles.moduleCard}>
         <div className={styles.imageContainer}>
-        {module.cover_image_url ? (
-          <img src={module.cover_image_url} alt={module.title} className={styles.cardImage} />
+        {module.cover_image_url && !imgError ? (
+          <img src={module.cover_image_url} alt={module.title} className={styles.cardImage} onError={() => setImgError(true)} />
         ) : (
           <div className={styles.cardImagePlaceholder}>
             <ImageIcon size={28} className={styles.placeholderIcon} />
@@ -91,7 +92,7 @@ export default function ModuleCard({
           </div>
           <div className={`${styles.metricItem} ${styles.metricCenter}`}>
             <Eye size={14} className={styles.metricIconMuted} />
-            <span>0 views</span>
+            <span>{module.completed_count ?? 0} completed</span>
           </div>
           <div className={`${styles.metricItem} ${styles.metricEnd}`}>
             <TrendingUp size={14} className={styles.metricIconSuccess} />

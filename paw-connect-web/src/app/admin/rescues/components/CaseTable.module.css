@@ -70,12 +70,32 @@
   gap: 0.6rem;
 }
 
+.avatarWrap {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.avatarIcon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--surface-secondary);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
 .avatarImage {
+  position: absolute;
+  inset: 0;
   width: 28px;
   height: 28px;
   border-radius: 50%;
   object-fit: cover;
-  flex-shrink: 0;
   border: 1px solid var(--border);
 }
 

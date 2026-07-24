@@ -1,4 +1,4 @@
-import { ResultSetHeader } from 'mysql2/promise';
+import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 import pool from '../config/db';
 import {
   CreateElearningModuleInput, UpdateElearningModuleInput, CreateCategoryInput,
@@ -34,7 +34,22 @@ export const learningModuleRepository = {
   // ── Modules ─────────────────────────────────────────────────────────
   async findAllModules(): Promise<ElearningModuleRow[]> {
     const [rows] = await pool.query<ElearningModuleRow[]>(
-      'SELECT * FROM elearning_modules ORDER BY order_index ASC, title ASC'
+      `SELECT m.*, c.name AS category_name
+       FROM elearning_modules m
+       LEFT JOIN elearning_categories c ON c.category_id = m.category_id
+       ORDER BY m.order_index ASC, m.title ASC`
+    );
+    return rows;
+  },
+
+  async findPublishedModulesWithProgress(residentId: number): Promise<ElearningModuleRow[]> {
+    const [rows] = await pool.query<ElearningModuleRow[]>(
+      `SELECT m.*, mp.status AS progress_status
+       FROM elearning_modules m
+       LEFT JOIN module_progress mp ON mp.module_id = m.module_id AND mp.resident_id = ?
+       WHERE m.status = 'published'
+       ORDER BY m.order_index ASC, m.title ASC`,
+      [residentId]
     );
     return rows;
   },
@@ -111,6 +126,19 @@ export const learningModuleRepository = {
   },
 
   // ── Progress ────────────────────────────────────────────────────────
+  async findCompletedCounts(): Promise<{ module_id: number; completed_count: number }[]> {
+    const [rows] = await pool.query<RowDataPacket[]>(
+      `SELECT module_id, COUNT(*) AS completed_count
+       FROM module_progress
+       WHERE status = 'completed'
+       GROUP BY module_id`
+    );
+    return (rows as any[]).map((r: any) => ({
+      module_id: r.module_id,
+      completed_count: Number(r.completed_count),
+    }));
+  },
+
   async findProgressByModuleAndResident(moduleId: number, residentId: number): Promise<ModuleProgressRow | undefined> {
     const [rows] = await pool.query<ModuleProgressRow[]>(
       'SELECT * FROM module_progress WHERE module_id = ? AND resident_id = ?',

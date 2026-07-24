@@ -14,11 +14,10 @@ interface StatsGridProps {
 
 const ICON_MAP: Record<string, React.ReactNode> = {
   'Total Animals': <PawPrint size={16} strokeWidth={2} />,
-  'Available': <CheckCircle2 size={16} strokeWidth={2} />,
-  'Under Rescue': <Siren size={16} strokeWidth={2} />,
-  'Under Treatment': <HeartPulse size={16} strokeWidth={2} />,
-  'Adopted': <Home size={16} strokeWidth={2} />,
-  'Unavailable': <Ban size={16} strokeWidth={2} />,
+  'Healthy': <CheckCircle2 size={16} strokeWidth={2} />,
+  'Recovering': <HeartPulse size={16} strokeWidth={2} />,
+  'Under Treatment': <Siren size={16} strokeWidth={2} />,
+  'Critical': <Ban size={16} strokeWidth={2} />,
 };
 
 export default function StatsGrid({ stats }: StatsGridProps) {

@@ -65,9 +65,17 @@ export default function RescuesPage() {
       let updated: AnimalReport | null = null;
 
       switch (actionId) {
-        case 'verify':
+        case 'verify': {
+          const confirmed = await confirm({
+            title: 'Verify Report',
+            message: `Verify rescue report #${reportId}? The report will move to Verified.`,
+            confirmLabel: 'Verify',
+            variant: 'admin-primary',
+          });
+          if (!confirmed) return null;
           updated = await updateReportStatus(reportId, 'in_progress');
           break;
+        }
 
         case 'dispatch': {
           const confirmed = await confirm({
@@ -123,7 +131,8 @@ export default function RescuesPage() {
 
   const handleExecuteAction = async () => {
     if (!selectedCaseDetails) return;
-    await executeAction(selectedCaseDetails.report_id, activeAction.id, selectedCaseDetails.location_area ?? undefined);
+    const updated = await executeAction(selectedCaseDetails.report_id, activeAction.id, selectedCaseDetails.location_area ?? undefined);
+    if (updated) setSelectedCaseDetails(null);
   };
 
   const handleCaseAction = (item: AnimalReport, actionId: string) => {
@@ -164,7 +173,8 @@ export default function RescuesPage() {
                 <div className={styles.sectionHeader}>
                   <div className={styles.sectionTitleGroup}>
                     <span className={styles.sectionIcon}>{STAGE_ICONS[stage]}</span>
-                    <span className={styles.sectionCount}>{stageCases.length} reports</span>
+                    <h3 className={styles.sectionTitle}>{STAGE_LABELS[stage]}</h3>
+                    <span className={styles.sectionCount}>({stageCases.length})</span>
                   </div>
 
                   <Button

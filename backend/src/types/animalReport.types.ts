@@ -18,11 +18,15 @@ export interface AnimalReport {
   submitted_at: string;
   resolved_at: string | null;
   updated_at: string;
+  resident_name: string | null;
+  resident_email: string | null;
+  resident_phone: string | null;
 }
 
-export interface AnimalReportRow extends AnimalReport {
+export interface AnimalReportRow extends Omit<AnimalReport, 'resident_name' | 'resident_email' | 'resident_phone'> {
   resident_name?: string;
   resident_email?: string;
+  resident_phone?: string;
 }
 
 export interface CreateAnimalReportInput {

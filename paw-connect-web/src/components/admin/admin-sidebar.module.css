@@ -1,13 +1,13 @@
 .sidebar {
   position: fixed;
-  top: 56px; /* sits below the navbar, never overlaps it */
+  top: 56px;
   left: 0;
   height: calc(100vh - 56px);
   width: 64px;
   background-color: var(--background);
   border-right: 1px solid var(--border);
   overflow: hidden;
-  z-index: 200; /* below the navbar's 300 */
+  z-index: 200;
   transition: width 0.18s ease;
 }
 
@@ -20,7 +20,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 232px; /* fixed so content doesn't reflow/wrap during the width transition */
+  width: 232px;
 }
 
 .nav {
@@ -59,6 +59,7 @@
   color: var(--text-secondary);
   text-decoration: none;
   white-space: nowrap;
+  position: relative;
 }
 
 .navItem:hover {
@@ -76,8 +77,60 @@
   color: var(--text-primary);
 }
 
+.navIconWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+}
+
 .navIcon {
   flex-shrink: 0;
+}
+
+.countBadge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  min-width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background-color: var(--danger, #dc2626);
+  color: #ffffff;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.countLabel {
+  margin-left: auto;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background-color: var(--danger, #dc2626);
+  color: #ffffff;
+  font-size: 0.625rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.sidebar:hover .countLabel {
+  opacity: 1;
+  transition-delay: 0.05s;
 }
 
 .navLabel {
@@ -95,7 +148,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .sidebar,
-  .navLabel {
+  .navLabel,
+  .countLabel {
     transition: none;
   }
 }

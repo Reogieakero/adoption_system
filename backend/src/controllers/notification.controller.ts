@@ -12,6 +12,7 @@ export const notificationController = {
         limit: limit ? Number(limit) : undefined,
         type: type as NotificationType | undefined,
         unreadOnly: unreadOnly === 'true',
+        recipient_id: (req as any).admin?.id,
       });
       res.json({ success: true, ...result });
     } catch (err) {
@@ -21,7 +22,7 @@ export const notificationController = {
 
   async unreadCount(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const count = await notificationService.getUnreadCount();
+      const count = await notificationService.getUnreadCount((req as any).admin?.id);
       res.json({ success: true, count });
     } catch (err) {
       handleServiceError(err, res, next);
@@ -49,7 +50,7 @@ export const notificationController = {
 
   async markAllRead(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const updated = await notificationService.markAllAsRead();
+      const updated = await notificationService.markAllAsRead((req as any).admin?.id);
       res.json({ success: true, updated });
     } catch (err) {
       handleServiceError(err, res, next);

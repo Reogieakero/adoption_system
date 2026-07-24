@@ -9,5 +9,7 @@ router.get('/stats', dashboardController.stats);
 router.get('/reports/recent', dashboardController.recentReports);
 router.get('/adoptions/recent', dashboardController.recentAdoptions);
 router.get('/adoptions/trends', dashboardController.adoptionTrends);
+router.get('/rescues/efficiency', dashboardController.rescueEfficiency);
+router.get('/rescues/geo-distribution', dashboardController.geoDistribution);
 
 export default router;

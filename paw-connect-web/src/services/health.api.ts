@@ -31,7 +31,7 @@ function recordToHealthAnimal(record: HealthRecord): HealthAnimal {
     breed: record.pet_breed_type,
     photo: record.pet_photo_url ?? '',
     heartRate: record.heart_rate_bpm ?? 0,
-    healthStatus: deriveHealthStatus(record),
+    healthStatus: record.health_status ?? deriveHealthStatus(record),
     vaccinationStatus: record.vaccination_status ?? 'Unknown',
     history: record.medical_history
       ? record.medical_history.split('\n').filter(Boolean).map((line, i) => parseHistoryLine(line, i))

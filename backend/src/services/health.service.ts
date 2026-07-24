@@ -22,6 +22,7 @@ export const healthService = {
     medicalHistory: string | null,
     vaccinationStatus: string | null,
     heartRateBpm: number | null,
+    healthStatus: string | null,
     createdByUserId: number
   ): Promise<HealthRecordWithPet> {
     const petExists = await healthRepository.petExists(petId);
@@ -29,7 +30,7 @@ export const healthService = {
       throw new AppError(404, 'Pet not found');
     }
 
-    await healthRepository.upsert(petId, medicalHistory, vaccinationStatus, heartRateBpm, createdByUserId);
+    await healthRepository.upsert(petId, medicalHistory, vaccinationStatus, heartRateBpm, healthStatus, createdByUserId);
     return this.getHealthByPetId(petId);
   },
 

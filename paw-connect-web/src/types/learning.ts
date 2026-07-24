@@ -23,6 +23,8 @@ export interface ElearningModule {
   created_at: string;
   updated_at: string;
   category_name?: string;
+  progress_status?: ProgressStatus | null;
+  completed_count?: number;
 }
 
 export interface ModuleProgress {

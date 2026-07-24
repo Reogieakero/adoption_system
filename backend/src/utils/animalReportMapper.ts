@@ -18,6 +18,9 @@ export interface ReportRow extends RowDataPacket {
   submitted_at: Date;
   resolved_at: Date | null;
   updated_at: Date;
+  resident_name?: string;
+  resident_email?: string;
+  resident_phone?: string;
 }
 
 function toISODate(value: Date | string | null | undefined): string {
@@ -53,5 +56,8 @@ export function rowToAnimalReport(row: ReportRow): AnimalReport {
     submitted_at: toISODate(row.submitted_at),
     resolved_at: toISODateTime(row.resolved_at),
     updated_at: toISODate(row.updated_at),
+    resident_name: row.resident_name ?? null,
+    resident_email: row.resident_email ?? null,
+    resident_phone: row.resident_phone ?? null,
   };
 }

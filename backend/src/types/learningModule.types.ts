@@ -22,6 +22,8 @@ export interface ElearningModule {
   created_by_admin_id: number;
   created_at: string;
   updated_at: string;
+  progress_status?: ProgressStatus | null;
+  category_name?: string | null;
 }
 
 export interface ModuleProgress {

@@ -47,7 +47,14 @@ export const notificationRepository = {
     return { rows, total: Number(countRows[0].count) };
   },
 
-  async countUnread(): Promise<number> {
+  async countUnread(recipientId?: number): Promise<number> {
+    if (recipientId) {
+      const [rows] = await pool.query<CountRow[]>(
+        'SELECT COUNT(*) as count FROM notifications WHERE is_read = 0 AND recipient_id = ?',
+        [recipientId]
+      );
+      return Number(rows[0].count);
+    }
     const [rows] = await pool.query<CountRow[]>(
       'SELECT COUNT(*) as count FROM notifications WHERE is_read = 0'
     );
@@ -87,7 +94,14 @@ export const notificationRepository = {
     return result.affectedRows > 0;
   },
 
-  async markAllAsRead(): Promise<number> {
+  async markAllAsRead(recipientId?: number): Promise<number> {
+    if (recipientId) {
+      const [result] = await pool.query<ResultSetHeader>(
+        'UPDATE notifications SET is_read = 1 WHERE is_read = 0 AND recipient_id = ?',
+        [recipientId]
+      );
+      return result.affectedRows;
+    }
     const [result] = await pool.query<ResultSetHeader>(
       'UPDATE notifications SET is_read = 1 WHERE is_read = 0'
     );

@@ -1,6 +1,5 @@
 ﻿import React from 'react';
 import { FileText, ClipboardCheck, Send, Heart } from 'lucide-react';
-import Button from '@/components/ui/button';
 import styles from './StageTabs.module.css';
 import type { RescueStage } from '@/types';
 
@@ -23,15 +22,15 @@ export default function StageTabs({ stages, counts, activeStage, onChange, label
   return (
     <div className={styles.tabBar}>
       {stages.map((stage) => (
-        <Button
+        <button
           key={stage}
-          variant="admin-ghost"
-          active={activeStage === stage}
+          className={`${styles.tab} ${activeStage === stage ? styles.tabActive : ''}`}
           onClick={() => onChange(stage)}
         >
           <span className={styles.tabIcon}>{STAGE_ICONS[stage]}</span>
+          <span className={styles.tabLabel}>{labels?.[stage] ?? stage.replace('_', ' ')}</span>
           <span className={styles.tabCount}>{counts[stage]}</span>
-        </Button>
+        </button>
       ))}
     </div>
   );

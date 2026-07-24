@@ -106,6 +106,15 @@ export const learningModuleController = {
   },
 
   // ── Progress ────────────────────────────────────────────────────────
+  async getCompletedCounts(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const stats = await learningModuleService.getCompletedCounts();
+      res.json({ success: true, stats });
+    } catch (err) {
+      handleServiceError(err, res, next);
+    }
+  },
+
   async getProgress(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const residentId = Number(req.params.residentId);

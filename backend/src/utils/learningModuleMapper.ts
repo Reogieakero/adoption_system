@@ -14,6 +14,8 @@ export interface ElearningModuleRow extends RowDataPacket {
   created_by_admin_id: number;
   created_at: Date;
   updated_at: Date;
+  progress_status?: ProgressStatus | null;
+  category_name?: string;
 }
 
 export interface ElearningCategoryRow extends RowDataPacket {
@@ -54,6 +56,8 @@ export function rowToElearningModule(row: ElearningModuleRow): ElearningModule {
     created_by_admin_id: row.created_by_admin_id,
     created_at: toISODate(row.created_at) ?? '',
     updated_at: toISODate(row.updated_at) ?? '',
+    progress_status: row.progress_status ?? null,
+    category_name: row.category_name ?? null,
   };
 }
 

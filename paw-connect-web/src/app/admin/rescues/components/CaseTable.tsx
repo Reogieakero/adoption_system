@@ -1,7 +1,8 @@
 ﻿import React from 'react';
-import { Eye, Check, Send, Heart, X } from 'lucide-react';
+import { Eye, Check, Send, Heart, X, Dog, Cat } from 'lucide-react';
 import Button from '@/components/ui/button';
 import { formatStatus } from '@/lib/format-status';
+import { API_BASE_URL } from '@/lib/config';
 import styles from './CaseTable.module.css';
 import type { AnimalReport } from '@/types';
 
@@ -45,7 +46,14 @@ export default function CaseTable({ items, onView, onAction }: CaseTableProps) {
             <tr key={item.report_id} className={styles.row}>
               <td className={styles.td}>
                 <div className={styles.avatarCell}>
-                  <img src={item.photo_url} alt="" className={styles.avatarImage} />
+                  <div className={styles.avatarWrap}>
+                    <div className={styles.avatarIcon}>
+                      {item.species === 'cat' ? <Cat size={14} /> : <Dog size={14} />}
+                    </div>
+                    {item.photo_url && (
+                      <img src={`${API_BASE_URL}${item.photo_url.split(',')[0]}`} alt="" className={styles.avatarImage} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                    )}
+                  </div>
                   <span className={styles.caseIdText}>{item.report_id}</span>
                 </div>
               </td>

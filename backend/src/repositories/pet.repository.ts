@@ -6,13 +6,23 @@ import { PetRow, PetPhotoRow, Pet3dAssetRow } from '../utils/petMapper';
 export const petRepository = {
   async findAll(): Promise<PetRow[]> {
     const [rows] = await pool.query<PetRow[]>(
-      'SELECT * FROM pets WHERE deleted_at IS NULL ORDER BY created_at DESC, name ASC'
+      `SELECT p.*, COALESCE(hr.health_status, 'Healthy') AS health_status
+       FROM pets p
+       LEFT JOIN health_records hr ON hr.pet_id = p.pet_id
+       WHERE p.deleted_at IS NULL
+       ORDER BY p.created_at DESC, p.name ASC`
     );
     return rows;
   },
 
   async findById(id: number): Promise<PetRow | undefined> {
-    const [rows] = await pool.query<PetRow[]>('SELECT * FROM pets WHERE pet_id = ?', [id]);
+    const [rows] = await pool.query<PetRow[]>(
+      `SELECT p.*, COALESCE(hr.health_status, 'Healthy') AS health_status
+       FROM pets p
+       LEFT JOIN health_records hr ON hr.pet_id = p.pet_id
+       WHERE p.pet_id = ?`,
+      [id]
+    );
     return rows[0];
   },
 

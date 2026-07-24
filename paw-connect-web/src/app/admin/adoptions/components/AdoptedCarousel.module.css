@@ -56,6 +56,18 @@
   border: 2px solid var(--border);
 }
 
+.carouselIconFallback {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--surface-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
 .carouselName {
   font-size: 0.66rem;
   font-weight: 600;

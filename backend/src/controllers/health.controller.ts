@@ -24,10 +24,11 @@ export const healthController = {
 
   async upsert(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { medical_history, vaccination_status, heart_rate_bpm } = req.body as {
+      const { medical_history, vaccination_status, heart_rate_bpm, health_status } = req.body as {
         medical_history?: string | null;
         vaccination_status?: string | null;
         heart_rate_bpm?: number | null;
+        health_status?: string | null;
       };
       const adminId = (req as any).admin?.id ?? 1;
       const record = await healthService.upsertHealthRecord(
@@ -35,6 +36,7 @@ export const healthController = {
         medical_history ?? null,
         vaccination_status ?? null,
         heart_rate_bpm ?? null,
+        health_status ?? null,
         adminId
       );
       res.json({ success: true, record });

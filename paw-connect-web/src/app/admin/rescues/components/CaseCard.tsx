@@ -1,6 +1,7 @@
 ﻿import React from 'react';
-import { Eye, Check, Send, Heart, X } from 'lucide-react';
+import { Eye, Check, Send, Heart, X, Dog, Cat } from 'lucide-react';
 import Button from '@/components/ui/button';
+import { API_BASE_URL } from '@/lib/config';
 import styles from './CaseCard.module.css';
 import type { AnimalReport } from '@/types';
 
@@ -46,7 +47,17 @@ export default function CaseCard({ item, onView, onAction }: CaseCardProps) {
           <span className={styles.caseId}>{item.report_id}</span>
         </div>
         <div className={styles.cardAvatarFrame}>
-          <img src={item.photo_url} alt="" className={styles.cardInnerImage} />
+          <div className={styles.cardAvatarIcon}>
+            {item.species === 'cat' ? <Cat size={18} /> : <Dog size={18} />}
+          </div>
+          {item.photo_url && (
+            <img
+              src={`${API_BASE_URL}${item.photo_url.split(',')[0]}`}
+              alt=""
+              className={styles.cardInnerImage}
+              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+            />
+          )}
         </div>
       </div>
 

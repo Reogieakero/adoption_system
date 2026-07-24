@@ -140,11 +140,15 @@ export function ApplicationDetailsModal({ application, onClose }: ApplicationDet
                 style={{ background: 'none', border: 'none', padding: 0 }}
                 disabled={!details}
               >
-                <img
-                  src={application.pet_photo_url ?? ''}
-                  alt={application.resident_name}
-                  className={styles.headerAvatar}
-                />
+                {application.pet_photo_url ? (
+                  <img
+                    src={application.pet_photo_url}
+                    alt={application.resident_name}
+                    className={styles.headerAvatar}
+                  />
+                ) : (
+                  <div className={styles.headerAvatar} />
+                )}
               </button>
               <div>
                 <div className={styles.headerName}>{application.resident_name}</div>

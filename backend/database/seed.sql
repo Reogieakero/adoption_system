@@ -100,15 +100,15 @@ INSERT INTO pet_3d_assets (asset_id, pet_id, asset_url, asset_type, uploaded_at)
 -- =============================================================================
 -- 6. health_records — one per pet, heart_rate_bpm left NULL
 -- =============================================================================
-INSERT INTO health_records (record_id, pet_id, medical_history, vaccination_status, heart_rate_bpm, created_by_user_id, last_updated_by) VALUES
-(1, 1, 'Initial checkup 2025-01-05: No parasites found, dewormed. Vaccination 2025-01-15: Core vaccines administered.', 'Core vaccines complete (5-in-1, rabies). Booster due 2026-01-15.', NULL, 1, 1),
-(2, 2, '2025-01-12: Spay surgery performed successfully. Recovered within a week.', 'Fully vaccinated (FVRCP, rabies).', NULL, 1, 1),
-(3, 3, '2025-02-01: Diagnosed with sarcoptic mange. Started medicated baths and oral ivermectin. 2025-02-15: Follow-up — skin improving, continuing treatment.', 'Initial deworming done. Core vaccines pending until skin condition resolves.', NULL, 1, 1),
-(4, 4, '2025-01-22: No major health issues found. Minor upper respiratory infection treated with antibiotics.', 'Fully vaccinated (FVRCP, rabies).', NULL, 1, 1),
-(5, 5, '2025-02-16: Tick infestation treated. Dewormed. Overall healthy.', 'Core vaccines complete (5-in-1, rabies).', NULL, 1, 1),
-(6, 6, '2025-06-01: Underweight on intake. Started high-calorie nutrition plan.', 'Not yet vaccinated — too young. Scheduled for first shots at 4 months.', NULL, 2, 2),
-(7, 7, '2025-03-02: Diagnosed with chronic kidney disease (early stage). Needs special diet and regular monitoring.', 'Fully vaccinated prior to intake.', NULL, 1, 1),
-(8, 8, '2025-05-16: General checkup — healthy. No microchip found.', 'Vaccination status unknown. Core vaccines administered on intake.', NULL, 5, 1);
+INSERT INTO health_records (record_id, pet_id, medical_history, vaccination_status, heart_rate_bpm, health_status, created_by_user_id, last_updated_by) VALUES
+(1, 1, 'Initial checkup 2025-01-05: No parasites found, dewormed. Vaccination 2025-01-15: Core vaccines administered.', 'Core vaccines complete (5-in-1, rabies). Booster due 2026-01-15.', NULL, 'Healthy', 1, 1),
+(2, 2, '2025-01-12: Spay surgery performed successfully. Recovered within a week.', 'Fully vaccinated (FVRCP, rabies).', NULL, 'Healthy', 1, 1),
+(3, 3, '2025-02-01: Diagnosed with sarcoptic mange. Started medicated baths and oral ivermectin. 2025-02-15: Follow-up — skin improving, continuing treatment.', 'Initial deworming done. Core vaccines pending until skin condition resolves.', NULL, 'Under Treatment', 1, 1),
+(4, 4, '2025-01-22: No major health issues found. Minor upper respiratory infection treated with antibiotics.', 'Fully vaccinated (FVRCP, rabies).', NULL, 'Recovering', 1, 1),
+(5, 5, '2025-02-16: Tick infestation treated. Dewormed. Overall healthy.', 'Core vaccines complete (5-in-1, rabies).', NULL, 'Healthy', 1, 1),
+(6, 6, '2025-06-01: Underweight on intake. Started high-calorie nutrition plan.', 'Not yet vaccinated — too young. Scheduled for first shots at 4 months.', NULL, 'Under Treatment', 2, 2),
+(7, 7, '2025-03-02: Diagnosed with chronic kidney disease (early stage). Needs special diet and regular monitoring.', 'Fully vaccinated prior to intake.', NULL, 'Critical', 1, 1),
+(8, 8, '2025-05-16: General checkup — healthy. No microchip found.', 'Vaccination status unknown. Core vaccines administered on intake.', NULL, 'Healthy', 5, 1);
 
 -- =============================================================================
 -- 7. adoption_applications — all 4 statuses, with pet_unavailable scenario

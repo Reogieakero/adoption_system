@@ -131,6 +131,7 @@ export default function LogVitalsPage({ params }: { params: Promise<{ id: string
       const medical_history = existingHistory ? `${existingHistory}\n${newLine}` : newLine
       const payload: UpdateHealthRecordPayload = {
         heart_rate_bpm: parsedHeartRate,
+        health_status: healthStatus,
         vaccination_status: vaccinationStatus,
         medical_history,
         last_updated_by: 1,
@@ -143,12 +144,22 @@ export default function LogVitalsPage({ params }: { params: Promise<{ id: string
         if (msg.includes('404') || msg.toLowerCase().includes('not found')) {
           await upsertHealthRecord(Number(resolvedParams.id), {
             heart_rate_bpm: parsedHeartRate,
+            health_status: healthStatus,
             vaccination_status: vaccinationStatus,
             medical_history,
           })
         } else {
           throw err
         }
+      }
+
+      try {
+        const { updatePet } = await import('@/services/animals.api')
+        await updatePet(Number(resolvedParams.id), {
+          health_status: healthStatus as Pet['health_status'],
+        })
+      } catch {
+        // non-critical — the health record was still saved
       }
 
       router.back()

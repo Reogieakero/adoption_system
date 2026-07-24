@@ -1,5 +1,5 @@
 import { RowDataPacket } from 'mysql2/promise';
-import { HealthRecord, HealthRecordWithPet } from '../types/health.types';
+import { HealthRecord, HealthRecordWithPet, HealthStatus } from '../types/health.types';
 
 export interface HealthRecordRow extends RowDataPacket {
   record_id: number;
@@ -7,6 +7,7 @@ export interface HealthRecordRow extends RowDataPacket {
   medical_history: string | null;
   vaccination_status: string | null;
   heart_rate_bpm: number | null;
+  health_status: string;
   created_by_user_id: number;
   last_updated_by: number;
   created_at: Date;
@@ -34,6 +35,7 @@ export function rowToHealthRecord(row: HealthRecordWithPetRow): HealthRecordWith
     medical_history: row.medical_history,
     vaccination_status: row.vaccination_status,
     heart_rate_bpm: row.heart_rate_bpm,
+    health_status: row.health_status as HealthStatus,
     created_by_user_id: row.created_by_user_id,
     last_updated_by: row.last_updated_by,
     created_at: toISODate(row.created_at),

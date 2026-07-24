@@ -32,7 +32,9 @@ export default function AdoptionManagementPage() {
   }, [applications]);
 
   const latestAdopted = useMemo(() => {
-    return [];
+    return applications.filter((a) => a.handover_confirmed_at).sort(
+      (a, b) => new Date(b.handover_confirmed_at!).getTime() - new Date(a.handover_confirmed_at!).getTime()
+    );
   }, [applications]);
 
   const selectedApplication = useMemo(

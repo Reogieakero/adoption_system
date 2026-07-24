@@ -9,6 +9,10 @@ import { rowToAnimalReport } from '../utils/animalReportMapper';
 const VALID_STATUSES: ReportStatus[] = ['submitted', 'in_progress', 'dispatched', 'resolved'];
 
 export const animalReportService = {
+  async countPending(): Promise<number> {
+    return animalReportRepository.countPending();
+  },
+
   async listReports(): Promise<AnimalReport[]> {
     const rows = await animalReportRepository.findAll();
     return rows.map(rowToAnimalReport);

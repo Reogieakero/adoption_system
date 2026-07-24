@@ -49,6 +49,7 @@
 .secondaryCellText { font-size: 0.76rem; color: var(--text-muted); }
 .animalProfileCell { display: flex; align-items: center; gap: 0.6rem; }
 .animalAvatar { width: 30px; height: 30px; border-radius: 6px; object-fit: cover;   border: 1px solid var(--border); }
+.animalAvatarEmpty { width: 30px; height: 30px; border-radius: 6px; background: var(--surface-secondary); }
 
 .fullSpan {
   grid-column: 1 / -1;

@@ -4,12 +4,17 @@ import { AppError } from '../errors/AppError';
 import { adoptionRepository } from '../repositories/adoption.repository';
 import { notificationService } from './notification.service';
 import { logService } from './log.service';
+import { userRepository } from '../repositories/user.repository';
 import { AdoptionApplicationWithDetails, AdoptionStatus, UpdateApplicationStatusInput } from '../types/adoption.types';
 import { rowToAdoptionApplication } from '../utils/adoptionMapper';
 
 const VALID_STATUSES: AdoptionStatus[] = ['pending_review', 'approved', 'rejected', 'pet_unavailable'];
 
 export const adoptionService = {
+  async countPending(): Promise<number> {
+    return adoptionRepository.countPending();
+  },
+
   async listApplications(): Promise<AdoptionApplicationWithDetails[]> {
     const rows = await adoptionRepository.findAll();
     return rows.map(rowToAdoptionApplication);
@@ -53,6 +58,18 @@ export const adoptionService = {
       message_text: `Your adoption application for "${pet[0][0].name}" has been submitted and is pending review.`,
     });
 
+    // Notify all admins about the new application
+    const adminIds = await userRepository.findAdminUserIds();
+    for (const adminId of adminIds) {
+      await notificationService.create({
+        recipient_id: adminId,
+        type: 'new_application',
+        linked_type: 'adoption_application',
+        linked_id: applicationId,
+        message_text: `A new adoption application for "${pet[0][0].name}" has been submitted and is pending review.`,
+      });
+    }
+
     return this.getApplicationDetails(applicationId);
   },
 
@@ -92,6 +109,19 @@ export const adoptionService = {
       message_text: `Your adoption application for "${application.pet_name}" has been ${status === 'approved' ? 'approved' : status === 'rejected' ? 'reviewed' : 'updated'}.`,
     });
 
+    // Notify all admins about the status change
+    const statusLabel = status === 'approved' ? 'approved' : status === 'rejected' ? 'reviewed' : 'updated';
+    const allAdminIds = await userRepository.findAdminUserIds();
+    for (const aid of allAdminIds) {
+      await notificationService.create({
+        recipient_id: aid,
+        type: 'adoption_status',
+        linked_type: 'adoption_application',
+        linked_id: id,
+        message_text: `Adoption application for "${application.pet_name}" has been ${statusLabel}.`,
+      });
+    }
+
     // Business rule: when one application is approved, set all other
     // pending_review applications for the same pet to pet_unavailable
     if (status === 'approved') {
@@ -117,9 +147,10 @@ export const adoptionService = {
       await adoptionRepository.updatePetStatus(application.pet_id, 'pending');
     }
 
-    // When the admin marks the animal as released, update the pet to adopted
+    // When the admin marks the animal as released, finalise the adoption
     if (status === 'pet_unavailable') {
       await adoptionRepository.updatePetStatus(application.pet_id, 'adopted');
+      await adoptionRepository.confirmHandover(id);
     }
 
     const updated = await adoptionRepository.findById(id);

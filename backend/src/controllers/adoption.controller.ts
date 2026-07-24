@@ -4,6 +4,15 @@ import { AdoptionStatus } from '../types/adoption.types';
 import { handleServiceError } from '../middleware/authenticateAdmin';
 
 export const adoptionController = {
+  async countPending(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const count = await adoptionService.countPending();
+      res.json({ success: true, count });
+    } catch (err) {
+      handleServiceError(err, res, next);
+    }
+  },
+
   async list(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const applications = await adoptionService.listApplications();

@@ -1,5 +1,5 @@
 import { RowDataPacket } from 'mysql2/promise';
-import { Pet, PetPhoto, Pet3dAsset, PetSpecies, PetBreedType, PetSex, PetStatus } from '../types/pet.types';
+import { Pet, PetPhoto, Pet3dAsset, PetSpecies, PetBreedType, PetSex, PetStatus, PetHealthStatus } from '../types/pet.types';
 
 export interface PetRow extends RowDataPacket {
   pet_id: number;
@@ -13,6 +13,7 @@ export interface PetRow extends RowDataPacket {
   sex: PetSex;
   description: string | null;
   status: PetStatus;
+  health_status: string;
   rejection_reason: string | null;
   location_area: string | null;
   created_by_user_id: number;
@@ -67,6 +68,7 @@ export function rowToPet(row: PetRow): Pet {
     sex: row.sex,
     description: row.description,
     status: row.status,
+    health_status: row.health_status as PetHealthStatus,
     rejection_reason: row.rejection_reason,
     location_area: row.location_area,
     created_by_user_id: row.created_by_user_id,

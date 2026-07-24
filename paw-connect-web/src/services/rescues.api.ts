@@ -3,6 +3,11 @@ import type { AnimalReport, ReportStatus } from '@/types';
 
 const { request } = createServiceClient('/api/admin/animal-reports');
 
+export async function fetchReportPendingCount(): Promise<number> {
+  const data = await request<{ success: true; count: number }>('/pending-count');
+  return data.count;
+}
+
 export async function fetchAnimalReports(): Promise<AnimalReport[]> {
   const data = await request<{ success: true; reports: AnimalReport[] }>('');
   return data.reports;
