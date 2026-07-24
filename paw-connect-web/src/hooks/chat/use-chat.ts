@@ -59,6 +59,11 @@ export function useChat(): UseChatResult {
   const loadConversations = useCallback(async () => {
     try {
       const convs = await fetchConversations();
+      convs.sort((a, b) => {
+        const aTime = a.last_message_at || a.created_at;
+        const bTime = b.last_message_at || b.created_at;
+        return new Date(aTime).getTime() - new Date(bTime).getTime();
+      });
       setConversations(convs);
       const total = convs.reduce((sum, c) => sum + c.unread_count, 0);
       setUnreadTotal(total);

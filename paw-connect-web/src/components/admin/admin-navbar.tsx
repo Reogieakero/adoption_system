@@ -159,10 +159,6 @@ export default function AdminNavbar() {
                 <ThemeToggle />
               </div>
               <div className={styles.dropdownDivider} />
-              <Link href="/admin/analytics" className={styles.dropdownItem} onClick={() => setProfileOpen(false)}>
-                <BarChart3 size={15} />
-                Analytics
-              </Link>
               <Link href="/admin/logs" className={styles.dropdownItem} onClick={() => setProfileOpen(false)}>
                 <History size={15} />
                 Logs

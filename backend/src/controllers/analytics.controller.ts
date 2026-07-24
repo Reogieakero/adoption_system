@@ -2,6 +2,29 @@ import { Request, Response, NextFunction } from 'express';
 import pool from '../config/db';
 import { RowDataPacket } from 'mysql2/promise';
 
+function getDateInterval(dateRange: string): string {
+  switch (dateRange) {
+    case 'Today': return '1 DAY';
+    case 'Last 7 days': return '7 DAY';
+    case 'Last 30 days': return '30 DAY';
+    case 'Last 90 days': return '90 DAY';
+    case 'This Year': return '12 MONTH';
+    default: return '12 MONTH';
+  }
+}
+
+function getSpeciesWhere(species: string, table: string): string {
+  if (species === 'All Species') return '';
+  if (species === 'Dogs') return `AND ${table}.species = 'dog'`;
+  if (species === 'Cats') return `AND ${table}.species = 'cat'`;
+  if (species === 'Others') return `AND ${table}.species NOT IN ('dog', 'cat')`;
+  return '';
+}
+
+function hasSpeciesColumn(table: string): boolean {
+  return ['pets', 'animal_reports'].includes(table);
+}
+
 function formatLabel(s: string): string {
   return s
     .replace(/_/g, ' ')
@@ -17,22 +40,25 @@ function calcChange(current: number, previous: number): { current: string; previ
   return { current: curStr, previous: prevStr, change: pct, trend: pct >= 0 ? 'up' : 'down' };
 }
 
-async function buildRecentAnalytics(pool: any) {
+async function buildRecentAnalytics(pool: any, dateRange: string, species: string) {
+  const interval = getDateInterval(dateRange);
+  const speciesWhere = getSpeciesWhere(species, 'pets');
+  const speciesWhereReports = getSpeciesWhere(species, 'animal_reports');
   const q = (sql: string) => pool.query(sql).then((r: any) => r[0][0] as Record<string, number>);
 
   const results = await Promise.all([
-    q("SELECT COUNT(*) AS curAdoptions FROM adoption_applications WHERE status IN ('approved','pet_unavailable') AND submitted_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH)"),
-    q("SELECT COUNT(*) AS prevAdoptions FROM adoption_applications WHERE status IN ('approved','pet_unavailable') AND submitted_at >= DATE_SUB(NOW(), INTERVAL 24 MONTH) AND submitted_at < DATE_SUB(NOW(), INTERVAL 12 MONTH)"),
-    q("SELECT COUNT(*) AS curActive FROM animal_reports WHERE status IN ('submitted','in_progress','dispatched') AND submitted_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH)"),
-    q("SELECT COUNT(*) AS prevActive FROM animal_reports WHERE status IN ('submitted','in_progress','dispatched') AND submitted_at >= DATE_SUB(NOW(), INTERVAL 24 MONTH) AND submitted_at < DATE_SUB(NOW(), INTERVAL 12 MONTH)"),
-    q("SELECT COUNT(*) AS curReports FROM animal_reports WHERE submitted_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH)"),
-    q("SELECT COUNT(*) AS prevReports FROM animal_reports WHERE submitted_at >= DATE_SUB(NOW(), INTERVAL 24 MONTH) AND submitted_at < DATE_SUB(NOW(), INTERVAL 12 MONTH)"),
-    q("SELECT COUNT(*) AS curTreatment FROM pets WHERE status = 'under_treatment' AND deleted_at IS NULL"),
-    q("SELECT COUNT(*) AS prevTreatment FROM pets WHERE status = 'under_treatment' AND deleted_at IS NULL AND created_at >= DATE_SUB(NOW(), INTERVAL 24 MONTH) AND created_at < DATE_SUB(NOW(), INTERVAL 12 MONTH)"),
-    q("SELECT COUNT(*) AS curVax FROM health_records WHERE vaccination_status = 'Vaccinated'"),
-    q("SELECT COUNT(*) AS prevVax FROM health_records WHERE vaccination_status = 'Vaccinated' AND created_at >= DATE_SUB(NOW(), INTERVAL 24 MONTH) AND created_at < DATE_SUB(NOW(), INTERVAL 12 MONTH)"),
-    q("SELECT COUNT(*) AS curTotalHealth FROM health_records"),
-    q("SELECT COUNT(*) AS prevTotalHealth FROM health_records WHERE created_at >= DATE_SUB(NOW(), INTERVAL 24 MONTH) AND created_at < DATE_SUB(NOW(), INTERVAL 12 MONTH)"),
+    q(`SELECT COUNT(*) AS curAdoptions FROM adoption_applications a JOIN pets p ON a.pet_id = p.pet_id WHERE a.status IN ('approved','pet_unavailable') AND a.submitted_at >= DATE_SUB(NOW(), INTERVAL ${interval}) ${speciesWhere.replace('pets', 'p')}`),
+    q(`SELECT COUNT(*) AS prevAdoptions FROM adoption_applications a JOIN pets p ON a.pet_id = p.pet_id WHERE a.status IN ('approved','pet_unavailable') AND a.submitted_at >= DATE_SUB(NOW(), INTERVAL 24 MONTH) AND a.submitted_at < DATE_SUB(NOW(), INTERVAL 12 MONTH) ${speciesWhere.replace('pets', 'p')}`),
+    q(`SELECT COUNT(*) AS curActive FROM animal_reports WHERE status IN ('submitted','in_progress','dispatched') AND submitted_at >= DATE_SUB(NOW(), INTERVAL ${interval}) ${speciesWhereReports}`),
+    q(`SELECT COUNT(*) AS prevActive FROM animal_reports WHERE status IN ('submitted','in_progress','dispatched') AND submitted_at >= DATE_SUB(NOW(), INTERVAL 24 MONTH) AND submitted_at < DATE_SUB(NOW(), INTERVAL 12 MONTH) ${speciesWhereReports}`),
+    q(`SELECT COUNT(*) AS curReports FROM animal_reports WHERE submitted_at >= DATE_SUB(NOW(), INTERVAL ${interval}) ${speciesWhereReports}`),
+    q(`SELECT COUNT(*) AS prevReports FROM animal_reports WHERE submitted_at >= DATE_SUB(NOW(), INTERVAL 24 MONTH) AND submitted_at < DATE_SUB(NOW(), INTERVAL 12 MONTH) ${speciesWhereReports}`),
+    q(`SELECT COUNT(*) AS curTreatment FROM pets WHERE status = 'under_treatment' AND deleted_at IS NULL ${speciesWhere}`),
+    q(`SELECT COUNT(*) AS prevTreatment FROM pets WHERE status = 'under_treatment' AND deleted_at IS NULL AND created_at >= DATE_SUB(NOW(), INTERVAL 24 MONTH) AND created_at < DATE_SUB(NOW(), INTERVAL 12 MONTH) ${speciesWhere}`),
+    q(`SELECT COUNT(*) AS curVax FROM health_records hr JOIN pets p ON hr.pet_id = p.pet_id WHERE hr.vaccination_status = 'Vaccinated' ${speciesWhere}`),
+    q(`SELECT COUNT(*) AS prevVax FROM health_records hr JOIN pets p ON hr.pet_id = p.pet_id WHERE hr.vaccination_status = 'Vaccinated' AND hr.created_at >= DATE_SUB(NOW(), INTERVAL 24 MONTH) AND hr.created_at < DATE_SUB(NOW(), INTERVAL 12 MONTH) ${speciesWhere}`),
+    q(`SELECT COUNT(*) AS curTotalHealth FROM health_records hr JOIN pets p ON hr.pet_id = p.pet_id ${speciesWhere}`),
+    q(`SELECT COUNT(*) AS prevTotalHealth FROM health_records hr JOIN pets p ON hr.pet_id = p.pet_id WHERE hr.created_at >= DATE_SUB(NOW(), INTERVAL 24 MONTH) AND hr.created_at < DATE_SUB(NOW(), INTERVAL 12 MONTH) ${speciesWhere}`),
   ]);
 
   const curAdoptions = results[0].curAdoptions;
@@ -66,26 +92,32 @@ async function buildRecentAnalytics(pool: any) {
 }
 
 export const analyticsController = {
-  async overview(_req: Request, res: Response, next: NextFunction): Promise<void> {
+  async overview(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const [[{ totalPets }]] = await pool.query<RowDataPacket[]>('SELECT COUNT(*) AS totalPets FROM pets WHERE deleted_at IS NULL');
-      const [[{ availablePets }]] = await pool.query<RowDataPacket[]>("SELECT COUNT(*) AS availablePets FROM pets WHERE status = 'available' AND deleted_at IS NULL");
-      const [[{ totalAdoptions }]] = await pool.query<RowDataPacket[]>("SELECT COUNT(*) AS totalAdoptions FROM adoption_applications WHERE status IN ('approved','pet_unavailable')");
-      const [[{ pendingAdoptions }]] = await pool.query<RowDataPacket[]>("SELECT COUNT(*) AS pendingAdoptions FROM adoption_applications WHERE status = 'pending_review'");
-      const [[{ rejectedAdoptions }]] = await pool.query<RowDataPacket[]>("SELECT COUNT(*) AS rejectedAdoptions FROM adoption_applications WHERE status = 'rejected'");
-      const [[{ activeRescues }]] = await pool.query<RowDataPacket[]>("SELECT COUNT(*) AS activeRescues FROM animal_reports WHERE status IN ('submitted','in_progress','dispatched')");
-      const [[{ resolvedRescues }]] = await pool.query<RowDataPacket[]>("SELECT COUNT(*) AS resolvedRescues FROM animal_reports WHERE status = 'resolved'");
-      const [[{ totalReports }]] = await pool.query<RowDataPacket[]>('SELECT COUNT(*) AS totalReports FROM animal_reports');
-      const [[{ underTreatment }]] = await pool.query<RowDataPacket[]>("SELECT COUNT(*) AS underTreatment FROM pets WHERE status = 'under_treatment' AND deleted_at IS NULL");
-      const [[{ criticalHealth }]] = await pool.query<RowDataPacket[]>('SELECT COUNT(*) AS criticalHealth FROM health_records WHERE heart_rate_bpm > 140');
-      const [[{ healthyCount }]] = await pool.query<RowDataPacket[]>('SELECT COUNT(*) AS healthyCount FROM health_records WHERE heart_rate_bpm IS NULL OR heart_rate_bpm <= 100');
-      const [[{ vaccinatedCount }]] = await pool.query<RowDataPacket[]>("SELECT COUNT(*) AS vaccinatedCount FROM health_records WHERE vaccination_status = 'Vaccinated'");
-      const [[{ totalHealthRecords }]] = await pool.query<RowDataPacket[]>('SELECT COUNT(*) AS totalHealthRecords FROM health_records');
+      const dateRange = (req.query.dateRange as string) || 'Last 30 days';
+      const species = (req.query.species as string) || 'All Species';
+      const interval = getDateInterval(dateRange);
+      const speciesWhere = getSpeciesWhere(species, 'pets');
+      const speciesWhereReports = getSpeciesWhere(species, 'animal_reports');
+
+      const [[{ totalPets }]] = await pool.query<RowDataPacket[]>(`SELECT COUNT(*) AS totalPets FROM pets WHERE deleted_at IS NULL ${speciesWhere}`);
+      const [[{ availablePets }]] = await pool.query<RowDataPacket[]>(`SELECT COUNT(*) AS availablePets FROM pets WHERE status = 'available' AND deleted_at IS NULL ${speciesWhere}`);
+      const [[{ totalAdoptions }]] = await pool.query<RowDataPacket[]>(`SELECT COUNT(*) AS totalAdoptions FROM adoption_applications a JOIN pets p ON a.pet_id = p.pet_id WHERE a.status IN ('approved','pet_unavailable') ${speciesWhere.replace('pets', 'p')}`);
+      const [[{ pendingAdoptions }]] = await pool.query<RowDataPacket[]>(`SELECT COUNT(*) AS pendingAdoptions FROM adoption_applications a JOIN pets p ON a.pet_id = p.pet_id WHERE a.status = 'pending_review' ${speciesWhere.replace('pets', 'p')}`);
+      const [[{ rejectedAdoptions }]] = await pool.query<RowDataPacket[]>(`SELECT COUNT(*) AS rejectedAdoptions FROM adoption_applications a JOIN pets p ON a.pet_id = p.pet_id WHERE a.status = 'rejected' ${speciesWhere.replace('pets', 'p')}`);
+      const [[{ activeRescues }]] = await pool.query<RowDataPacket[]>(`SELECT COUNT(*) AS activeRescues FROM animal_reports WHERE status IN ('submitted','in_progress','dispatched') ${speciesWhereReports}`);
+      const [[{ resolvedRescues }]] = await pool.query<RowDataPacket[]>(`SELECT COUNT(*) AS resolvedRescues FROM animal_reports WHERE status = 'resolved' ${speciesWhereReports}`);
+      const [[{ totalReports }]] = await pool.query<RowDataPacket[]>(`SELECT COUNT(*) AS totalReports FROM animal_reports ${speciesWhereReports}`);
+      const [[{ underTreatment }]] = await pool.query<RowDataPacket[]>(`SELECT COUNT(*) AS underTreatment FROM pets WHERE status = 'under_treatment' AND deleted_at IS NULL ${speciesWhere}`);
+      const [[{ criticalHealth }]] = await pool.query<RowDataPacket[]>(`SELECT COUNT(*) AS criticalHealth FROM health_records hr JOIN pets p ON hr.pet_id = p.pet_id WHERE hr.heart_rate_bpm > 140 ${speciesWhere}`);
+      const [[{ healthyCount }]] = await pool.query<RowDataPacket[]>(`SELECT COUNT(*) AS healthyCount FROM health_records hr JOIN pets p ON hr.pet_id = p.pet_id WHERE hr.heart_rate_bpm IS NULL OR hr.heart_rate_bpm <= 100 ${speciesWhere}`);
+      const [[{ vaccinatedCount }]] = await pool.query<RowDataPacket[]>(`SELECT COUNT(*) AS vaccinatedCount FROM health_records hr JOIN pets p ON hr.pet_id = p.pet_id WHERE hr.vaccination_status = 'Vaccinated' ${speciesWhere}`);
+      const [[{ totalHealthRecords }]] = await pool.query<RowDataPacket[]>(`SELECT COUNT(*) AS totalHealthRecords FROM health_records hr JOIN pets p ON hr.pet_id = p.pet_id ${speciesWhere}`);
 
       const vaccinationCoverage = totalHealthRecords > 0 ? Math.round((vaccinatedCount / totalHealthRecords) * 100) : 0;
 
       const [dogsVsCatsRows] = await pool.query<RowDataPacket[]>(
-        "SELECT species, COUNT(*) AS value FROM pets WHERE deleted_at IS NULL GROUP BY species"
+        `SELECT species, COUNT(*) AS value FROM pets WHERE deleted_at IS NULL ${speciesWhere} GROUP BY species`
       );
 
       const [adoptionTrendRows] = await pool.query<RowDataPacket[]>(
@@ -93,7 +125,9 @@ export const analyticsController = {
                 SUM(CASE WHEN a.status IN ('approved','pet_unavailable') THEN 1 ELSE 0 END) AS adoptions,
                 COUNT(*) AS applications
          FROM adoption_applications a
-         WHERE a.submitted_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+         JOIN pets p ON a.pet_id = p.pet_id
+         WHERE a.submitted_at >= DATE_SUB(NOW(), INTERVAL ${interval})
+         ${speciesWhere.replace('pets', 'p')}
          GROUP BY DATE_FORMAT(a.submitted_at, '%b')
          ORDER BY MIN(a.submitted_at) ASC`
       );
@@ -102,8 +136,9 @@ export const analyticsController = {
         `SELECT DATE_FORMAT(a.submitted_at, '%b') AS month, p.species, COUNT(*) AS count
          FROM adoption_applications a
          JOIN pets p ON a.pet_id = p.pet_id
-         WHERE a.submitted_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+         WHERE a.submitted_at >= DATE_SUB(NOW(), INTERVAL ${interval})
          AND a.status IN ('approved','pet_unavailable')
+         ${speciesWhere.replace('pets', 'p')}
          GROUP BY DATE_FORMAT(a.submitted_at, '%b'), p.species
          ORDER BY MIN(a.submitted_at) ASC`
       );
@@ -111,75 +146,75 @@ export const analyticsController = {
       const [[{ avgResponseMinutes }]] = await pool.query<RowDataPacket[]>(
         `SELECT COALESCE(AVG(TIMESTAMPDIFF(MINUTE, submitted_at, resolved_at)), 0) AS avgResponseMinutes
          FROM animal_reports
-         WHERE resolved_at IS NOT NULL AND status = 'resolved'`
+         WHERE resolved_at IS NOT NULL AND status = 'resolved' ${speciesWhereReports}`
       );
 
       const [rescueCategoryRows] = await pool.query<RowDataPacket[]>(
-        `SELECT CASE WHEN species = 'unknown' THEN 'Unknown' WHEN species = 'dog' THEN 'Dog' WHEN species = 'cat' THEN 'Cat' END AS name, COUNT(*) AS value FROM animal_reports GROUP BY species`
+        `SELECT CASE WHEN species = 'unknown' THEN 'Unknown' WHEN species = 'dog' THEN 'Dog' WHEN species = 'cat' THEN 'Cat' END AS name, COUNT(*) AS value FROM animal_reports ${speciesWhereReports ? 'WHERE species IS NOT NULL' : ''} GROUP BY species`
       );
 
       const [reportCategoryRows] = await pool.query<RowDataPacket[]>(
-        `SELECT CASE WHEN species = 'unknown' THEN 'Unknown' WHEN species = 'dog' THEN 'Dog' WHEN species = 'cat' THEN 'Cat' END AS name, COUNT(*) AS value FROM animal_reports GROUP BY species`
+        `SELECT CASE WHEN species = 'unknown' THEN 'Unknown' WHEN species = 'dog' THEN 'Dog' WHEN species = 'cat' THEN 'Cat' END AS name, COUNT(*) AS value FROM animal_reports ${speciesWhereReports ? 'WHERE species IS NOT NULL' : ''} GROUP BY species`
       );
 
       const [barangayRows] = await pool.query<RowDataPacket[]>(
-        `SELECT location_area AS name, COUNT(*) AS value FROM animal_reports WHERE location_area IS NOT NULL AND location_area != '' GROUP BY location_area ORDER BY value DESC LIMIT 10`
+        `SELECT location_area AS name, COUNT(*) AS value FROM animal_reports WHERE location_area IS NOT NULL AND location_area != '' ${speciesWhereReports} GROUP BY location_area ORDER BY value DESC LIMIT 10`
       );
 
       const [sexDistRows] = await pool.query<RowDataPacket[]>(
-        `SELECT sex AS name, COUNT(*) AS value FROM pets WHERE deleted_at IS NULL GROUP BY sex`
+        `SELECT sex AS name, COUNT(*) AS value FROM pets WHERE deleted_at IS NULL ${speciesWhere} GROUP BY sex`
       );
 
       const [petStatusDistRows] = await pool.query<RowDataPacket[]>(
-        `SELECT status AS name, COUNT(*) AS value FROM pets WHERE deleted_at IS NULL GROUP BY status`
+        `SELECT status AS name, COUNT(*) AS value FROM pets WHERE deleted_at IS NULL ${speciesWhere} GROUP BY status`
       );
 
       const [ageDistRows] = await pool.query<RowDataPacket[]>(
-        `SELECT age_estimate AS name, COUNT(*) AS value FROM pets WHERE deleted_at IS NULL AND age_estimate IS NOT NULL AND age_estimate != '' GROUP BY age_estimate ORDER BY value DESC LIMIT 10`
+        `SELECT age_estimate AS name, COUNT(*) AS value FROM pets WHERE deleted_at IS NULL AND age_estimate IS NOT NULL AND age_estimate != '' ${speciesWhere} GROUP BY age_estimate ORDER BY value DESC LIMIT 10`
       );
 
       const [shelterCapacityRows] = await pool.query<RowDataPacket[]>(
-        `SELECT source_type AS name, COUNT(*) AS value FROM pets WHERE deleted_at IS NULL GROUP BY source_type`
+        `SELECT source_type AS name, COUNT(*) AS value FROM pets WHERE deleted_at IS NULL ${speciesWhere} GROUP BY source_type`
       );
 
       const [adoptionStatusRows] = await pool.query<RowDataPacket[]>(
-        `SELECT status AS name, COUNT(*) AS value FROM adoption_applications GROUP BY status`
+        `SELECT a.status AS name, COUNT(*) AS value FROM adoption_applications a JOIN pets p ON a.pet_id = p.pet_id ${speciesWhere.replace('pets', 'p')} GROUP BY a.status`
       );
 
       const [rescueByMonthRows] = await pool.query<RowDataPacket[]>(
         `SELECT DATE_FORMAT(submitted_at, '%b') AS month, COUNT(*) AS cases
          FROM animal_reports
-         WHERE submitted_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+         WHERE submitted_at >= DATE_SUB(NOW(), INTERVAL ${interval}) ${speciesWhereReports}
          GROUP BY DATE_FORMAT(submitted_at, '%b')
          ORDER BY MIN(submitted_at) ASC`
       );
 
       const [rescueStatusRows] = await pool.query<RowDataPacket[]>(
-        `SELECT status AS name, COUNT(*) AS value FROM animal_reports GROUP BY status`
+        `SELECT status AS name, COUNT(*) AS value FROM animal_reports ${speciesWhereReports ? `WHERE ${speciesWhereReports.replace('AND ', '')}` : ''} GROUP BY status`
       );
 
       const [reportsByMonthRows] = await pool.query<RowDataPacket[]>(
         `SELECT DATE_FORMAT(submitted_at, '%b') AS month, COUNT(*) AS reports
          FROM animal_reports
-         WHERE submitted_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+         WHERE submitted_at >= DATE_SUB(NOW(), INTERVAL ${interval}) ${speciesWhereReports}
          GROUP BY DATE_FORMAT(submitted_at, '%b')
          ORDER BY MIN(submitted_at) ASC`
       );
 
       const [reportsByStatusRows] = await pool.query<RowDataPacket[]>(
-        `SELECT CASE WHEN status IN ('submitted','in_progress','dispatched') THEN 'In Progress' WHEN status = 'resolved' THEN 'Resolved' ELSE status END AS name, COUNT(*) AS value FROM animal_reports GROUP BY name`
+        `SELECT CASE WHEN status IN ('submitted','in_progress','dispatched') THEN 'In Progress' WHEN status = 'resolved' THEN 'Resolved' ELSE status END AS name, COUNT(*) AS value FROM animal_reports ${speciesWhereReports ? `WHERE ${speciesWhereReports.replace('AND ', '')}` : ''} GROUP BY name`
       );
 
       const [breedDistributionRows] = await pool.query<RowDataPacket[]>(
-        `SELECT breed_detail AS name, COUNT(*) AS value FROM pets WHERE deleted_at IS NULL AND breed_detail IS NOT NULL AND breed_detail != '' GROUP BY breed_detail ORDER BY value DESC LIMIT 10`
+        `SELECT breed_detail AS name, COUNT(*) AS value FROM pets WHERE deleted_at IS NULL AND breed_detail IS NOT NULL AND breed_detail != '' ${speciesWhere} GROUP BY breed_detail ORDER BY value DESC LIMIT 10`
       );
 
       const [topBreedRows] = await pool.query<RowDataPacket[]>(
-        `SELECT breed_detail AS name, COUNT(*) AS value FROM pets WHERE deleted_at IS NULL AND breed_detail IS NOT NULL AND breed_detail != '' GROUP BY breed_detail ORDER BY value DESC LIMIT 6`
+        `SELECT breed_detail AS name, COUNT(*) AS value FROM pets WHERE deleted_at IS NULL AND breed_detail IS NOT NULL AND breed_detail != '' ${speciesWhere} GROUP BY breed_detail ORDER BY value DESC LIMIT 6`
       );
 
       const [healthStatusRows] = await pool.query<RowDataPacket[]>(
-        `SELECT CASE WHEN hr.heart_rate_bpm > 140 THEN 'Critical' WHEN hr.heart_rate_bpm > 100 THEN 'Under Treatment' WHEN hr.heart_rate_bpm > 80 OR hr.heart_rate_bpm IS NOT NULL THEN 'Recovering' WHEN hr.heart_rate_bpm IS NULL THEN 'Healthy' END AS name, COUNT(*) AS value FROM health_records hr GROUP BY name`
+        `SELECT CASE WHEN hr.heart_rate_bpm > 140 THEN 'Critical' WHEN hr.heart_rate_bpm > 100 THEN 'Under Treatment' WHEN hr.heart_rate_bpm > 80 OR hr.heart_rate_bpm IS NOT NULL THEN 'Recovering' WHEN hr.heart_rate_bpm IS NULL THEN 'Healthy' END AS name, COUNT(*) AS value FROM health_records hr JOIN pets p ON hr.pet_id = p.pet_id ${speciesWhere} GROUP BY name`
       );
 
       const adoptionApprovalRate = totalAdoptions + pendingAdoptions + rejectedAdoptions > 0
@@ -233,7 +268,7 @@ export const analyticsController = {
           { label: 'Animals Under Treatment', value: String(underTreatment), change: null },
           { label: 'Vaccination Coverage', value: `${vaccinationCoverage}%`, change: null },
         ],
-        recentAnalytics: await buildRecentAnalytics(pool),
+        recentAnalytics: await buildRecentAnalytics(pool, dateRange, species),
       };
 
       res.json({ success: true, overview });

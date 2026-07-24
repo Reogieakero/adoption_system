@@ -50,6 +50,11 @@ export default function AdminMessagesPage() {
     setLoading(true);
     try {
       const convs = await fetchConversations();
+      convs.sort((a, b) => {
+        const aTime = a.last_message_at || a.created_at;
+        const bTime = b.last_message_at || b.created_at;
+        return new Date(aTime).getTime() - new Date(bTime).getTime();
+      });
       setChatConversations(convs);
 
       const msgsMap: Record<number, Message[]> = {};

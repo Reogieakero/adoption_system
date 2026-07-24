@@ -29,7 +29,11 @@ export interface AnalyticsOverview {
   recentAnalytics: { metric: string; current: string; previous: string; change: number | null; trend: string }[];
 }
 
-export async function fetchAnalyticsOverview(): Promise<AnalyticsOverview> {
-  const data = await request<{ success: true; overview: AnalyticsOverview }>('/overview');
+export async function fetchAnalyticsOverview(dateRange?: string, species?: string): Promise<AnalyticsOverview> {
+  const params = new URLSearchParams();
+  if (dateRange) params.set('dateRange', dateRange);
+  if (species) params.set('species', species);
+  const qs = params.toString();
+  const data = await request<{ success: true; overview: AnalyticsOverview }>(`/overview${qs ? `?${qs}` : ''}`);
   return data.overview;
 }

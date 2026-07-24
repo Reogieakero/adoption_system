@@ -34,9 +34,9 @@ export default function FloatingChat({ role, autoOpen, onClose, hideBubble }: Fl
   const [view, setView] = useState<'list' | 'chat'>('list');
   const [residents, setResidents] = useState<{ user_id: number; full_name: string }[]>([]);
   const [admins, setAdmins] = useState<{ user_id: number; full_name: string }[]>([]);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
   const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);
   const residentInitRef = useRef(false);
   const convRef = useRef(conversations);
@@ -55,10 +55,6 @@ export default function FloatingChat({ role, autoOpen, onClose, hideBubble }: Fl
   }, [activeConvId, isResident]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
-  useEffect(() => {
     if (isOpen) {
       refetchConversations();
       if (isAdmin) {
@@ -70,6 +66,17 @@ export default function FloatingChat({ role, autoOpen, onClose, hideBubble }: Fl
       residentInitRef.current = false;
     }
   }, [isOpen, refetchConversations, isAdmin, isResident]);
+
+  // Scroll to bottom when switching views or loading content
+  useEffect(() => {
+    if (bodyRef.current) {
+      requestAnimationFrame(() => {
+        if (bodyRef.current) {
+          bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
+        }
+      });
+    }
+  }, [view, conversations, messages]);
 
   const autoOpenDoneRef = useRef(false);
 
@@ -182,7 +189,7 @@ export default function FloatingChat({ role, autoOpen, onClose, hideBubble }: Fl
             </button>
           </div>
 
-          <div className={styles.body}>
+          <div className={styles.body} ref={bodyRef}>
             {view === 'list' ? (
               isResident ? (
                 <div className={styles.empty}>
@@ -212,28 +219,30 @@ export default function FloatingChat({ role, autoOpen, onClose, hideBubble }: Fl
                   )}
                 </div>
               ) : (
-                conversations.map((conv) => (
-                  <button
-                    key={conv.conversation_id}
-                    className={styles.convItem}
-                    onClick={() => selectConversation(conv.conversation_id)}
-                  >
-                    <div className={styles.convAvatar}>
-                      {conv.other_user_name.charAt(0).toUpperCase()}
-                    </div>
-                    <div className={styles.convInfo}>
-                      <div className={styles.convName}>{conv.other_user_name}</div>
-                      <div className={styles.convPreview}>
-                        {conv.last_message?.message_text || 'No messages yet'}
+                <>
+                  {conversations.map((conv) => (
+                    <button
+                      key={conv.conversation_id}
+                      className={styles.convItem}
+                      onClick={() => selectConversation(conv.conversation_id)}
+                    >
+                      <div className={styles.convAvatar}>
+                        {conv.other_user_name.charAt(0).toUpperCase()}
                       </div>
-                    </div>
-                    {conv.unread_count > 0 && (
-                      <span className={styles.convBadge}>
-                        {conv.unread_count > 99 ? '99+' : conv.unread_count}
-                      </span>
-                    )}
-                  </button>
-                ))
+                      <div className={styles.convInfo}>
+                        <div className={styles.convName}>{conv.other_user_name}</div>
+                        <div className={styles.convPreview}>
+                          {conv.last_message?.message_text || 'No messages yet'}
+                        </div>
+                      </div>
+                      {conv.unread_count > 0 && (
+                        <span className={styles.convBadge}>
+                          {conv.unread_count > 99 ? '99+' : conv.unread_count}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </>
               )
             ) : (
               <div className={styles.messagesContainer}>
@@ -242,7 +251,7 @@ export default function FloatingChat({ role, autoOpen, onClose, hideBubble }: Fl
                 ) : messages.length === 0 ? (
                   <div className={styles.empty}>No messages yet. Say hello!</div>
                 ) : (
-                  messages.map((msg) => {
+                  [...messages].sort((a, b) => new Date(a.sent_at).getTime() - new Date(b.sent_at).getTime()).map((msg) => {
                     const isOwn = currentUserId ? msg.sender_id === currentUserId : false;
                     return (
                       <div
@@ -264,7 +273,6 @@ export default function FloatingChat({ role, autoOpen, onClose, hideBubble }: Fl
                     );
                   })
                 )}
-                <div ref={messagesEndRef} />
               </div>
             )}
           </div>

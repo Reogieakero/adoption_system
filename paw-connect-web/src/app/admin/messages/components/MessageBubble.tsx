@@ -1,8 +1,22 @@
 ﻿import React from 'react';
 import { CheckCheck, Check } from 'lucide-react';
 import type { Message } from '@/types';
-const ADMIN_SENDER_ID = 1;
 import styles from './MessageBubble.module.css';
+
+function decodeUserId(token: string): number | null {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.id ?? null;
+  } catch {
+    return null;
+  }
+}
+
+function getCurrentUserId(): number | null {
+  if (typeof window === 'undefined') return null;
+  const token = sessionStorage.getItem('adminAuthToken');
+  return token ? decodeUserId(token) : null;
+}
 
 interface MessageBubbleProps {
   message: Message;
@@ -14,7 +28,8 @@ function formatTime(isoString: string): string {
 }
 
 export default function MessageBubble({ message }: MessageBubbleProps) {
-  const isAdmin = message.sender_id === ADMIN_SENDER_ID;
+  const adminId = getCurrentUserId();
+  const isAdmin = adminId !== null && message.sender_id === adminId;
 
   return (
     <div className={`${styles.msgRow} ${isAdmin ? styles.msgAdmin : styles.msgIncoming}`}>

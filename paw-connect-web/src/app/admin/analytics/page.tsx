@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import React from "react";
+import React, { useState } from "react";
 import styles from "./page.module.css";
 import { useAnalytics } from "@/hooks/admin/use-analytics";
 import { Header } from "./components/layout/Header";
@@ -15,7 +15,9 @@ import { PerformanceMetrics } from "./components/sections/PerformanceMetrics";
 import { RecentAnalyticsTable } from "./components/sections/RecentAnalyticsTable";
 
 export default function AnalyticsDashboardPage() {
-  const { data, isLoading, error, refetch } = useAnalytics();
+  const [dateRange, setDateRange] = useState("Last 30 days");
+  const [species, setSpecies] = useState("All Species");
+  const { data, isLoading, error, refetch } = useAnalytics(dateRange, species);
 
   return (
     <div className={styles.root}>
